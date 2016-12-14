@@ -23,6 +23,9 @@ public:
 
     QStringList getObjectAllName();
     QStringList getEventAllName();
+
+    void save();
+    void save(QString path);
 };
 
 #endif // LOADER_H

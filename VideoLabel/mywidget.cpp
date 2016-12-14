@@ -58,4 +58,12 @@ void MyWidget::addRect(int x, int y, int w, int h)
 void MyWidget::setRect(const QRect rec)
 {
     mRectActiv.setRect(rec.x(),rec.y(),rec.width(),rec.height());
+    this->repaint();
 }
+
+void MyWidget::clearRects()
+{
+    mRects.clear();
+    mRectActiv.setRect(0,0,0,0);
+}
+

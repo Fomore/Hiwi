@@ -9,21 +9,26 @@
 class Controler
 {
 private:
-     std::vector<ActivModel> mEvents;
+     std::vector<std::vector<ActivModel>> mEvents;
 
      int VideoWidth, VideoHeight;
      int DisplayWidth, DisplayHeight;
 
      double getScall();
 
-     int getLastID(int frame);
-     int getNextID(int frame);
+     int getPosition(int frame, int O_id);
+     void addObject();
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
     void setVideoSize(int w, int h);
     void setDisplaySize(int w, int h);
-    QRect getRect(int frame);
+    QRect getRect(int frame, int O_id);
+    void setObjectSize(int anz);
+    void loadFromFile();
+    void loadFromFile(QString path);
+    void save();
+    void save(QString path);
 };
 
 #endif // CONTROLER_H

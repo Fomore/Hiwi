@@ -47,6 +47,8 @@ private slots:
 
     void newVideoFrame(qint64 newPos);
 
+    void on_actionSave_triggered();
+
 private:
     Ui::MainWindow *ui;
 

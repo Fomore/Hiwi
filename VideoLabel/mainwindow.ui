@@ -71,6 +71,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menuVideo">
     <property name="title">
@@ -99,6 +100,7 @@
    <addaction name="actionStepForward"/>
    <addaction name="actionSkipForward"/>
    <addaction name="actionStop"/>
+   <addaction name="actionSave"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -173,6 +175,15 @@
    </property>
    <property name="text">
     <string>SkipBackward</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/archive.png</normaloff>:/Icons/Icon/archive.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
    </property>
   </action>
  </widget>

@@ -8,5 +8,6 @@
         <file>Icon/skip-backward.png</file>
         <file>Icon/android-folder.png</file>
         <file>Icon/stop.png</file>
+        <file>Icon/archive.png</file>
     </qresource>
 </RCC>

@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionPlay->setVisible(true);
 
     mLoader.loadFromFile();
+    mControler.loadFromFile();
 
     QStringList EventList = mLoader.getEventAllName();
     for(int i = 0; i < EventList.size(); i++){
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int i = 0; i < ObjectList.size(); i++){
         ui->listWidget_1->addItem(ObjectList[i]);
     }
+    mControler.setObjectSize(ObjectList.size());
 
     connect(ui->widgetVideo,SIGNAL(Mouse_Pose()),this,SLOT(Mouse_current_Pose()));
     connect(ui->widgetVideo,SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
@@ -58,10 +60,14 @@ void MainWindow::on_actionOpen_triggered()
     player->setMedia(QUrl::fromLocalFile(filename));
 
     mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
-    mControler.setVideoSize(player->media().canonicalResource().resolution().width(),
-                            player->media().canonicalResource().resolution().height());
 
-    on_actionPlay_triggered();
+    int w = player->media().canonicalResource().resolution().width();
+    int h = player->media().canonicalResource().resolution().height();
+    if(w > 0 && h > 0){
+        mControler.setVideoSize(w,h);
+    }else{
+        mControler.setVideoSize(640,480);
+    }
 }
 
 void MainWindow::on_actionPlay_triggered()
@@ -154,14 +160,21 @@ void MainWindow::Mouse_Released()
                         ui->widgetVideo->x,
                         ui->widgetVideo->y,
                         player->position(),
-                        ui->listWidget_1->currentIndex().row(),
-                        ui->listWidget_2->currentIndex().row());
+                        ui->listWidget_2->currentIndex().row(),
+                        ui->listWidget_1->currentIndex().row());
 }
 
-void MainWindow::newVideoFrame(qint64 newPos)
+void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
 {
-    std::cout<<"Frame: "<<player->position()<<" "<<newPos<<std::endl;
-    QRect tmp = mControler.getRect(newPos);
-    std::cout<<tmp.x()<<tmp.y()<<tmp.width()<<tmp.height()<<std::endl;
-    ui->widgetVideo->setRect(mControler.getRect(newPos));
+    ui->widgetVideo->clearRects();
+    for(int i = 0; i < ui->listWidget_1->count(); i++){
+        ui->widgetVideo->addRect(mControler.getRect(newPos,i));
+    }
+    ui->widgetVideo->repaint();
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    mLoader.save();
+    mControler.save();
 }

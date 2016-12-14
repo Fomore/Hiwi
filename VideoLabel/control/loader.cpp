@@ -68,3 +68,32 @@ QStringList Loader::getEventAllName(){
     }
     return ret;
 }
+
+void Loader::save(){
+    save("./data/");
+}
+
+void Loader::save(QString path)
+{
+    QFile file_event(path+"event.txt");
+    if(!file_event.open(QIODevice::WriteOnly)) {
+        std::cout<<"Datei "<<(path+"event.txt").toStdString()<<" nicht gefunden"<<std::endl;
+    }else{
+        QTextStream out(&file_event);
+        for(int i = 0; i < mEvents.size(); i++){
+            out << mEvents[i].getDateAll() << endl;
+        }
+    }
+    file_event.close();
+
+    QFile file_object(path+"object.txt");
+    if(!file_object.open(QIODevice::WriteOnly)) {
+        std::cout<<"Datei "<<(path+"object.txt").toStdString()<<" nicht gefunden"<<std::endl;
+    }else{
+        QTextStream out(&file_object);
+        for(int i = 0; i < mObjects.size(); i++){
+            out << mObjects[i].getDateAll() << endl;
+        }
+    }
+    file_object.close();
+}

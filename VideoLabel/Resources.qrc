@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>Icon/ios7-pause.png</file>
+        <file>Icon/ios7-play.png</file>
+        <file>Icon/ios7-skipbackward.png</file>
+        <file>Icon/ios7-skipforward.png</file>
+        <file>Icon/skip-forward.png</file>
+        <file>Icon/skip-backward.png</file>
+        <file>Icon/android-folder.png</file>
+        <file>Icon/stop.png</file>
+    </qresource>
+</RCC>

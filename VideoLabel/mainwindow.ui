@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>713</width>
+    <height>553</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,3">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
+      <item>
+       <widget class="MyWidget" name="widgetVideo" native="true">
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,2,2">
+      <item>
+       <widget class="QListWidget" name="listWidget_1"/>
+      </item>
+      <item>
+       <widget class="QListWidget" name="listWidget_2"/>
+      </item>
+      <item>
+       <widget class="QTextBrowser" name="textBrowser"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>713</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+   </widget>
+   <widget class="QMenu" name="menuVideo">
+    <property name="title">
+     <string>Video</string>
+    </property>
+    <addaction name="actionPlay"/>
+    <addaction name="actionPause"/>
+    <addaction name="actionStop"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuVideo"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>BottomToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSkipBackward"/>
+   <addaction name="actionStepBackward"/>
+   <addaction name="actionPlay"/>
+   <addaction name="actionPause"/>
+   <addaction name="actionStepForward"/>
+   <addaction name="actionSkipForward"/>
+   <addaction name="actionStop"/>
+  </widget>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/android-folder.png</normaloff>:/Icons/Icon/android-folder.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open A File</string>
+   </property>
+  </action>
+  <action name="actionPlay">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/ios7-play.png</normaloff>:/Icons/Icon/ios7-play.png</iconset>
+   </property>
+   <property name="text">
+    <string>Play</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/ios7-pause.png</normaloff>:/Icons/Icon/ios7-pause.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/stop.png</normaloff>:/Icons/Icon/stop.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionStepForward">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/ios7-skipforward.png</normaloff>:/Icons/Icon/ios7-skipforward.png</iconset>
+   </property>
+   <property name="text">
+    <string>StepForward</string>
+   </property>
+  </action>
+  <action name="actionStepBackward">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/ios7-skipbackward.png</normaloff>:/Icons/Icon/ios7-skipbackward.png</iconset>
+   </property>
+   <property name="text">
+    <string>StepBackward</string>
+   </property>
+  </action>
+  <action name="actionSkipForward">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/skip-forward.png</normaloff>:/Icons/Icon/skip-forward.png</iconset>
+   </property>
+   <property name="text">
+    <string>SkipForward</string>
+   </property>
+  </action>
+  <action name="actionSkipBackward">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/skip-backward.png</normaloff>:/Icons/Icon/skip-backward.png</iconset>
+   </property>
+   <property name="text">
+    <string>SkipBackward</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">mywidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

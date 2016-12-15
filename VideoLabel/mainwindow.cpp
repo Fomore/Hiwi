@@ -186,3 +186,13 @@ void MainWindow::on_actionSave_triggered()
     mLoader.save(mFileName);
     mControler.save(mFileName);
 }
+
+void MainWindow::on_actionAddEvent_triggered()
+{
+    std::cout<<"Add Neues Event"<<std::endl;
+}
+
+void MainWindow::on_actionAdd_Object_triggered()
+{
+    std::cout<<"Add neues Object"<<std::endl;
+}

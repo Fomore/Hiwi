@@ -85,6 +85,8 @@
     <property name="title">
      <string>Label</string>
     </property>
+    <addaction name="actionAddEvent"/>
+    <addaction name="actionAdd_Object"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVideo"/>
@@ -190,6 +192,16 @@
    </property>
    <property name="text">
     <string>Save</string>
+   </property>
+  </action>
+  <action name="actionAddEvent">
+   <property name="text">
+    <string>Add Event</string>
+   </property>
+  </action>
+  <action name="actionAdd_Object">
+   <property name="text">
+    <string>Add Object</string>
    </property>
   </action>
  </widget>

@@ -3,6 +3,7 @@
 
 #include "mywidget.h"
 #include <QPainter>
+#include <QFileInfo>
 
 #include <iostream>
 
@@ -25,24 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionPause->setVisible(false);
     ui->actionPlay->setVisible(true);
 
-    mLoader.loadFromFile();
-    mControler.loadFromFile();
-
-    QStringList EventList = mLoader.getEventAllName();
-    for(int i = 0; i < EventList.size(); i++){
-        ui->listWidget_2->addItem(EventList[i]);
-    }
-
-    QStringList ObjectList = mLoader.getObjectAllName();
-    for(int i = 0; i < ObjectList.size(); i++){
-        ui->listWidget_1->addItem(ObjectList[i]);
-    }
-    mControler.setObjectSize(ObjectList.size());
-
     connect(ui->widgetVideo,SIGNAL(Mouse_Pose()),this,SLOT(Mouse_current_Pose()));
     connect(ui->widgetVideo,SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
     connect(ui->widgetVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
-
 
     connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(newVideoFrame(qint64)));
 }
@@ -55,6 +41,28 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionOpen_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,tr("Open Video"), "~", tr("Video Files (*.avi *.mp4 *.wmv);; All (*.*)"));
+    QFileInfo fi(filename);
+
+    this->setWindowTitle("VideoLabel - " + fi.fileName());
+    mFileName = fi.baseName();
+
+    mLoader.loadFromFile(mFileName);
+    mControler.loadFromFile(mFileName);
+
+    ui->listWidget_2->clear();
+    QStringList EventList = mLoader.getEventAllName();
+    for(int i = 0; i < EventList.size(); i++){
+        ui->listWidget_2->addItem(EventList[i]);
+    }
+
+    ui->listWidget_1->clear();
+    QStringList ObjectList = mLoader.getObjectAllName();
+    for(int i = 0; i < ObjectList.size(); i++){
+        ui->listWidget_1->addItem(ObjectList[i]);
+    }
+    mControler.setObjectSize(ObjectList.size());
+
+
     on_actionStop_triggered();
 
     player->setMedia(QUrl::fromLocalFile(filename));
@@ -175,6 +183,6 @@ void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
 
 void MainWindow::on_actionSave_triggered()
 {
-    mLoader.save();
-    mControler.save();
+    mLoader.save(mFileName);
+    mControler.save(mFileName);
 }

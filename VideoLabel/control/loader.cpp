@@ -7,14 +7,14 @@ Loader::Loader()
 {
 }
 
-void Loader::loadFromFile(){
-    loadFromFile("./data/");
+void Loader::loadFromFile(QString name){
+    loadFromFile(name,"./data/");
 }
 
-void Loader::loadFromFile(QString path){
-    QFile file_event(path+"event.txt");
+void Loader::loadFromFile(QString name, QString path){
+    QFile file_event(path+name+"_event.txt");
     if(!file_event.open(QIODevice::ReadOnly)) {
-        std::cout<<"Datei "<<(path+"event.txt").toStdString()<<" nicht gefunden"<<std::endl;
+        std::cout<<"Datei "<<(path+name+"_event.txt").toStdString()<<" nicht gefunden"<<std::endl;
     }else{
         QTextStream in(&file_event);
         while(!in.atEnd()) {
@@ -24,9 +24,9 @@ void Loader::loadFromFile(QString path){
     }
     file_event.close();
 
-    QFile file_object(path+"object.txt");
+    QFile file_object(path+name+"_object.txt");
     if(!file_object.open(QIODevice::ReadOnly)) {
-        std::cout<<"Datei "<<(path+"object.txt").toStdString()<<" nicht gefunden"<<std::endl;
+        std::cout<<"Datei "<<(path+name+"_object.txt").toStdString()<<" nicht gefunden"<<std::endl;
     }else{
         QTextStream in(&file_object);
         while(!in.atEnd()) {
@@ -69,15 +69,15 @@ QStringList Loader::getEventAllName(){
     return ret;
 }
 
-void Loader::save(){
+void Loader::save(QString name){
     save("./data/");
 }
 
-void Loader::save(QString path)
+void Loader::save(QString name, QString path)
 {
-    QFile file_event(path+"event.txt");
+    QFile file_event(path+name+"_event.txt");
     if(!file_event.open(QIODevice::WriteOnly)) {
-        std::cout<<"Datei "<<(path+"event.txt").toStdString()<<" nicht gefunden"<<std::endl;
+        std::cout<<"Datei "<<(path+name+"_event.txt").toStdString()<<" nicht gefunden"<<std::endl;
     }else{
         QTextStream out(&file_event);
         for(int i = 0; i < mEvents.size(); i++){
@@ -86,9 +86,9 @@ void Loader::save(QString path)
     }
     file_event.close();
 
-    QFile file_object(path+"object.txt");
+    QFile file_object(path+name+"_object.txt");
     if(!file_object.open(QIODevice::WriteOnly)) {
-        std::cout<<"Datei "<<(path+"object.txt").toStdString()<<" nicht gefunden"<<std::endl;
+        std::cout<<"Datei "<<(path+name+"_object.txt").toStdString()<<" nicht gefunden"<<std::endl;
     }else{
         QTextStream out(&file_object);
         for(int i = 0; i < mObjects.size(); i++){

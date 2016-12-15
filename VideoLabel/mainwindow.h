@@ -58,6 +58,8 @@ private:
     Loader mLoader;
     Controler mControler;
 
+    QString mFileName;
+
     void displayEvent(int id);
     void displayObject(int id);
 

@@ -25,10 +25,10 @@ public:
     void setDisplaySize(int w, int h);
     QRect getRect(int frame, int O_id);
     void setObjectSize(int anz);
-    void loadFromFile();
-    void loadFromFile(QString path);
-    void save();
-    void save(QString path);
+    void loadFromFile(QString name);
+    void loadFromFile(QString name, QString path);
+    void save(QString name);
+    void save(QString name, QString path);
 };
 
 #endif // CONTROLER_H

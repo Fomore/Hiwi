@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>VideoLabel</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -81,8 +81,14 @@
     <addaction name="actionPause"/>
     <addaction name="actionStop"/>
    </widget>
+   <widget class="QMenu" name="menuLabel">
+    <property name="title">
+     <string>Label</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVideo"/>
+   <addaction name="menuLabel"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">

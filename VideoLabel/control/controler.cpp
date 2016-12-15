@@ -116,14 +116,14 @@ void Controler::setObjectSize(int anz)
     }
 }
 
-void Controler::loadFromFile(){
-    loadFromFile("./data/");
+void Controler::loadFromFile(QString name){
+    loadFromFile(name, "./data/");
 }
 
-void Controler::loadFromFile(QString path){
-    QFile file_object(path+"activevent.txt");
+void Controler::loadFromFile(QString name, QString path){
+    QFile file_object(path+name+"_activevent.txt");
     if(!file_object.open(QIODevice::ReadOnly)) {
-        std::cout<<"Datei "<<(path+"activevent.txt").toStdString()<<" nicht gefunden"<<std::endl;
+        std::cout<<"Datei "<<(path+name+"_activevent.txt").toStdString()<<" nicht gefunden"<<std::endl;
     }else{
         QTextStream in(&file_object);
         while(!in.atEnd()) {
@@ -138,15 +138,15 @@ void Controler::loadFromFile(QString path){
     file_object.close();
 }
 
-void Controler::save(){
-    save("./data/");
+void Controler::save(QString name){
+    save(name,"./data/");
 }
 
-void Controler::save(QString path)
+void Controler::save(QString name, QString path)
 {
-    QFile file_object(path+"activevent.txt");
+    QFile file_object(path+name+"_activevent.txt");
     if(!file_object.open(QIODevice::WriteOnly)) {
-        std::cout<<"Datei "<<(path+"activevent.txt").toStdString()<<" nicht gefunden"<<std::endl;
+        std::cout<<"Datei "<<(path+name+"_activevent.txt").toStdString()<<" nicht gefunden"<<std::endl;
     }else{
         QTextStream out(&file_object);
         for(int i = 0; i < mEvents.size(); i++){

@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     model/object.cpp \
     model/activmodel.cpp \
     mywidget.cpp \
-    control/controler.cpp
+    control/controler.cpp \
+    inputevobdialog.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -28,9 +29,11 @@ HEADERS  += mainwindow.h \
     model/object.h \
     model/activmodel.h \
     mywidget.h \
-    control/controler.h
+    control/controler.h \
+    inputevobdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    inputevobdialog.ui
 
 RESOURCES += \
     Resources.qrc

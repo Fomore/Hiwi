@@ -12,6 +12,8 @@
 #include "control/loader.h"
 #include "control/controler.h"
 
+#include "inputevobdialog.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -53,6 +55,8 @@ private slots:
 
     void on_actionAdd_Object_triggered();
 
+    void updateView();
+
 private:
     Ui::MainWindow *ui;
 
@@ -67,6 +71,7 @@ private:
     void displayEvent(int id);
     void displayObject(int id);
 
+    InputEvObDialog *mEvObDialog;
 };
 
 #endif // MAINWINDOW_H

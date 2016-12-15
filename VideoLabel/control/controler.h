@@ -9,15 +9,15 @@
 class Controler
 {
 private:
-     std::vector<std::vector<ActivModel>> mEvents;
+    std::vector<std::vector<ActivModel>> mEvents;
 
-     int VideoWidth, VideoHeight;
-     int DisplayWidth, DisplayHeight;
+    int VideoWidth, VideoHeight;
+    int DisplayWidth, DisplayHeight;
 
-     double getScall();
+    double getScall();
 
-     int getPosition(int frame, int O_id);
-     void addObject();
+    int getPosition(int frame, int O_id);
+    void addObject();
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);

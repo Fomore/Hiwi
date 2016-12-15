@@ -26,6 +26,9 @@ public:
 
     void save(QString name);
     void save(QString name, QString path);
+
+    void addNewObject(QString name, QString description);
+    void addNewEvent(QString name, QString description);
 };
 
 #endif // LOADER_H

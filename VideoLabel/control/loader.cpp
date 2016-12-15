@@ -97,3 +97,13 @@ void Loader::save(QString name, QString path)
     }
     file_object.close();
 }
+
+void Loader::addNewObject(QString name, QString description)
+{
+    mObjects.push_back(Object(mObjects.size(), name, description));
+}
+
+void Loader::addNewEvent(QString name, QString description)
+{
+    mEvents.push_back(Event(mEvents.size(), name, description));
+}

@@ -31,12 +31,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->widgetVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
 
     connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(newVideoFrame(qint64)));
+
+    mEvObDialog = new InputEvObDialog(this, &mLoader);
+
+    connect(mEvObDialog,SIGNAL(accepted()),this,SLOT(updateView()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 void MainWindow::on_actionOpen_triggered()
 {
@@ -49,19 +54,7 @@ void MainWindow::on_actionOpen_triggered()
     mLoader.loadFromFile(mFileName);
     mControler.loadFromFile(mFileName);
 
-    ui->listWidget_2->clear();
-    QStringList EventList = mLoader.getEventAllName();
-    for(int i = 0; i < EventList.size(); i++){
-        ui->listWidget_2->addItem(EventList[i]);
-    }
-
-    ui->listWidget_1->clear();
-    QStringList ObjectList = mLoader.getObjectAllName();
-    for(int i = 0; i < ObjectList.size(); i++){
-        ui->listWidget_1->addItem(ObjectList[i]);
-    }
-    mControler.setObjectSize(ObjectList.size());
-
+    updateView();
 
     on_actionStop_triggered();
 
@@ -189,10 +182,33 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionAddEvent_triggered()
 {
-    std::cout<<"Add Neues Event"<<std::endl;
+    mEvObDialog->setWindowTitle("Add new Event");
+    mEvObDialog->setUseEvent();
+    mEvObDialog->clear();
+    mEvObDialog->show();
+
 }
 
 void MainWindow::on_actionAdd_Object_triggered()
 {
-    std::cout<<"Add neues Object"<<std::endl;
+    mEvObDialog->setWindowTitle("Add new Object");
+    mEvObDialog->setUseObject();
+    mEvObDialog->clear();
+    mEvObDialog->show();
+}
+
+void MainWindow::updateView()
+{
+    ui->listWidget_2->clear();
+    QStringList EventList = mLoader.getEventAllName();
+    for(int i = 0; i < EventList.size(); i++){
+        ui->listWidget_2->addItem(EventList[i]);
+    }
+
+    ui->listWidget_1->clear();
+    QStringList ObjectList = mLoader.getObjectAllName();
+    for(int i = 0; i < ObjectList.size(); i++){
+        ui->listWidget_1->addItem(ObjectList[i]);
+    }
+    mControler.setObjectSize(ObjectList.size());
 }

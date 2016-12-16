@@ -160,3 +160,8 @@ void Controler::save(QString name, QString path)
     }
     file_object.close();
 }
+
+void Controler::clearAll()
+{
+    mEvents.clear();
+}

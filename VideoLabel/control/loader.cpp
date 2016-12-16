@@ -127,3 +127,9 @@ int Loader::getEventSize()
 {
     return mEvents.size();
 }
+
+void Loader::clearAll()
+{
+    mEvents.clear();
+    mObjects.clear();
+}

@@ -69,6 +69,8 @@ void MainWindow::on_actionOpen_triggered()
     this->setWindowTitle("VideoLabel - " + fi.fileName());
     mFileName = fi.baseName();
 
+    clearAll();
+
     mLoader.loadFromFile(mFileName);
     mControler.loadFromFile(mFileName);
 
@@ -144,6 +146,16 @@ void MainWindow::displayObject(int id){
     ui->textBrowser->setHtml(text);
 }
 
+void MainWindow::clearAll()
+{
+    mLoader.clearAll();
+    mControler.clearAll();
+    mEvObDialog->clear();
+    ui->listWidget_2->clear();
+    ui->listWidget_1->clear();
+
+}
+
 void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 {
     displayObject(index.row());
@@ -189,8 +201,12 @@ void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
     for(int i = 0; i < ui->listWidget_1->count(); i++){
         int evID = -1;
         QRect rec = mControler.getRect(newPos,i, evID);
-        if(i == ui->listWidget_1->currentIndex().row() && evID == ui->listWidget_2->currentIndex().row()){
-            ui->widgetVideo->addRect(rec,QColor(Qt::blue));
+        if(i == ui->listWidget_1->currentIndex().row()){
+            if(evID == ui->listWidget_2->currentIndex().row()){
+                ui->widgetVideo->addRect(rec,QColor(Qt::blue));
+            }else{
+                ui->widgetVideo->addRect(rec,QColor(255,0,255,255));
+            }
         }else{
             ui->widgetVideo->addRect(rec);
         }

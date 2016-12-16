@@ -90,6 +90,8 @@ private:
     void displayObject(int id);
 
     InputEvObDialog *mEvObDialog;
+
+    void clearAll();
 };
 
 #endif // MAINWINDOW_H

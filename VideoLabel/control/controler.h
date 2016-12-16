@@ -29,6 +29,7 @@ public:
     void loadFromFile(QString name, QString path);
     void save(QString name);
     void save(QString name, QString path);
+    void clearAll();
 };
 
 #endif // CONTROLER_H

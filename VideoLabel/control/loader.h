@@ -35,6 +35,8 @@ public:
 
     int getObjectSize();
     int getEventSize();
+
+    void clearAll();
 };
 
 #endif // LOADER_H

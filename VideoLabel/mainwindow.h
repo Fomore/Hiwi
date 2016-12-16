@@ -57,6 +57,18 @@ private slots:
 
     void updateView();
 
+    void contextEventMenuRequested(const QPoint& point);
+
+    void contextObjectMenuRequested(const QPoint& point);
+
+    void Eventchange();
+
+    void Objectchange();
+
+    void on_actionMute_triggered();
+
+    void on_actionSound_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -67,6 +79,12 @@ private:
     Controler mControler;
 
     QString mFileName;
+
+    QMenu* mEventMenu;
+    std::vector<QAction*> mEventMenueAction;
+
+    QMenu* mObjectMenu;
+    std::vector<QAction*> mObjectMenueAction;
 
     void displayEvent(int id);
     void displayObject(int id);

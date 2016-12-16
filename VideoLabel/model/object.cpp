@@ -49,3 +49,9 @@ QString Object::getDescription(){
 QString Object::getDateAll(){
     return QString::number(mID)+"&"+mName+"&"+mBeschreibung;
 }
+
+void Object::change(QString name, QString description)
+{
+    mName = name;
+    mBeschreibung = description;
+}

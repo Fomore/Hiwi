@@ -29,6 +29,12 @@ public:
 
     void addNewObject(QString name, QString description);
     void addNewEvent(QString name, QString description);
+
+    void ChangeObject(int id, QString name, QString description);
+    void ChamgeEvent(int id, QString name, QString description);
+
+    int getObjectSize();
+    int getEventSize();
 };
 
 #endif // LOADER_H

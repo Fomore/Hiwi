@@ -19,6 +19,8 @@ public:
     int getID();
     QString getDescription();
     QString getDateAll();
+
+    void change(QString name, QString description);
 };
 
 #endif // OBJECT_H

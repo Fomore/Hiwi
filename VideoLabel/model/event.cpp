@@ -49,3 +49,9 @@ QString Event::getDescription(){
 QString Event::getDateAll(){
     return QString::number(mID)+"&"+mName+"&"+mBeschreibung;
 }
+
+void Event::change(QString name, QString description)
+{
+    mName = name;
+    mBeschreibung = description;
+}

@@ -26,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionPause->setVisible(false);
     ui->actionPlay->setVisible(true);
 
+    ui->actionMute->setVisible(false);
+    ui->actionSound->setVisible(true);
+
     connect(ui->widgetVideo,SIGNAL(Mouse_Pose()),this,SLOT(Mouse_current_Pose()));
     connect(ui->widgetVideo,SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
     connect(ui->widgetVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
@@ -35,6 +38,21 @@ MainWindow::MainWindow(QWidget *parent) :
     mEvObDialog = new InputEvObDialog(this, &mLoader);
 
     connect(mEvObDialog,SIGNAL(accepted()),this,SLOT(updateView()));
+
+    mEventMenu = new QMenu(ui->listWidget_2);
+    ui->listWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->listWidget_2, SIGNAL(customContextMenuRequested(const QPoint)),this,
+            SLOT(contextEventMenuRequested(const QPoint)));
+    mEventMenueAction.push_back(mEventMenu->addAction("Ändern"));
+    connect(mEventMenueAction[0],SIGNAL(triggered()),this,SLOT(Eventchange()));
+
+    mObjectMenu = new QMenu(ui->listWidget_1);
+    ui->listWidget_1->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->listWidget_1, SIGNAL(customContextMenuRequested(const QPoint)),this,
+            SLOT(contextObjectMenuRequested(const QPoint)));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
+    connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(Objectchange()));
+
 }
 
 MainWindow::~MainWindow()
@@ -185,6 +203,7 @@ void MainWindow::on_actionAddEvent_triggered()
     mEvObDialog->setWindowTitle("Add new Event");
     mEvObDialog->setUseEvent();
     mEvObDialog->clear();
+    mEvObDialog->setID(mLoader.getEventSize());
     mEvObDialog->show();
 
 }
@@ -194,6 +213,7 @@ void MainWindow::on_actionAdd_Object_triggered()
     mEvObDialog->setWindowTitle("Add new Object");
     mEvObDialog->setUseObject();
     mEvObDialog->clear();
+    mEvObDialog->setID(mLoader.getObjectSize());
     mEvObDialog->show();
 }
 
@@ -211,4 +231,55 @@ void MainWindow::updateView()
         ui->listWidget_1->addItem(ObjectList[i]);
     }
     mControler.setObjectSize(ObjectList.size());
+}
+
+void MainWindow::contextEventMenuRequested(const QPoint &point)
+{
+    QModelIndex t = ui->listWidget_2->indexAt(point);
+    if(t.row() >= 0){
+        mEventMenu->popup(ui->listWidget_2->mapToGlobal(point));
+        ui->listWidget_2->item(t.row())->setSelected(true);
+    }
+}
+
+void MainWindow::contextObjectMenuRequested(const QPoint &point)
+{
+    QModelIndex t = ui->listWidget_1->indexAt(point);
+    if(t.row() >= 0){
+        mObjectMenu->popup(ui->listWidget_1->mapToGlobal(point));
+        ui->listWidget_1->item(t.row())->setSelected(true);
+    }
+}
+
+void MainWindow::Eventchange()
+{
+    int id = ui->listWidget_2->currentIndex().row();
+    QStringList all = mLoader.getEvent(id);
+    mEvObDialog->setWindowTitle("Change Event");
+    mEvObDialog->setUseObject();
+    mEvObDialog->setEvOb(id, all[0], all[2]);
+    mEvObDialog->show();
+}
+
+void MainWindow::Objectchange(){
+    int id = ui->listWidget_1->currentIndex().row();
+    QStringList all = mLoader.getObject(id);
+    mEvObDialog->setWindowTitle("Change Object");
+    mEvObDialog->setEvOb(id, all[0], all[2]);
+    mEvObDialog->setUseObject();
+    mEvObDialog->show();
+}
+
+void MainWindow::on_actionMute_triggered()
+{
+    player->setMuted(false);
+    ui->actionMute->setVisible(false);
+    ui->actionSound->setVisible(true);
+}
+
+void MainWindow::on_actionSound_triggered()
+{
+    player->setMuted(true);
+    ui->actionMute->setVisible(true);
+    ui->actionSound->setVisible(false);
 }

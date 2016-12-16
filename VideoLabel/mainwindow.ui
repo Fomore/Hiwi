@@ -80,6 +80,8 @@
     <addaction name="actionPlay"/>
     <addaction name="actionPause"/>
     <addaction name="actionStop"/>
+    <addaction name="actionSound"/>
+    <addaction name="actionMute"/>
    </widget>
    <widget class="QMenu" name="menuLabel">
     <property name="title">
@@ -109,6 +111,8 @@
    <addaction name="actionSkipForward"/>
    <addaction name="actionStop"/>
    <addaction name="actionSave"/>
+   <addaction name="actionMute"/>
+   <addaction name="actionSound"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -202,6 +206,24 @@
   <action name="actionAdd_Object">
    <property name="text">
     <string>Add Object</string>
+   </property>
+  </action>
+  <action name="actionMute">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/volume-mute.png</normaloff>:/Icons/Icon/volume-mute.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mute</string>
+   </property>
+  </action>
+  <action name="actionSound">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icon/volume-medium.png</normaloff>:/Icons/Icon/volume-medium.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sound</string>
    </property>
   </action>
  </widget>

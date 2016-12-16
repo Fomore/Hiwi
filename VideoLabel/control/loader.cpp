@@ -107,3 +107,23 @@ void Loader::addNewEvent(QString name, QString description)
 {
     mEvents.push_back(Event(mEvents.size(), name, description));
 }
+
+void Loader::ChangeObject(int id, QString name, QString description)
+{
+    mObjects[id].change(name,description);
+}
+
+void Loader::ChamgeEvent(int id, QString name, QString description)
+{
+    mEvents[id].change(name,description);
+}
+
+int Loader::getObjectSize()
+{
+    return mObjects.size();
+}
+
+int Loader::getEventSize()
+{
+    return mEvents.size();
+}

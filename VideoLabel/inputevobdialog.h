@@ -21,12 +21,16 @@ public:
 
     void clear();
 
+    void setEvOb(int id, QString name, QString desc);
+    void setID(int id);
+
 private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
 
 private:
     Ui::InputEvObDialog *ui;
     int mUsedFore;
+    int mID;
 
     Loader *mLoader;
 };

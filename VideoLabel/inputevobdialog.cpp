@@ -39,9 +39,30 @@ void InputEvObDialog::on_buttonBox_clicked(QAbstractButton *button)
     QString desc = ui->textEdit->toPlainText();
     if(name.size() > 0){
         if(mUsedFore == 0){//Objekt wird angelegt
+            if(mID < mLoader->getObjectSize()){
+                mLoader->ChangeObject(mID, name, desc);
+            }else{
             mLoader->addNewObject(name,desc);
+            }
         }else if(mUsedFore == 1){//Event wird angelegt
-            mLoader->addNewEvent(name,desc);
+            if(mID < mLoader->getEventSize()){
+                mLoader->ChamgeEvent(mID, name, desc);
+            }else{
+                mLoader->addNewEvent(name,desc);
+            }
         }
     }
+}
+
+void InputEvObDialog::setEvOb(int id, QString name, QString desc)
+{
+    setID(id);
+    ui->lineEditName->setText(name);
+    ui->textEdit->setText(desc);
+}
+
+void InputEvObDialog::setID(int id)
+{
+    mID = id;
+    ui->label_ID->setText("ID: "+QString::number(id));
 }

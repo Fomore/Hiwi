@@ -9,5 +9,7 @@
         <file>Icon/android-folder.png</file>
         <file>Icon/stop.png</file>
         <file>Icon/archive.png</file>
+        <file>Icon/volume-mute.png</file>
+        <file>Icon/volume-medium.png</file>
     </qresource>
 </RCC>

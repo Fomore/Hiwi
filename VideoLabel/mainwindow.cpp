@@ -187,7 +187,13 @@ void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
 {
     ui->widgetVideo->clearRects();
     for(int i = 0; i < ui->listWidget_1->count(); i++){
-        ui->widgetVideo->addRect(mControler.getRect(newPos,i));
+        int evID = -1;
+        QRect rec = mControler.getRect(newPos,i, evID);
+        if(i == ui->listWidget_1->currentIndex().row() && evID == ui->listWidget_2->currentIndex().row()){
+            ui->widgetVideo->addRect(rec,QColor(Qt::blue));
+        }else{
+            ui->widgetVideo->addRect(rec);
+        }
     }
     ui->widgetVideo->repaint();
 }

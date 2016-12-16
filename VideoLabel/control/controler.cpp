@@ -67,7 +67,7 @@ int Controler::getPosition(int frame, int O_id)
     return i;
 }
 
-QRect Controler::getRect(int frame, int O_id){
+QRect Controler::getRect(int frame, int O_id, int &E_id){
 
     int lastID = getPosition(frame, O_id)-1;
 
@@ -78,6 +78,8 @@ QRect Controler::getRect(int frame, int O_id){
         int y = mEvents[O_id][lastID].mY;
         int w = mEvents[O_id][lastID].mW;
         int h = mEvents[O_id][lastID].mH;
+
+        E_id = mEvents[O_id][lastID].mEventID;
 
         return QRect(x,y,w,h);
     }else{
@@ -95,6 +97,8 @@ QRect Controler::getRect(int frame, int O_id){
         double y_diff = (mEvents[O_id][lastID+1].mY -mEvents[O_id][lastID].mY)*s;
         double w_diff = (mEvents[O_id][lastID+1].mW -mEvents[O_id][lastID].mW)*s;
         double h_diff = (mEvents[O_id][lastID+1].mH -mEvents[O_id][lastID].mH)*s;
+
+        E_id = mEvents[O_id][lastID].mEventID;
 
         return QRect(x+x_diff,
                      y+y_diff,

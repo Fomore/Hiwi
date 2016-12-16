@@ -23,6 +23,7 @@ public:
     int lastX, lastY;
 
     void addRect(const QRect);
+    void addRect(const QRect, const QColor);
     void addRect(int x, int y, int w, int h);
 
     void setRect(const QRect rec);
@@ -33,6 +34,7 @@ protected:
 
     QRect mRectActiv;
     std::vector<QRect> mRects;
+    std::vector<QColor> mColores;
 
 signals:
     void Mouse_Pressed();

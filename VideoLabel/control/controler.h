@@ -23,7 +23,7 @@ public:
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
     void setVideoSize(int w, int h);
     void setDisplaySize(int w, int h);
-    QRect getRect(int frame, int O_id);
+    QRect getRect(int frame, int O_id, int &E_id);
     void setObjectSize(int anz);
     void loadFromFile(QString name);
     void loadFromFile(QString name, QString path);

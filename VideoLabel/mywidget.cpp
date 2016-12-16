@@ -34,20 +34,25 @@ void MyWidget::mouseReleaseEvent(QMouseEvent *ev)
 
 void MyWidget::paintEvent(QPaintEvent *){
     QPen pen1(Qt::red);
-    QPen pen2(Qt::green);
 
     QPainter paint(this);
     paint.setPen(pen1);
     paint.drawRect(mRectActiv);
-    paint.setPen(pen2);
     for(int i = 0; i < mRects.size(); i++){
+        paint.setPen(QPen(mColores[i]));
         paint.drawRect(mRects[i]);
     }
     paint.end();
 }
 
 void MyWidget::addRect(const QRect rec){
+    addRect(rec, QColor(Qt::green));
+}
+
+void MyWidget::addRect(const QRect rec, const QColor col)
+{
     mRects.push_back(QRect(rec));
+    mColores.push_back(QColor(col));
 }
 
 void MyWidget::addRect(int x, int y, int w, int h)
@@ -65,5 +70,6 @@ void MyWidget::clearRects()
 {
     mRects.clear();
     mRectActiv.setRect(0,0,0,0);
+    mColores.clear();
 }
 

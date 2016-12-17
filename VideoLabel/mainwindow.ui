@@ -71,6 +71,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionImport_XML"/>
     <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menuVideo">
@@ -224,6 +225,11 @@
    </property>
    <property name="text">
     <string>Sound</string>
+   </property>
+  </action>
+  <action name="actionImport_XML">
+   <property name="text">
+    <string>Import XML</string>
    </property>
   </action>
  </widget>

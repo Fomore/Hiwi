@@ -103,6 +103,20 @@ void Loader::addNewObject(QString name, QString description)
     mObjects.push_back(Object(mObjects.size(), name, description));
 }
 
+void Loader::addObjectSave(QString name, QString description)
+{
+    bool exist = false;
+    for(int i = 0; i < mObjects.size(); i++){
+        if(name == mObjects[i].getName()){
+            exist = true;
+            break;
+        }
+    }
+    if(!exist){
+        addNewObject(name, description);
+    }
+}
+
 void Loader::addNewEvent(QString name, QString description)
 {
     mEvents.push_back(Event(mEvents.size(), name, description));

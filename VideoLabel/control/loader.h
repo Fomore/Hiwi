@@ -28,6 +28,8 @@ public:
     void save(QString name, QString path);
 
     void addNewObject(QString name, QString description);
+    void addObjectSave(QString name, QString description);
+
     void addNewEvent(QString name, QString description);
 
     void ChangeObject(int id, QString name, QString description);

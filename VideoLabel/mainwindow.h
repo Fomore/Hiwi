@@ -11,6 +11,7 @@
 
 #include "control/loader.h"
 #include "control/controler.h"
+#include "control/xmlloader.h"
 
 #include "inputevobdialog.h"
 
@@ -69,6 +70,8 @@ private slots:
 
     void on_actionSound_triggered();
 
+    void on_actionImport_XML_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -77,6 +80,7 @@ private:
 
     Loader mLoader;
     Controler mControler;
+    XMLLoader *mXMLLoader;
 
     QString mFileName;
 

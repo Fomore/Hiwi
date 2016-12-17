@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(Objectchange()));
 
+    mXMLLoader = new XMLLoader(&mLoader,&mControler);
 }
 
 MainWindow::~MainWindow()
@@ -304,4 +305,11 @@ void MainWindow::on_actionSound_triggered()
     player->setMuted(true);
     ui->actionMute->setVisible(true);
     ui->actionSound->setVisible(false);
+}
+
+void MainWindow::on_actionImport_XML_triggered()
+{
+     QString filename = QFileDialog::getOpenFileName(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
+     mXMLLoader->read(filename);
+     updateView();
 }

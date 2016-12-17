@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia multimediawidgets
+QT       += core gui multimedia multimediawidgets xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     model/activmodel.cpp \
     mywidget.cpp \
     control/controler.cpp \
-    inputevobdialog.cpp
+    inputevobdialog.cpp \
+    control/xmlloader.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     model/activmodel.h \
     mywidget.h \
     control/controler.h \
-    inputevobdialog.h
+    inputevobdialog.h \
+    control/xmlloader.h
 
 FORMS    += mainwindow.ui \
     inputevobdialog.ui

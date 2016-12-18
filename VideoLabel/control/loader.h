@@ -28,15 +28,18 @@ public:
     void save(QString name, QString path);
 
     void addNewObject(QString name, QString description);
-    void addObjectSave(QString name, QString description);
+    int addObjectSave(QString name, QString description);
 
     void addNewEvent(QString name, QString description);
+    void addEventSave(QString name, QString description);
 
     void ChangeObject(int id, QString name, QString description);
     void ChamgeEvent(int id, QString name, QString description);
 
     int getObjectSize();
     int getEventSize();
+
+    int getID(QString name);
 
     void clearAll();
 };

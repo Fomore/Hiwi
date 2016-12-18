@@ -31,6 +31,12 @@ void XMLLoader::read(const QString filename)
     }
 }
 
+void XMLLoader::processName()
+{
+    mLoader->addEventSave(readNextText(),"");
+    xml.skipCurrentElement();
+}
+
 void XMLLoader::processDataset()
 {
     if (!xml.isStartElement() || xml.name() != "dataset")
@@ -38,6 +44,8 @@ void XMLLoader::processDataset()
     while (xml.readNextStartElement()) {
         if (xml.name() == "images")
             processImages();
+        else if (xml.name() == "name")
+            processName();
         else
             xml.skipCurrentElement();
     }
@@ -69,6 +77,12 @@ void XMLLoader::processImage(int frame)
             bool manual, ignore;
             boxAttributToValue(xml.attributes(),height,left,top,width,manual,ignore);
             int id = processBox();
+            if(id >= 0){
+                mControl->setObjectSize(id+1);
+                mControl->addEvent(left,top,width,height,frame,0,id);//ToDo: Verknüpfung zum Event besser
+            }else{
+                std::cout<<"Fehler bei Label"<<std::endl;
+            }
         }
         else
             xml.skipCurrentElement();
@@ -89,8 +103,7 @@ int XMLLoader::processBox() {
     }
 
     if (!label.isNull()){
-        mLoader->addObjectSave(label,"");
-        return 0;
+        return mLoader->addObjectSave(label,"");
     }
     return -1;
 }

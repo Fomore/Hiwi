@@ -103,23 +103,42 @@ void Loader::addNewObject(QString name, QString description)
     mObjects.push_back(Object(mObjects.size(), name, description));
 }
 
-void Loader::addObjectSave(QString name, QString description)
+int Loader::addObjectSave(QString name, QString description)
 {
     bool exist = false;
+    int ret = -1;
     for(int i = 0; i < mObjects.size(); i++){
         if(name == mObjects[i].getName()){
             exist = true;
+            ret = i;
             break;
         }
     }
     if(!exist){
+        ret = mObjects.size();
         addNewObject(name, description);
+        std::cout<<"Object: "<<name.toStdString()<<std::endl;
     }
+    return ret;
 }
 
 void Loader::addNewEvent(QString name, QString description)
 {
     mEvents.push_back(Event(mEvents.size(), name, description));
+}
+
+void Loader::addEventSave(QString name, QString description)
+{
+    bool exist = false;
+    for(int i = 0; i < mEvents.size(); i++){
+        if(name == mEvents[i].getName()){
+            exist = true;
+            break;
+        }
+    }
+    if(!exist){
+        addNewEvent(name, description);
+    }
 }
 
 void Loader::ChangeObject(int id, QString name, QString description)
@@ -140,6 +159,18 @@ int Loader::getObjectSize()
 int Loader::getEventSize()
 {
     return mEvents.size();
+}
+
+int Loader::getID(QString name)
+{
+    int ret = -1;
+    for(int i = 0; i < mObjects.size(); i++){
+        if(name == mObjects[i].getName()){
+            ret = i;
+            break;
+        }
+    }
+    return ret;
 }
 
 void Loader::clearAll()

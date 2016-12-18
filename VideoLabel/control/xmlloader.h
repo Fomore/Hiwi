@@ -16,6 +16,7 @@ public:
     void read(const QString filename);
 
 private:
+    void processName();
     void processDataset();
     void processImages();
     void processImage(int frame);

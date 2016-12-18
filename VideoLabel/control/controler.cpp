@@ -21,7 +21,7 @@ double Controler::getScall()
 void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD)
 {
     if(O_iD < 0 || O_iD >= mEvents.size()){
-        std::cout<<"Fehler Objekt ID funktioniert nicht "<<O_iD<<std::endl;
+        std::cout<<"Fehler Objekt ID funktioniert nicht "<<O_iD<<" - "<<mEvents.size()<<std::endl;
         O_iD=0;
     }
     std::cout<<"Aufruf mit: "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<frame<<" "<<E_id<<" "<<O_iD<<std::endl;
@@ -107,7 +107,7 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
     }
 }
 
-void Controler::addObject()
+void Controler::addEvent()
 {
     mEvents.push_back(std::vector<ActivModel>());
     mEvents.back().clear();
@@ -116,7 +116,7 @@ void Controler::addObject()
 void Controler::setObjectSize(int anz)
 {
     for(int i = mEvents.size(); i < anz; i++){
-        addObject();
+        addEvent();
     }
 }
 
@@ -134,7 +134,7 @@ void Controler::loadFromFile(QString name, QString path){
             QString line = in.readLine();
             ActivModel am(line);
             while(am.mObjectID >= mEvents.size()){
-                addObject();
+                addEvent();
             }
             mEvents[am.mObjectID].push_back(am);
         }

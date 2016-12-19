@@ -29,8 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionMute->setVisible(false);
     ui->actionSound->setVisible(true);
 
-    connect(ui->widgetVideo,SIGNAL(Mouse_Pose()),this,SLOT(Mouse_current_Pose()));
-    connect(ui->widgetVideo,SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
     connect(ui->widgetVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
 
     connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(newVideoFrame(qint64)));
@@ -100,6 +98,7 @@ void MainWindow::on_actionPlay_triggered()
     ui->statusBar->showMessage("Play");
     ui->actionPlay->setVisible(false);
     ui->actionPause->setVisible(true);
+    updateRects();
 }
 
 void MainWindow::on_actionPause_triggered()
@@ -221,6 +220,7 @@ void MainWindow::Mouse_Pressed()
 {
     ui->textBrowser->setText(QString("Pressed %1 %2").arg(ui->widgetVideo->x).arg(ui->widgetVideo->y));
 }
+
 
 void MainWindow::Mouse_Released()
 {
@@ -347,7 +347,7 @@ void MainWindow::on_actionStepForward_triggered()
 
 void MainWindow::on_actionStepBackward_triggered()
 {
-    player->setPosition(std::max(0,(int)player->position()-20));
+    player->setPosition(std::max((qint64)0,player->position()-20));
 }
 
 void MainWindow::on_actionSkipForward_triggered()
@@ -359,5 +359,5 @@ void MainWindow::on_actionSkipForward_triggered()
 void MainWindow::on_actionSkipBackward_triggered()
 {
     int step = player->duration()/30;
-    player->setPosition(std::min(player->duration(),player->position()-step));
+    player->setPosition(std::min((qint64)0,player->position()-step));
 }

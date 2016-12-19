@@ -42,22 +42,26 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     int h = std::max(y1,y2)-y;
 
     double scall = getScall();
-     x = x/scall+0.5;
-     y = y/scall+0.5;
-     w = x/scall-x/scall+0.5;
-     h = y/scall-y/scall+0.5;
+    double nx = (x-mShiftX)/scall+0.5;
+    double ny = (y-mShiftY)/scall+0.5;
+    double nw = w/scall+0.5;
+    double nh = h/scall+0.5;
 
-    addEventInFrame(x,y,w,h,frame,E_id,O_iD);
+    addEventInFrame(nx,ny,nw,nh,frame,E_id,O_iD);
 }
 
 void Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD)
 {
     int pos = getPosition(frame, O_iD);
-    if(pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
-        std::cout<<"Re-";
-        mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size());
+    if(O_iD >=0 && mEvents.size() > O_iD){
+        if(pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
+            std::cout<<"Re-";
+            mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size());
+        }else{
+            mEvents[O_iD].insert(mEvents[O_iD].begin()+pos,ActivModel(x,y,w,h,frame,E_id,O_iD,pos));
+        }
     }else{
-        mEvents[O_iD].insert(mEvents[O_iD].begin()+pos,ActivModel(x,y,w,h,frame,E_id,O_iD,pos));
+        std::cout<<"Object ID Fehler "<<O_iD<<std::endl;
     }
 }
 

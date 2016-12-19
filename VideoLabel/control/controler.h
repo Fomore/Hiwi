@@ -23,10 +23,6 @@ private:
     int getPosition(int frame, int O_id);
     void addEvent();
 
-    int toVideoX(int x);
-    int toVideoY(int y);
-    int toDisplayX(int x);
-    int toDisplayY(int y);
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);

@@ -35,8 +35,8 @@ void InputEvObDialog::clear()
 
 void InputEvObDialog::on_buttonBox_clicked(QAbstractButton *button)
 {
-    QString name = ui->lineEditName->text();
-    QString desc = ui->textEdit->toPlainText();
+    QString name = ui->lineEditName->text().simplified();
+    QString desc = ui->textEdit->toPlainText().simplified();
     if(name.size() > 0){
         if(mUsedFore == 0){//Objekt wird angelegt
             if(mID < mLoader->getObjectSize()){

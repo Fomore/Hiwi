@@ -70,7 +70,7 @@ QStringList Loader::getEventAllName(){
 }
 
 void Loader::save(QString name){
-    save("./data/");
+    save(name, "./data/");
 }
 
 void Loader::save(QString name, QString path)

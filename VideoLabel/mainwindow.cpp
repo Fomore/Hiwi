@@ -65,30 +65,32 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionOpen_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,tr("Open Video"), "~", tr("Video Files (*.avi *.mp4 *.wmv);; All (*.*)"));
-    QFileInfo fi(filename);
+    if(!filename.isEmpty()){
+        QFileInfo fi(filename);
 
-    this->setWindowTitle("VideoLabel - " + fi.fileName());
-    mFileName = fi.baseName();
+        this->setWindowTitle("VideoLabel - " + fi.fileName());
+        mFileName = fi.baseName();
 
-    clearAll();
+        clearAll();
 
-    mLoader.loadFromFile(mFileName);
-    mControler.loadFromFile(mFileName);
+        mLoader.loadFromFile(mFileName);
+        mControler.loadFromFile(mFileName);
 
-    updateView();
+        updateView();
 
-    on_actionStop_triggered();
+        on_actionStop_triggered();
 
-    player->setMedia(QUrl::fromLocalFile(filename));
+        player->setMedia(QUrl::fromLocalFile(filename));
 
-    mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
+        mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
 
-    int w = player->media().canonicalResource().resolution().width();
-    int h = player->media().canonicalResource().resolution().height();
-    if(w > 0 && h > 0){
-        mControler.setVideoSize(w,h);
-    }else{
-        mControler.setVideoSize(640,480);
+        int w = player->media().canonicalResource().resolution().width();
+        int h = player->media().canonicalResource().resolution().height();
+        if(w > 0 && h > 0){
+            mControler.setVideoSize(w,h);
+        }else{
+            mControler.setVideoSize(640,480);
+        }
     }
 }
 
@@ -217,8 +219,11 @@ void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
 
 void MainWindow::on_actionSave_triggered()
 {
+    std::cout<<"Save Beginnt"<<std::endl;
     mLoader.save(mFileName);
+    std::cout<<"Loader Controler"<<std::endl;
     mControler.save(mFileName);
+    std::cout<<"Ende"<<std::endl;
 }
 
 void MainWindow::on_actionAddEvent_triggered()
@@ -279,7 +284,7 @@ void MainWindow::Eventchange()
     int id = ui->listWidget_2->currentIndex().row();
     QStringList all = mLoader.getEvent(id);
     mEvObDialog->setWindowTitle("Change Event");
-    mEvObDialog->setUseObject();
+    mEvObDialog->setUseEvent();
     mEvObDialog->setEvOb(id, all[0], all[2]);
     mEvObDialog->show();
 }
@@ -309,7 +314,7 @@ void MainWindow::on_actionSound_triggered()
 
 void MainWindow::on_actionImport_XML_triggered()
 {
-     QString filename = QFileDialog::getOpenFileName(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
-     mXMLLoader->read(filename);
-     updateView();
+    QString filename = QFileDialog::getOpenFileName(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
+    mXMLLoader->read(filename);
+    updateView();
 }

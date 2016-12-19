@@ -72,6 +72,14 @@ private slots:
 
     void on_actionImport_XML_triggered();
 
+    void on_actionStepForward_triggered();
+
+    void on_actionStepBackward_triggered();
+
+    void on_actionSkipForward_triggered();
+
+    void on_actionSkipBackward_triggered();
+
 private:
     Ui::MainWindow *ui;
 

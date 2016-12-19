@@ -163,12 +163,12 @@ void MainWindow::updateSelection()
 {
     int frame = player->position();
     int O_id = ui->listWidget_1->currentIndex().row();
-        int E_id = mControler.getEventToObject(frame,O_id);
-        if(E_id >= 0 && E_id < ui->listWidget_2->count()){
-            ui->listWidget_2->item(E_id)->setSelected(true);
-        }else{
-            ui->listWidget_2->clearFocus();
-        }
+    int E_id = mControler.getEventToObject(frame,O_id);
+    if(E_id >= 0 && E_id < ui->listWidget_2->count()){
+        ui->listWidget_2->item(E_id)->setSelected(true);
+    }else{
+        ui->listWidget_2->clearFocus();
+    }
 }
 
 void MainWindow::updateRects()
@@ -338,4 +338,26 @@ void MainWindow::on_actionImport_XML_triggered()
     QString filename = QFileDialog::getOpenFileName(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
     mXMLLoader->read(filename);
     updateView();
+}
+
+void MainWindow::on_actionStepForward_triggered()
+{
+    player->setPosition(std::min(player->duration(),player->position()+20));
+}
+
+void MainWindow::on_actionStepBackward_triggered()
+{
+    player->setPosition(std::max(0,(int)player->position()-20));
+}
+
+void MainWindow::on_actionSkipForward_triggered()
+{
+    int step = player->duration()/30;
+    player->setPosition(std::min(player->duration(),player->position()+step));
+}
+
+void MainWindow::on_actionSkipBackward_triggered()
+{
+    int step = player->duration()/30;
+    player->setPosition(std::min(player->duration(),player->position()-step));
 }

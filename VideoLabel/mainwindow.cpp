@@ -52,6 +52,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(Objectchange()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
+
+    QAction *strgS =new QAction("save",this);
+    strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    connect(strgS, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
 }
 
 MainWindow::~MainWindow()
@@ -188,6 +192,19 @@ void MainWindow::updateRects()
         }
     }
     ui->widgetVideo->repaint();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+
+    QMainWindow::keyPressEvent(event);
+    if(event->key() == Qt::Key_Space){
+        if(ui->actionPlay->isVisible()){
+            on_actionPlay_triggered();
+        }else if(ui->actionPause->isVisible()){
+            on_actionPause_triggered();
+        }
+    }
 }
 
 void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)

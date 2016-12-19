@@ -107,6 +107,8 @@ private:
 
     void updateSelection();
     void updateRects();
+
+    void keyPressEvent(QKeyEvent *);
 };
 
 #endif // MAINWINDOW_H

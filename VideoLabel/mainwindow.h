@@ -96,6 +96,9 @@ private:
     InputEvObDialog *mEvObDialog;
 
     void clearAll();
+
+    void updateSelection();
+    void updateRects();
 };
 
 #endif // MAINWINDOW_H

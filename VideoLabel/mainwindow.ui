@@ -43,12 +43,19 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,2,2">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,2,0,2">
       <item>
        <widget class="QListWidget" name="listWidget_1"/>
       </item>
       <item>
        <widget class="QListWidget" name="listWidget_2"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxEvent">
+        <property name="text">
+         <string>Change Event</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QTextBrowser" name="textBrowser"/>

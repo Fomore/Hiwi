@@ -11,11 +11,22 @@ Controler::Controler()
     VideoHeight = VideoWidth = 0;
     DisplayHeight = DisplayWidth = 0;
     mEvents.clear();
+    mScall = 1.0;
+    mShiftX = 0;
+    mShiftY = 0;
 }
 
 double Controler::getScall()
 {
-    return std::min((double)VideoHeight/(double)DisplayHeight,(double)VideoWidth/(double)DisplayWidth);
+    return mScall;
+}
+
+void Controler::calculateParameter()
+{
+    mScall = std::min((double)DisplayHeight/(double)VideoHeight,(double)DisplayWidth/(double)VideoWidth);
+    mShiftX = std::max(0.0,(DisplayWidth-VideoWidth*mScall)/2);
+    mShiftY = std::max(0.0,(DisplayHeight-VideoHeight*mScall)/2);
+
 }
 
 void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD)
@@ -29,13 +40,18 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     int w = std::max(x1,x2)-x;
     int y = std::min(y1,y2);
     int h = std::max(y1,y2)-y;
-    /*
+
     double scall = getScall();
-    double x = x1*scall;
-    double y = y1*scall;
-    double w = x2*scall-x1*scall;
-    double h = y2*scall-y1*scall;
-    */
+     x = x/scall+0.5;
+     y = y/scall+0.5;
+     w = x/scall-x/scall+0.5;
+     h = y/scall-y/scall+0.5;
+
+    addEventInFrame(x,y,w,h,frame,E_id,O_iD);
+}
+
+void Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD)
+{
     int pos = getPosition(frame, O_iD);
     if(pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
         std::cout<<"Re-";
@@ -49,20 +65,25 @@ void Controler::setVideoSize(int w, int h)
 {
     VideoHeight = h;
     VideoWidth = w;
+    calculateParameter();
 }
 
 void Controler::setDisplaySize(int w, int h)
 {
     DisplayHeight = h;
     DisplayWidth = w;
+    calculateParameter();
 }
 
 
 int Controler::getPosition(int frame, int O_id)
 {
-    int i = 0;
-    while(i < mEvents[O_id].size() && mEvents[O_id][i].getFrame() < frame){
-        i++;
+    int i = -1;
+    if(O_id >= 0 && O_id < mEvents.size() ){
+        i = 0;
+        while(i < mEvents[O_id].size() && mEvents[O_id][i].getFrame() < frame){
+            i++;
+        }
     }
     return i;
 }
@@ -71,7 +92,7 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
     int lastID = getPosition(frame, O_id)-1;
 
-    if(lastID == -1){
+    if(lastID < 0){
         return QRect(0,0,0,0);
     }else if(lastID == mEvents[O_id].size()-1 || mEvents[O_id][lastID].getFrame()==frame){
         int x = mEvents[O_id][lastID].mX;
@@ -81,9 +102,10 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
         E_id = mEvents[O_id][lastID].mEventID;
 
-        return QRect(x,y,w,h);
+        double s = getScall();
+        return QRect(x*s+mShiftX,y*s+mShiftY,w*s,h*s);
     }else{
-        double scall = getScall(); // ToDO: skallieren ins Kammerasystem
+        double sca = getScall(); // ToDO: skallieren ins Kammerasystem
         double x = mEvents[O_id][lastID].mX;
         double y = mEvents[O_id][lastID].mY;
         double w = mEvents[O_id][lastID].mW;
@@ -100,11 +122,20 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
         E_id = mEvents[O_id][lastID].mEventID;
 
-        return QRect(x+x_diff,
-                     y+y_diff,
-                     w+w_diff,
-                     h+h_diff);
+        return QRect((x+x_diff)*sca+mShiftX,
+                     (y+y_diff)*sca+mShiftY,
+                     (w+w_diff)*sca,
+                     (h+h_diff)*sca);
     }
+}
+
+int Controler::getEventToObject(int frame, int O_id)
+{
+    int i = getPosition(frame, O_id)-1;
+    if(i >= 0 && i < mEvents[O_id].size()){
+        return mEvents[O_id][i].mEventID;
+    }
+    return -1;
 }
 
 void Controler::addEvent()
@@ -155,7 +186,7 @@ void Controler::save(QString name, QString path)
         QTextStream out(&file_object);
         for(int i = 0; i < mEvents.size(); i++){
             for(int j = 0; j < mEvents[i].size(); j++)
-            out << mEvents[i][j].getDateAll() << endl;
+                out << mEvents[i][j].getDateAll() << endl;
         }
     }
     file_object.close();
@@ -164,4 +195,22 @@ void Controler::save(QString name, QString path)
 void Controler::clearAll()
 {
     mEvents.clear();
+}
+
+void Controler::changeEvent(int frame, int O_id, int E_id)
+{
+    int i = getPosition(frame, O_id)-1;
+    if(i >= 0 && i < mEvents[O_id].size()){
+        if(frame == mEvents[O_id][i].mTimePos){
+            mEvents[O_id][i].mEventID = E_id;
+        }else {
+            int lasE_id;
+            QRect rec = getRect(frame, O_id, lasE_id);
+            int x1= rec.x();
+            int y1= rec.y();
+            int x2= rec.x()+rec.width();
+            int y2= rec.y()+rec.height();
+            addEvent(x1,y1,x2,y2,frame,E_id,O_id);
+        }
+    }
 }

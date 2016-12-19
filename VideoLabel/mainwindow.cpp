@@ -159,20 +159,57 @@ void MainWindow::clearAll()
 
 }
 
+void MainWindow::updateSelection()
+{
+    int frame = player->position();
+    int O_id = ui->listWidget_1->currentIndex().row();
+        int E_id = mControler.getEventToObject(frame,O_id);
+        if(E_id >= 0 && E_id < ui->listWidget_2->count()){
+            ui->listWidget_2->item(E_id)->setSelected(true);
+        }else{
+            ui->listWidget_2->clearFocus();
+        }
+}
+
+void MainWindow::updateRects()
+{
+    int newPos = player->position();
+    ui->widgetVideo->clearRects();
+    for(int i = 0; i < ui->listWidget_1->count(); i++){
+        int evID = -1;
+        QRect rec = mControler.getRect(newPos,i, evID);
+        if(i == ui->listWidget_1->currentIndex().row()){
+            if(evID == ui->listWidget_2->currentIndex().row()){
+                ui->widgetVideo->addRect(rec,QColor(Qt::blue));
+            }else{
+                ui->widgetVideo->addRect(rec,QColor(255,0,255,255));
+            }
+        }else{
+            ui->widgetVideo->addRect(rec);
+        }
+    }
+    ui->widgetVideo->repaint();
+}
+
 void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 {
     displayObject(index.row());
+    updateSelection();
 }
 
 void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
 {
     displayEvent(index.row());
+    if(ui->checkBoxEvent->isChecked()){
+        std::cout<<"Ändere Event"<<std::endl;
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     QMainWindow::resizeEvent(ev);
     mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
+    updateRects();
 }
 
 void MainWindow::Mouse_current_Pose()
@@ -200,30 +237,14 @@ void MainWindow::Mouse_Released()
 
 void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
 {
-    ui->widgetVideo->clearRects();
-    for(int i = 0; i < ui->listWidget_1->count(); i++){
-        int evID = -1;
-        QRect rec = mControler.getRect(newPos,i, evID);
-        if(i == ui->listWidget_1->currentIndex().row()){
-            if(evID == ui->listWidget_2->currentIndex().row()){
-                ui->widgetVideo->addRect(rec,QColor(Qt::blue));
-            }else{
-                ui->widgetVideo->addRect(rec,QColor(255,0,255,255));
-            }
-        }else{
-            ui->widgetVideo->addRect(rec);
-        }
-    }
-    ui->widgetVideo->repaint();
+    updateRects();
+    updateSelection();
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    std::cout<<"Save Beginnt"<<std::endl;
     mLoader.save(mFileName);
-    std::cout<<"Loader Controler"<<std::endl;
     mControler.save(mFileName);
-    std::cout<<"Ende"<<std::endl;
 }
 
 void MainWindow::on_actionAddEvent_triggered()

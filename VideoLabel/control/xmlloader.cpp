@@ -79,7 +79,7 @@ void XMLLoader::processImage(int frame)
             int id = processBox();
             if(id >= 0){
                 mControl->setObjectSize(id+1);
-                mControl->addEvent(left,top,width,height,frame,0,id);//ToDo: Verknüpfung zum Event besser
+                mControl->addEventInFrame(left,top,width,height,frame,0,id);//ToDo: Verknüpfung zum Event besser
             }else{
                 std::cout<<"Fehler bei Label"<<std::endl;
             }

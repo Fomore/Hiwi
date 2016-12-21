@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     mywidget.cpp \
     control/controler.cpp \
     inputevobdialog.cpp \
-    control/xmlloader.cpp
+    control/xmlloader.cpp \
+    control/myvideoplayer.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     mywidget.h \
     control/controler.h \
     inputevobdialog.h \
-    control/xmlloader.h
+    control/xmlloader.h \
+    control/myvideoplayer.h
 
 FORMS    += mainwindow.ui \
     inputevobdialog.ui
@@ -40,3 +42,7 @@ FORMS    += mainwindow.ui \
 RESOURCES += \
     Resources.qrc
 
+PKGCONFIG += opencv
+
+INCLUDEPATH += /usr/local/include
+LIBS += -L/usr/local/lib -lopencv_shape -lopencv_stitching -lopencv_objdetect -lopencv_superres -lopencv_videostab -lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs -lopencv_video -lopencv_photo -lopencv_ml -lopencv_imgproc -lopencv_flann -lopencv_viz -lopencv_core

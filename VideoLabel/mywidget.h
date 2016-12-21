@@ -28,7 +28,6 @@ public:
 
     void setRect(const QRect rec);
     void clearRects();
-
 protected:
     void paintEvent(QPaintEvent *);
 

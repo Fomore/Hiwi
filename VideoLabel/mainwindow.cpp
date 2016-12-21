@@ -17,6 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
     vw = new QVideoWidget(ui->widgetVideo);
     player->setVideoOutput(vw);
 
+    mPlayer = new MyVideoPlayer(ui->widgetVideo,ui->labelVideo);
+
+//    connect(mPlayer,SIGNAL(legthChanged),ui->horizontalSlider,&QSlider::setMaximum);
+//    connect(mPlayer,SIGNAL(positionChanger),ui->horizontalSlider,&QSlider::setValue);
+//    connect(ui->horizontalSlider,&QSlider::sliderMoved,mPlayer,SLOT(setPosition(double));
+
     connect(player,&QMediaPlayer::durationChanged,ui->horizontalSlider,&QSlider::setMaximum);
     connect(player,&QMediaPlayer::positionChanged,ui->horizontalSlider,&QSlider::setValue);
     connect(ui->horizontalSlider,&QSlider::sliderMoved,player,&QMediaPlayer::setPosition);
@@ -103,6 +109,8 @@ void MainWindow::on_actionPlay_triggered()
     ui->actionPlay->setVisible(false);
     ui->actionPause->setVisible(true);
     updateRects();
+
+    mPlayer->play();
 }
 
 void MainWindow::on_actionPause_triggered()
@@ -111,12 +119,16 @@ void MainWindow::on_actionPause_triggered()
     ui->statusBar->showMessage("Pause");
     ui->actionPlay->setVisible(true);
     ui->actionPause->setVisible(false);
+
+    mPlayer->pause();
 }
 
 void MainWindow::on_actionStop_triggered()
 {
     player->stop();
     ui->statusBar->showMessage("Stop");
+
+    mPlayer->stop();
 }
 
 void MainWindow::myclick_on_Slider(int newPos){
@@ -360,21 +372,25 @@ void MainWindow::on_actionImport_XML_triggered()
 void MainWindow::on_actionStepForward_triggered()
 {
     player->setPosition(std::min(player->duration(),player->position()+20));
+    mPlayer->forward();
 }
 
 void MainWindow::on_actionStepBackward_triggered()
 {
     player->setPosition(std::max((qint64)0,player->position()-20));
+    mPlayer->backward();
 }
 
 void MainWindow::on_actionSkipForward_triggered()
 {
     int step = player->duration()/30;
     player->setPosition(std::min(player->duration(),player->position()+step));
+    mPlayer->skipForward();
 }
 
 void MainWindow::on_actionSkipBackward_triggered()
 {
     int step = player->duration()/30;
     player->setPosition(std::min((qint64)0,player->position()-step));
+    mPlayer->skipBackward();
 }

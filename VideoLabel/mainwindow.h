@@ -12,6 +12,7 @@
 #include "control/loader.h"
 #include "control/controler.h"
 #include "control/xmlloader.h"
+#include "control/myvideoplayer.h"
 
 #include "inputevobdialog.h"
 
@@ -109,6 +110,8 @@ private:
     void updateRects();
 
     void keyPressEvent(QKeyEvent *);
+
+    MyVideoPlayer* mPlayer;
 };
 
 #endif // MAINWINDOW_H

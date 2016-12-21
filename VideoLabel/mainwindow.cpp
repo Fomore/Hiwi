@@ -13,15 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    player = new QMediaPlayer(ui->widgetVideo);
-    vw = new QVideoWidget(ui->widgetVideo);
-    player->setVideoOutput(vw);
-
-    mPlayer = new MyVideoPlayer(ui->widgetVideo,ui->labelVideo);
+    mPlayer = new MyVideoPlayer();
 
     QObject::connect(mPlayer,SIGNAL(legthChanged(int)),this,SLOT(VideoLengthChange(int)));
     QObject::connect(mPlayer,SIGNAL(positionChanger(int)),this,SLOT(VideoPositionChange(int)));
     QObject::connect(ui->horizontalSlider,SIGNAL(sliderMoved(int)),mPlayer,SLOT(setPosition(int)));
+    connect(mPlayer,SIGNAL(isNewImage(QImage)),this,SLOT(newVideoFrame(QImage)));
 
     /*connect(player,&QMediaPlayer::durationChanged,ui->horizontalSlider,&QSlider::setMaximum);
     connect(player,&QMediaPlayer::positionChanged,ui->horizontalSlider,&QSlider::setValue);
@@ -32,12 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionPause->setVisible(false);
     ui->actionPlay->setVisible(true);
 
-    ui->actionMute->setVisible(false);
-    ui->actionSound->setVisible(true);
-
     connect(ui->widgetVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
 
-    connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(newVideoFrame(qint64)));
 
     mEvObDialog = new InputEvObDialog(this, &mLoader);
 
@@ -88,13 +81,12 @@ void MainWindow::on_actionOpen_triggered()
 
         on_actionStop_triggered();
 
-        player->setMedia(QUrl::fromLocalFile(filename));
         mPlayer->setPath(filename);
 
         mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
 
-        int w = player->media().canonicalResource().resolution().width();
-        int h = player->media().canonicalResource().resolution().height();
+        int w = mPlayer->getVideoWidth();
+        int h = mPlayer->getVideoHeight();
         if(w > 0 && h > 0){
             mControler.setVideoSize(w,h);
         }else{
@@ -105,7 +97,6 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionPlay_triggered()
 {
-    player->play();
     ui->statusBar->showMessage("Play");
     ui->actionPlay->setVisible(false);
     ui->actionPause->setVisible(true);
@@ -116,7 +107,6 @@ void MainWindow::on_actionPlay_triggered()
 
 void MainWindow::on_actionPause_triggered()
 {
-    player->pause();
     ui->statusBar->showMessage("Pause");
     ui->actionPlay->setVisible(true);
     ui->actionPause->setVisible(false);
@@ -126,7 +116,6 @@ void MainWindow::on_actionPause_triggered()
 
 void MainWindow::on_actionStop_triggered()
 {
-    player->stop();
     ui->statusBar->showMessage("Stop");
 
     ui->actionPlay->setVisible(true);
@@ -145,7 +134,7 @@ void MainWindow::myclick_on_Slider(int newPos){
         if (sliderPosUnderMouse != newPos)
         {
             ui->horizontalSlider->setValue(sliderPosUnderMouse);
-            player->setPosition(sliderPosUnderMouse);
+            mPlayer->setPosition(sliderPosUnderMouse);
             return;
         }
     }
@@ -179,7 +168,7 @@ void MainWindow::clearAll()
 
 void MainWindow::updateSelection()
 {
-    int frame = player->position();
+    int frame = mPlayer->getPosition();
     int O_id = ui->listWidget_1->currentIndex().row();
     int E_id = mControler.getEventToObject(frame,O_id);
     if(E_id >= 0 && E_id < ui->listWidget_2->count()){
@@ -191,7 +180,7 @@ void MainWindow::updateSelection()
 
 void MainWindow::updateRects()
 {
-    int newPos = player->position();
+    int newPos = mPlayer->getPosition();
     ui->widgetVideo->clearRects();
     for(int i = 0; i < ui->listWidget_1->count(); i++){
         int evID = -1;
@@ -262,7 +251,7 @@ void MainWindow::Mouse_Released()
                         ui->widgetVideo->lastY,
                         ui->widgetVideo->x,
                         ui->widgetVideo->y,
-                        player->position(),
+                        mPlayer->getPosition(),
                         ui->listWidget_2->currentIndex().row(),
                         ui->listWidget_1->currentIndex().row());
 }
@@ -277,13 +266,13 @@ void MainWindow::VideoLengthChange(int size)
     ui->horizontalSlider->setMaximum(size);
 }
 
-void MainWindow::SliderPositionChange(int pos)
+void MainWindow::newVideoFrame(QImage frame)
 {
-    std::cout<<"Neue Position: "<<pos<<std::endl;
-}
+    QImage img2 = frame.scaled(ui->labelVideo->size().width(),
+                               ui->labelVideo->size().height(),
+                               Qt::KeepAspectRatio);
+    ui->labelVideo->setPixmap(QPixmap::fromImage(img2));
 
-void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam
-{
     updateRects();
     updateSelection();
 }
@@ -366,20 +355,6 @@ void MainWindow::Objectchange(){
     mEvObDialog->show();
 }
 
-void MainWindow::on_actionMute_triggered()
-{
-    player->setMuted(false);
-    ui->actionMute->setVisible(false);
-    ui->actionSound->setVisible(true);
-}
-
-void MainWindow::on_actionSound_triggered()
-{
-    player->setMuted(true);
-    ui->actionMute->setVisible(true);
-    ui->actionSound->setVisible(false);
-}
-
 void MainWindow::on_actionImport_XML_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
@@ -389,26 +364,20 @@ void MainWindow::on_actionImport_XML_triggered()
 
 void MainWindow::on_actionStepForward_triggered()
 {
-    player->setPosition(std::min(player->duration(),player->position()+20));
     mPlayer->forward();
 }
 
 void MainWindow::on_actionStepBackward_triggered()
 {
-    player->setPosition(std::max((qint64)0,player->position()-20));
     mPlayer->backward();
 }
 
 void MainWindow::on_actionSkipForward_triggered()
 {
-    int step = player->duration()/30;
-    player->setPosition(std::min(player->duration(),player->position()+step));
     mPlayer->skipForward();
 }
 
 void MainWindow::on_actionSkipBackward_triggered()
 {
-    int step = player->duration()/30;
-    player->setPosition(std::min((qint64)0,player->position()-step));
     mPlayer->skipBackward();
 }

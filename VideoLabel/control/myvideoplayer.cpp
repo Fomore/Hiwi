@@ -4,14 +4,9 @@
 #include <QPixmap>
 #include <stdlib.h>
 
-MyVideoPlayer::MyVideoPlayer(MyWidget *wg, QLabel *parent) :
-    QThread(),
-    mLabel(parent), mWg(wg)
+MyVideoPlayer::MyVideoPlayer() :
+    QThread()
 {
-    video = cv::VideoCapture("/home/falko/Videos/Chor_01.mp4");
-    frameRate = video.get(CV_CAP_PROP_FPS);
-    emit legthChanged((int)video.get(CV_CAP_PROP_FRAME_COUNT));
-
     mStop = true;
     mIsNewPosition = false;
 }
@@ -91,6 +86,21 @@ void MyVideoPlayer::setPosition(int pos)
     setPosition((double)pos, false);
 }
 
+double MyVideoPlayer::getPosition()
+{
+    return video.get(CV_CAP_PROP_POS_FRAMES);
+}
+
+double MyVideoPlayer::getVideoWidth()
+{
+    return video.get(CV_CAP_PROP_FRAME_WIDTH);
+}
+
+double MyVideoPlayer::getVideoHeight()
+{
+    return video.get(CV_CAP_PROP_FRAME_HEIGHT);
+}
+
 void MyVideoPlayer::run()
 {
     clock_t last = clock();
@@ -113,8 +123,6 @@ void MyVideoPlayer::showImage(cv::Mat image, bool showPos)
 
     QImage img = MatToQImage(image);
     emit isNewImage(img);
-    QImage img2 = img.scaled(mLabel->size().width(),mLabel->size().height(),Qt::KeepAspectRatio);
-    mLabel->setPixmap(QPixmap::fromImage(img2));
 }
 
 // Diese Methode stammt von http://www.qtcentre.org/threads/56482-efficient-way-to-display-opencv-image-into-Qt

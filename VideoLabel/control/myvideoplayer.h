@@ -3,9 +3,7 @@
 
 #include <QtCore>
 #include <QThread>
-#include <QLabel>
 #include <QImage>
-#include "mywidget.h"
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -24,11 +22,9 @@ private:
     cv::VideoCapture video;
     void run();
     void showImage(cv::Mat image, bool showPos);
-    QLabel *mLabel;
-    MyWidget *mWg;
     QImage MatToQImage(const cv::Mat &mat);
 public:
-    MyVideoPlayer(MyWidget *wg= 0,QLabel *parent = 0);
+    MyVideoPlayer();
     bool setPath(QString path);
 public slots:
     void play();
@@ -42,6 +38,10 @@ public slots:
 
     void setPosition(double pos, bool show = true);
     void setPosition(int pos);
+    double getPosition();
+
+    double getVideoWidth();
+    double getVideoHeight();
 signals:
    void legthChanged(const int &length);
     void positionChanger(const int &pos);

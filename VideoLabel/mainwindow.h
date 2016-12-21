@@ -51,9 +51,8 @@ private slots:
 
     void VideoPositionChange(int pos);
     void VideoLengthChange(int size);
-    void SliderPositionChange(int pos);
 
-    void newVideoFrame(qint64 newPos);
+    void newVideoFrame(QImage frame);
 
     void on_actionSave_triggered();
 
@@ -71,10 +70,6 @@ private slots:
 
     void Objectchange();
 
-    void on_actionMute_triggered();
-
-    void on_actionSound_triggered();
-
     void on_actionImport_XML_triggered();
 
     void on_actionStepForward_triggered();
@@ -87,9 +82,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
-    QMediaPlayer* player;
-    QVideoWidget* vw;
 
     Loader mLoader;
     Controler mControler;

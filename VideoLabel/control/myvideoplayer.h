@@ -15,7 +15,11 @@ class MyVideoPlayer : public QThread
     Q_OBJECT
 private:
     bool mStop;
+    bool mIsNewPosition;
+    double mNewPosition;
+
     double mLastPos;
+    double frameRate;
     std::string path;
     cv::VideoCapture video;
     void run();
@@ -40,6 +44,7 @@ public slots:
 signals:
     void legthChanged(double length);
     void positionChanger(double pos);
+//    void isNewImage(const QImage &image);
 };
 
 #endif // MYVIDEOPLAYER_H

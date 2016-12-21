@@ -9,12 +9,14 @@ MyVideoPlayer::MyVideoPlayer(MyWidget *wg, QLabel *parent) :
     mLabel(parent), mWg(wg)
 {
     video = cv::VideoCapture("/home/falko/Videos/Chor_01.mp4");
+    frameRate = video.get(CV_CAP_PROP_FPS);
 }
 
 bool MyVideoPlayer::setPath(QString path)
 {
-    video = cv::VideoCapture(path.toStdString());
+    video.open(path.toStdString());
     if(video.isOpened()){
+        frameRate = video.get(CV_CAP_PROP_FPS);
         emit legthChanged(video.get(CV_CAP_PROP_FRAME_COUNT));
         mLastPos = 0;
     }
@@ -24,8 +26,8 @@ bool MyVideoPlayer::setPath(QString path)
 void MyVideoPlayer::play()
 {
     if(video.isOpened()){
-    mStop = false;
-    start();
+        mStop = false;
+        start();
     }
 }
 
@@ -43,65 +45,55 @@ void MyVideoPlayer::stop()
 
 void MyVideoPlayer::forward()
 {
-    cv::Mat frame;
-    if(video.read(frame)){
-        showImage(frame);
-    }
+    setPosition(video.get(CV_CAP_PROP_POS_FRAMES));
 }
 
 void MyVideoPlayer::backward()
 {
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
-    video.set(CV_CAP_PROP_POS_FRAMES,std::max(-1.0, pos-2));
-    cv::Mat frame;
-    if(video.read(frame)){
-        showImage(frame);
-    }
+    setPosition(std::max(-1.0, pos-2));
 }
 
 void MyVideoPlayer::skipForward()
 {
-    double fps = video.get(CV_CAP_PROP_FPS);
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
     double mx = video.get(CV_CAP_PROP_FRAME_COUNT);
-    video.set(CV_CAP_PROP_POS_FRAMES,std::min(mx, pos+fps*10));
-    cv::Mat frame;
-    if(video.read(frame)){
-        showImage(frame);
-    }
+   setPosition(std::min(mx, pos+frameRate*10.0));
 }
 
 void MyVideoPlayer::skipBackward()
 {
-    double fps = video.get(CV_CAP_PROP_FPS);
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
-    video.set(CV_CAP_PROP_POS_FRAMES,std::max(-1.0, pos-fps*10-2));
-    cv::Mat frame;
-    if(video.read(frame)){
-        showImage(frame);
-    }
+    setPosition(std::max(-1.0, pos-frameRate*10.0-2));
 }
 
 void MyVideoPlayer::setPosition(double pos)
 {
-    video.set(CV_CAP_PROP_POS_FRAMES,std::max(-1.0, pos));
+    pos = std::max(-1.0, std::min(pos,video.get(CV_CAP_PROP_FRAME_COUNT)));
+    if(mStop){
+        video.set(CV_CAP_PROP_POS_FRAMES,pos);
+        cv::Mat frame;
+        if(video.read(frame)){
+            showImage(frame);
+        }
+    }else{
+        mIsNewPosition = true;
+        mNewPosition = pos;
+    }
 }
 
 void MyVideoPlayer::run()
 {
-    clock_t wait;
-    double fps = video.get(CV_CAP_PROP_FPS);
-
+    clock_t last = clock();
     cv::Mat frame;
-    bool run = video.read(frame);
-    while (run && !mStop) {
-        wait = clock();
-        if(!video.read(frame)){
-            break;
-        }
-
+    while (!mStop && video.read(frame)) {
         showImage(frame);
-        usleep(std::max(0,(int)(CLOCKS_PER_SEC/fps - (clock()-wait))));
+        usleep(std::max(0,(int)(CLOCKS_PER_SEC/frameRate - (clock()-last))));
+        last=clock();
+        if(mIsNewPosition){
+            video.set(CV_CAP_PROP_POS_FRAMES,mNewPosition);
+            mIsNewPosition = false;
+        }
     }
 }
 

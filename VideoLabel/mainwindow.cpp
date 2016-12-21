@@ -89,6 +89,7 @@ void MainWindow::on_actionOpen_triggered()
         on_actionStop_triggered();
 
         player->setMedia(QUrl::fromLocalFile(filename));
+        mPlayer->setPath(filename);
 
         mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
 

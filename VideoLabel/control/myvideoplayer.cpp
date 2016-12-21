@@ -10,6 +10,10 @@ MyVideoPlayer::MyVideoPlayer(MyWidget *wg, QLabel *parent) :
 {
     video = cv::VideoCapture("/home/falko/Videos/Chor_01.mp4");
     frameRate = video.get(CV_CAP_PROP_FPS);
+    emit legthChanged((int)video.get(CV_CAP_PROP_FRAME_COUNT));
+
+    mStop = true;
+    mIsNewPosition = false;
 }
 
 bool MyVideoPlayer::setPath(QString path)
@@ -17,7 +21,7 @@ bool MyVideoPlayer::setPath(QString path)
     video.open(path.toStdString());
     if(video.isOpened()){
         frameRate = video.get(CV_CAP_PROP_FPS);
-        emit legthChanged(video.get(CV_CAP_PROP_FRAME_COUNT));
+        emit legthChanged((int)video.get(CV_CAP_PROP_FRAME_COUNT));
         mLastPos = 0;
     }
     return video.isOpened();
@@ -58,7 +62,7 @@ void MyVideoPlayer::skipForward()
 {
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
     double mx = video.get(CV_CAP_PROP_FRAME_COUNT);
-   setPosition(std::min(mx, pos+frameRate*10.0));
+    setPosition(std::min(mx, pos+frameRate*10.0));
 }
 
 void MyVideoPlayer::skipBackward()
@@ -67,14 +71,14 @@ void MyVideoPlayer::skipBackward()
     setPosition(std::max(-1.0, pos-frameRate*10.0-2));
 }
 
-void MyVideoPlayer::setPosition(double pos)
+void MyVideoPlayer::setPosition(double pos, bool show)
 {
     pos = std::max(-1.0, std::min(pos,video.get(CV_CAP_PROP_FRAME_COUNT)));
     if(mStop){
         video.set(CV_CAP_PROP_POS_FRAMES,pos);
         cv::Mat frame;
         if(video.read(frame)){
-            showImage(frame);
+            showImage(frame, show);
         }
     }else{
         mIsNewPosition = true;
@@ -82,12 +86,17 @@ void MyVideoPlayer::setPosition(double pos)
     }
 }
 
+void MyVideoPlayer::setPosition(int pos)
+{
+    setPosition((double)pos, false);
+}
+
 void MyVideoPlayer::run()
 {
     clock_t last = clock();
     cv::Mat frame;
     while (!mStop && video.read(frame)) {
-        showImage(frame);
+        showImage(frame, true);
         usleep(std::max(0,(int)(CLOCKS_PER_SEC/frameRate - (clock()-last))));
         last=clock();
         if(mIsNewPosition){
@@ -97,13 +106,13 @@ void MyVideoPlayer::run()
     }
 }
 
-void MyVideoPlayer::showImage(cv::Mat image)
+void MyVideoPlayer::showImage(cv::Mat image, bool showPos)
 {
-    if(std::abs(video.get(CV_CAP_PROP_POS_FRAMES)-mLastPos) >= std::max(1.0,video.get(CV_CAP_PROP_FRAME_COUNT)/1000.0)){
-        emit positionChanger(video.get(CV_CAP_PROP_POS_FRAMES));
-    }
+    if(showPos)
+        emit positionChanger((int) video.get(CV_CAP_PROP_POS_FRAMES));
 
     QImage img = MatToQImage(image);
+    emit isNewImage(img);
     QImage img2 = img.scaled(mLabel->size().width(),mLabel->size().height(),Qt::KeepAspectRatio);
     mLabel->setPixmap(QPixmap::fromImage(img2));
 }

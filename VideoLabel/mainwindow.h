@@ -49,6 +49,10 @@ private slots:
     void Mouse_Pressed();
     void Mouse_Released();
 
+    void VideoPositionChange(int pos);
+    void VideoLengthChange(int size);
+    void SliderPositionChange(int pos);
+
     void newVideoFrame(qint64 newPos);
 
     void on_actionSave_triggered();

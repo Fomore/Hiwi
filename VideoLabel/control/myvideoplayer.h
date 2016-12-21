@@ -23,7 +23,7 @@ private:
     std::string path;
     cv::VideoCapture video;
     void run();
-    void showImage(cv::Mat image);
+    void showImage(cv::Mat image, bool showPos);
     QLabel *mLabel;
     MyWidget *mWg;
     QImage MatToQImage(const cv::Mat &mat);
@@ -40,11 +40,12 @@ public slots:
     void skipForward();
     void skipBackward();
 
-    void setPosition(double pos);
+    void setPosition(double pos, bool show = true);
+    void setPosition(int pos);
 signals:
-    void legthChanged(double length);
-    void positionChanger(double pos);
-//    void isNewImage(const QImage &image);
+   void legthChanged(const int &length);
+    void positionChanger(const int &pos);
+    void isNewImage(const QImage &image);
 };
 
 #endif // MYVIDEOPLAYER_H

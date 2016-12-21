@@ -19,14 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mPlayer = new MyVideoPlayer(ui->widgetVideo,ui->labelVideo);
 
-//    connect(mPlayer,SIGNAL(legthChanged),ui->horizontalSlider,&QSlider::setMaximum);
-//    connect(mPlayer,SIGNAL(positionChanger),ui->horizontalSlider,&QSlider::setValue);
-//    connect(ui->horizontalSlider,&QSlider::sliderMoved,mPlayer,SLOT(setPosition(double));
+    QObject::connect(mPlayer,SIGNAL(legthChanged(int)),this,SLOT(VideoLengthChange(int)));
+    QObject::connect(mPlayer,SIGNAL(positionChanger(int)),this,SLOT(VideoPositionChange(int)));
+    QObject::connect(ui->horizontalSlider,SIGNAL(sliderMoved(int)),mPlayer,SLOT(setPosition(int)));
 
-    connect(player,&QMediaPlayer::durationChanged,ui->horizontalSlider,&QSlider::setMaximum);
+    /*connect(player,&QMediaPlayer::durationChanged,ui->horizontalSlider,&QSlider::setMaximum);
     connect(player,&QMediaPlayer::positionChanged,ui->horizontalSlider,&QSlider::setValue);
     connect(ui->horizontalSlider,&QSlider::sliderMoved,player,&QMediaPlayer::setPosition);
-
+*/
     connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(myclick_on_Slider(int)));
 
     ui->actionPause->setVisible(false);
@@ -129,6 +129,8 @@ void MainWindow::on_actionStop_triggered()
     player->stop();
     ui->statusBar->showMessage("Stop");
 
+    ui->actionPlay->setVisible(true);
+    ui->actionPause->setVisible(false);
     mPlayer->stop();
 }
 
@@ -263,6 +265,21 @@ void MainWindow::Mouse_Released()
                         player->position(),
                         ui->listWidget_2->currentIndex().row(),
                         ui->listWidget_1->currentIndex().row());
+}
+
+void MainWindow::VideoPositionChange(int pos)
+{
+    ui->horizontalSlider->setValue(pos);
+}
+
+void MainWindow::VideoLengthChange(int size)
+{
+    ui->horizontalSlider->setMaximum(size);
+}
+
+void MainWindow::SliderPositionChange(int pos)
+{
+    std::cout<<"Neue Position: "<<pos<<std::endl;
 }
 
 void MainWindow::newVideoFrame(qint64 newPos) //ToDo: Aufruf etwas zu langsam

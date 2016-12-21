@@ -268,12 +268,33 @@ void MainWindow::VideoLengthChange(int size)
 
 void MainWindow::newVideoFrame(QImage frame)
 {
-    QImage img2 = frame.scaled(ui->labelVideo->size().width(),
-                               ui->labelVideo->size().height(),
-                               Qt::KeepAspectRatio);
-    ui->labelVideo->setPixmap(QPixmap::fromImage(img2));
+    ui->labelVideo->clear();
+    int newPos = mPlayer->getPosition();
 
-    updateRects();
+    QPixmap img = QPixmap::fromImage(frame);
+
+    QPainter paint(&img);
+
+    for(int i = 0; i < ui->listWidget_1->count(); i++){
+        int evID = -1;
+        QRect rec = mControler.getRect(newPos,i, evID);
+        if(i == ui->listWidget_1->currentIndex().row()){
+            if(evID == ui->listWidget_2->currentIndex().row()){
+                paint.setPen(QColor(Qt::blue));
+            }else{
+                paint.setPen(QColor(255,0,255,255));
+            }
+        }else{
+            paint.setPen(QColor(Qt::green));
+        }
+        paint.drawRect(rec);
+    }
+    paint.end();
+    QPixmap img2 = img.scaled(ui->labelVideo->size().width(),
+                               ui->labelVideo->size().height(),
+                               Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    ui->labelVideo->setPixmap(img2);
+
     updateSelection();
 }
 

@@ -107,7 +107,8 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
         E_id = mEvents[O_id][lastID].mEventID;
 
         double s = getScall();
-        return QRect(x*s+mShiftX,y*s+mShiftY,w*s,h*s);
+//        return QRect(x*s+mShiftX,y*s+mShiftY,w*s,h*s);
+        return QRect(x,y,w,h);
     }else{
         double sca = getScall(); // ToDO: skallieren ins Kammerasystem
         double x = mEvents[O_id][lastID].mX;
@@ -126,10 +127,13 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
         E_id = mEvents[O_id][lastID].mEventID;
 
+        return QRect((x+x_diff), (y+y_diff), (w+w_diff), (h+h_diff));
+        /*
         return QRect((x+x_diff)*sca+mShiftX,
                      (y+y_diff)*sca+mShiftY,
                      (w+w_diff)*sca,
                      (h+h_diff)*sca);
+        */
     }
 }
 

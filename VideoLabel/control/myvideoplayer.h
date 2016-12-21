@@ -26,6 +26,10 @@ private:
 public:
     MyVideoPlayer();
     bool setPath(QString path);
+    double getPosition();
+
+    double getVideoWidth();
+    double getVideoHeight();
 public slots:
     void play();
     void pause();
@@ -38,10 +42,6 @@ public slots:
 
     void setPosition(double pos, bool show = true);
     void setPosition(int pos);
-    double getPosition();
-
-    double getVideoWidth();
-    double getVideoHeight();
 signals:
    void legthChanged(const int &length);
     void positionChanger(const int &pos);

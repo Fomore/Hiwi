@@ -1,7 +1,7 @@
-#ifndef MYWIDGET_H
-#define MYWIDGET_H
+#ifndef MYLABEL_H
+#define MYLABEL_H
 
-#include <QWidget>
+#include <QLabel>
 #include <QMouseEvent>
 #include <QEvent>
 #include <QDebug>
@@ -9,11 +9,11 @@
 #include <QtGui>
 #include <QtCore>
 
-class MyWidget : public QWidget
+class MyLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit MyWidget(QWidget *parent = 0);
+    explicit MyLabel(QWidget *parent = 0);
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
@@ -22,24 +22,19 @@ public:
     int x,y;
     int lastX, lastY;
 
-    void addRect(const QRect);
-    void addRect(const QRect, const QColor);
-    void addRect(int x, int y, int w, int h);
-
     void setRect(const QRect rec);
-    void clearRects();
 protected:
     void paintEvent(QPaintEvent *);
 
     QRect mRectActiv;
-    std::vector<QRect> mRects;
-    std::vector<QColor> mColores;
 
 signals:
     void Mouse_Pressed();
     void Mouse_Released();
-    void Mouse_Pose();
+    void Mouse_Move();
+
 public slots:
+
 };
 
-#endif // MYWIDGET_H
+#endif // MYLABEL_H

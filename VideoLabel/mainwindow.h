@@ -45,11 +45,10 @@ private slots:
 
     void resizeEvent(QResizeEvent *);
 
-    void Mouse_current_Pose();
-    void Mouse_Pressed();
     void Mouse_Released();
 
     void VideoPositionChange(int pos);
+
     void VideoLengthChange(int size);
 
     void newVideoFrame(QImage frame);

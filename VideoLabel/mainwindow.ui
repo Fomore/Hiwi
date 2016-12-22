@@ -22,19 +22,12 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,3">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetNoConstraint</enum>
       </property>
       <item>
-       <widget class="MyWidget" name="widgetVideo" native="true">
-        <property name="mouseTracking">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelVideo">
+       <widget class="MyLabel" name="labelVideo">
         <property name="text">
          <string/>
         </property>
@@ -228,10 +221,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MyWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">mywidget.h</header>
-   <container>1</container>
+   <class>MyLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">mylabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>

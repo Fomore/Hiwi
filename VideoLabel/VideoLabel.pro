@@ -19,22 +19,22 @@ SOURCES += main.cpp\
     model/event.cpp \
     model/object.cpp \
     model/activmodel.cpp \
-    mywidget.cpp \
     control/controler.cpp \
     inputevobdialog.cpp \
     control/xmlloader.cpp \
-    control/myvideoplayer.cpp
+    control/myvideoplayer.cpp \
+    mylabel.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
     model/event.h \
     model/object.h \
     model/activmodel.h \
-    mywidget.h \
     control/controler.h \
     inputevobdialog.h \
     control/xmlloader.h \
-    control/myvideoplayer.h
+    control/myvideoplayer.h \
+    mylabel.h
 
 FORMS    += mainwindow.ui \
     inputevobdialog.ui

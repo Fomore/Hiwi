@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "mywidget.h"
+#include "mylabel.h"
 #include <QPainter>
 #include <QFileInfo>
 
@@ -20,17 +20,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->horizontalSlider,SIGNAL(sliderMoved(int)),mPlayer,SLOT(setPosition(int)));
     connect(mPlayer,SIGNAL(isNewImage(QImage)),this,SLOT(newVideoFrame(QImage)));
 
-    /*connect(player,&QMediaPlayer::durationChanged,ui->horizontalSlider,&QSlider::setMaximum);
-    connect(player,&QMediaPlayer::positionChanged,ui->horizontalSlider,&QSlider::setValue);
-    connect(ui->horizontalSlider,&QSlider::sliderMoved,player,&QMediaPlayer::setPosition);
-*/
     connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(myclick_on_Slider(int)));
 
     ui->actionPause->setVisible(false);
     ui->actionPlay->setVisible(true);
 
-    connect(ui->widgetVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
-
+    connect(ui->labelVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
 
     mEvObDialog = new InputEvObDialog(this, &mLoader);
 
@@ -83,7 +78,7 @@ void MainWindow::on_actionOpen_triggered()
 
         mPlayer->setPath(filename);
 
-        mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
+        mControler.setDisplaySize(ui->labelVideo->size().width(),ui->labelVideo->size().height());
 
         int w = mPlayer->getVideoWidth();
         int h = mPlayer->getVideoHeight();
@@ -100,7 +95,6 @@ void MainWindow::on_actionPlay_triggered()
     ui->statusBar->showMessage("Play");
     ui->actionPlay->setVisible(false);
     ui->actionPause->setVisible(true);
-    updateRects();
 
     mPlayer->play();
 }
@@ -125,7 +119,10 @@ void MainWindow::on_actionStop_triggered()
 
 void MainWindow::myclick_on_Slider(int newPos){
     QPoint localMousePos = ui->horizontalSlider->mapFromGlobal(QCursor::pos());
-    bool clickOnSlider = (QApplication::mouseButtons() & Qt::LeftButton);
+    bool clickOnSlider = (QApplication::mouseButtons() && Qt::LeftButton) &&
+            (localMousePos.x() >= 0 && localMousePos.y() >= 0 &&
+             localMousePos.x() < ui->horizontalSlider->size().width() &&
+             localMousePos.y() < ui->horizontalSlider->size().height());
     if (clickOnSlider){
         // Attention! The following works only for Horizontal, Left-to-right sliders
         double posRatio = localMousePos.x() / (double)ui->horizontalSlider->size().width();
@@ -178,26 +175,6 @@ void MainWindow::updateSelection()
     }
 }
 
-void MainWindow::updateRects()
-{
-    int newPos = mPlayer->getPosition();
-    ui->widgetVideo->clearRects();
-    for(int i = 0; i < ui->listWidget_1->count(); i++){
-        int evID = -1;
-        QRect rec = mControler.getRect(newPos,i, evID);
-        if(i == ui->listWidget_1->currentIndex().row()){
-            if(evID == ui->listWidget_2->currentIndex().row()){
-                ui->widgetVideo->addRect(rec,QColor(Qt::blue));
-            }else{
-                ui->widgetVideo->addRect(rec,QColor(255,0,255,255));
-            }
-        }else{
-            ui->widgetVideo->addRect(rec);
-        }
-    }
-    ui->widgetVideo->repaint();
-}
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
 
@@ -228,29 +205,18 @@ void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     QMainWindow::resizeEvent(ev);
-    mControler.setDisplaySize(ui->widgetVideo->size().width(),ui->widgetVideo->size().height());
-    updateRects();
-}
-
-void MainWindow::Mouse_current_Pose()
-{
-    ui->textBrowser->setText(QString("Klick: %1/%2").arg(ui->widgetVideo->x).arg(ui->widgetVideo->y));
-}
-
-void MainWindow::Mouse_Pressed()
-{
-    ui->textBrowser->setText(QString("Pressed %1 %2").arg(ui->widgetVideo->x).arg(ui->widgetVideo->y));
+    mControler.setDisplaySize(ui->labelVideo->size().width(),ui->labelVideo->size().height());
 }
 
 
 void MainWindow::Mouse_Released()
 {
-    ui->textBrowser->setText(QString("Released %1 %2 -> %3 %4").arg(ui->widgetVideo->x).arg(ui->widgetVideo->y).arg(ui->widgetVideo->lastX).arg(ui->widgetVideo->lastY));
+    ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(ui->labelVideo->x).arg(ui->labelVideo->y).arg(ui->labelVideo->lastX).arg(ui->labelVideo->lastY));
 
-    mControler.addEvent(ui->widgetVideo->lastX,
-                        ui->widgetVideo->lastY,
-                        ui->widgetVideo->x,
-                        ui->widgetVideo->y,
+    mControler.addEvent(ui->labelVideo->lastX,
+                        ui->labelVideo->lastY,
+                        ui->labelVideo->x,
+                        ui->labelVideo->y,
                         mPlayer->getPosition(),
                         ui->listWidget_2->currentIndex().row(),
                         ui->listWidget_1->currentIndex().row());
@@ -291,8 +257,8 @@ void MainWindow::newVideoFrame(QImage frame)
     }
     paint.end();
     QPixmap img2 = img.scaled(ui->labelVideo->size().width(),
-                               ui->labelVideo->size().height(),
-                               Qt::KeepAspectRatio,Qt::SmoothTransformation);
+                              ui->labelVideo->size().height(),
+                              Qt::KeepAspectRatio,Qt::SmoothTransformation);
     ui->labelVideo->setPixmap(img2);
 
     updateSelection();

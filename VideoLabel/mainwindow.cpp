@@ -145,16 +145,23 @@ void MainWindow::displayEvent(int id){
     Event ev = mLoader.getEvent(id);
     QString text = "<table><tr><th align=left>Name:</th> <td>"+ev.getName()+"</td></tr>";
     text += "<tr> <th align=left>ID:</th> <td>"+QString::number(ev.getID())+"</td></tr> </table>";
+    if(ev.OnTask()){
+        text += "<br><b>On-Task</b>";
+    }else{
+        text += "<br><b>Off-Task</b>";
+    }
+
     if(ev.getEyeVontact())
         text += "<br>+ Blickkontakt zum legitimen Sprecher oder Objekt";
     if(ev.getActiveParticipation())
         text += "<br>+ Aktive Beteiligung an der Aufgabe";
     if(ev.getOtherActivities())
-        text += "<br>+ Ausübung anderer Tätigkeiten";
+        text += "<br>- Ausübung anderer Tätigkeiten";
     if(ev.getRestlessness())
-        text += "<br>+ Motorische Unruhe";
+        text += "<br>- Motorische Unruhe";
     if(ev.getCommunication())
-        text += "<br>+ Themenferne Kommunikation";
+        text += "<br>- Themenferne Kommunikation";
+
     text += "<br>"+ev.getDescription();
     ui->textBrowser->setHtml(text);
 }

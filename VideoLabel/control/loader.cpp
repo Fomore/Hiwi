@@ -37,12 +37,8 @@ void Loader::loadFromFile(QString name, QString path){
     file_object.close();
 }
 
-QStringList Loader::getEvent(int id){
-    QStringList ret;
-    ret.push_back(mEvents[id].getName());
-    ret.push_back(QString::number(mEvents[id].getID()));
-    ret.push_back(mEvents[id].getDescription());
-    return ret;
+Event Loader::getEvent(int id){
+    return mEvents[id];
 }
 
 QStringList Loader::getObject(int id){
@@ -122,12 +118,12 @@ int Loader::addObjectSave(QString name, QString description)
     return ret;
 }
 
-void Loader::addNewEvent(QString name, QString description)
+void Loader::addNewEvent(QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
-    mEvents.push_back(Event(mEvents.size(), name, description));
+    mEvents.push_back(Event(mEvents.size(), name, description, eye, activ, other, less, comm));
 }
 
-void Loader::addEventSave(QString name, QString description)
+void Loader::addEventSave(QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
     bool exist = false;
     for(int i = 0; i < mEvents.size(); i++){
@@ -137,7 +133,7 @@ void Loader::addEventSave(QString name, QString description)
         }
     }
     if(!exist){
-        addNewEvent(name, description);
+        addNewEvent(name, description, eye, activ, other, less, comm);
     }
 }
 
@@ -146,9 +142,9 @@ void Loader::ChangeObject(int id, QString name, QString description)
     mObjects[id].change(name,description);
 }
 
-void Loader::ChamgeEvent(int id, QString name, QString description)
+void Loader::ChamgeEvent(int id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
-    mEvents[id].change(name,description);
+    mEvents[id].change(name,description, eye, activ, other, less, comm);
 }
 
 int Loader::getObjectSize()

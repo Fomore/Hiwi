@@ -14,7 +14,8 @@
 #include "control/xmlloader.h"
 #include "control/myvideoplayer.h"
 
-#include "inputevobdialog.h"
+#include "objectdialog.h"
+#include "eventdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -97,7 +98,8 @@ private:
     void displayEvent(int id);
     void displayObject(int id);
 
-    InputEvObDialog *mEvObDialog;
+    ObjectDialog *mObjectDialog;
+    EventDialog *mEventDialog;
 
     void clearAll();
 

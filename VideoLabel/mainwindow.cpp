@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QFileInfo>
 
+#include "model/event.h"
+
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -27,9 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->labelVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
 
-    mEvObDialog = new InputEvObDialog(this, &mLoader);
+    mObjectDialog = new ObjectDialog(this, &mLoader);
+    mEventDialog = new EventDialog(this, &mLoader);
 
-    connect(mEvObDialog,SIGNAL(accepted()),this,SLOT(updateView()));
+    connect(mObjectDialog,SIGNAL(accepted()),this,SLOT(updateView()));
+    connect(mEventDialog,SIGNAL(accepted()),this,SLOT(updateView()));
 
     mEventMenu = new QMenu(ui->listWidget_2);
     ui->listWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -138,10 +142,20 @@ void MainWindow::myclick_on_Slider(int newPos){
 }
 
 void MainWindow::displayEvent(int id){
-    QStringList data = mLoader.getEvent(id);
-    QString text = "<table><tr><th align=left>Name:</th> <td>"+data[0]+"</td></tr>";
-    text += "<tr> <th align=left>ID:</th> <td>"+data[1]+"</td></tr> </table>";
-    text += data[2];
+    Event ev = mLoader.getEvent(id);
+    QString text = "<table><tr><th align=left>Name:</th> <td>"+ev.getName()+"</td></tr>";
+    text += "<tr> <th align=left>ID:</th> <td>"+QString::number(ev.getID())+"</td></tr> </table>";
+    if(ev.getEyeVontact())
+        text += "<br>+ Blickkontakt zum legitimen Sprecher oder Objekt";
+    if(ev.getActiveParticipation())
+        text += "<br>+ Aktive Beteiligung an der Aufgabe";
+    if(ev.getOtherActivities())
+        text += "<br>+ Ausübung anderer Tätigkeiten";
+    if(ev.getRestlessness())
+        text += "<br>+ Motorische Unruhe";
+    if(ev.getCommunication())
+        text += "<br>+ Themenferne Kommunikation";
+    text += "<br>"+ev.getDescription();
     ui->textBrowser->setHtml(text);
 }
 
@@ -149,7 +163,7 @@ void MainWindow::displayObject(int id){
     QStringList data = mLoader.getObject(id);
     QString text = "<table><tr><th align=left>Name:</th> <td>"+data[0]+"</td></tr>";
     text += "<tr> <th align=left>ID:</th> <td>"+data[1]+"</td></tr> </table>";
-    text += data[2];
+    text += "<p>"+data[2]+ "</p>";
     ui->textBrowser->setHtml(text);
 }
 
@@ -157,7 +171,7 @@ void MainWindow::clearAll()
 {
     mLoader.clearAll();
     mControler.clearAll();
-    mEvObDialog->clear();
+    mObjectDialog->clear();
     ui->listWidget_2->clear();
     ui->listWidget_1->clear();
 
@@ -272,21 +286,19 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionAddEvent_triggered()
 {
-    mEvObDialog->setWindowTitle("Add new Event");
-    mEvObDialog->setUseEvent();
-    mEvObDialog->clear();
-    mEvObDialog->setID(mLoader.getEventSize());
-    mEvObDialog->show();
+    mEventDialog->setWindowTitle("Add new Event");
+    mEventDialog->clear();
+    mEventDialog->setID(mLoader.getEventSize());
+    mEventDialog->show();
 
 }
 
 void MainWindow::on_actionAdd_Object_triggered()
 {
-    mEvObDialog->setWindowTitle("Add new Object");
-    mEvObDialog->setUseObject();
-    mEvObDialog->clear();
-    mEvObDialog->setID(mLoader.getObjectSize());
-    mEvObDialog->show();
+    mObjectDialog->setWindowTitle("Add new Object");
+    mObjectDialog->clear();
+    mObjectDialog->setID(mLoader.getObjectSize());
+    mObjectDialog->show();
 }
 
 void MainWindow::updateView()
@@ -326,20 +338,18 @@ void MainWindow::contextObjectMenuRequested(const QPoint &point)
 void MainWindow::Eventchange()
 {
     int id = ui->listWidget_2->currentIndex().row();
-    QStringList all = mLoader.getEvent(id);
-    mEvObDialog->setWindowTitle("Change Event");
-    mEvObDialog->setUseEvent();
-    mEvObDialog->setEvOb(id, all[0], all[2]);
-    mEvObDialog->show();
+    Event ev = mLoader.getEvent(id);
+    mEventDialog->setWindowTitle("Change Event");
+    mEventDialog->setEvOb(id, ev.getName(), ev.getDescription());
+    mEventDialog->show();
 }
 
 void MainWindow::Objectchange(){
     int id = ui->listWidget_1->currentIndex().row();
     QStringList all = mLoader.getObject(id);
-    mEvObDialog->setWindowTitle("Change Object");
-    mEvObDialog->setEvOb(id, all[0], all[2]);
-    mEvObDialog->setUseObject();
-    mEvObDialog->show();
+    mObjectDialog->setWindowTitle("Change Object");
+    mObjectDialog->setEvOb(id, all[0], all[2]);
+    mObjectDialog->show();
 }
 
 void MainWindow::on_actionImport_XML_triggered()

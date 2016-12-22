@@ -20,10 +20,11 @@ SOURCES += main.cpp\
     model/object.cpp \
     model/activmodel.cpp \
     control/controler.cpp \
-    inputevobdialog.cpp \
     control/xmlloader.cpp \
     control/myvideoplayer.cpp \
-    mylabel.cpp
+    mylabel.cpp \
+    eventdialog.cpp \
+    objectdialog.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -31,13 +32,15 @@ HEADERS  += mainwindow.h \
     model/object.h \
     model/activmodel.h \
     control/controler.h \
-    inputevobdialog.h \
     control/xmlloader.h \
     control/myvideoplayer.h \
-    mylabel.h
+    mylabel.h \
+    eventdialog.h \
+    objectdialog.h
 
 FORMS    += mainwindow.ui \
-    inputevobdialog.ui
+    eventdialog.ui \
+    objectdialog.ui
 
 RESOURCES += \
     Resources.qrc

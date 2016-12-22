@@ -55,6 +55,9 @@
         <property name="text">
          <string>Change Event</string>
         </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>

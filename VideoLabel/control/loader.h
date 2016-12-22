@@ -19,7 +19,7 @@ public:
     void loadFromFile(QString name, QString path);
 
     QStringList getObject(int id);
-    QStringList getEvent(int id);
+    Event getEvent(int id);
 
     QStringList getObjectAllName();
     QStringList getEventAllName();
@@ -30,11 +30,13 @@ public:
     void addNewObject(QString name, QString description);
     int addObjectSave(QString name, QString description);
 
-    void addNewEvent(QString name, QString description);
-    void addEventSave(QString name, QString description);
+    void addNewEvent(QString name, QString description,
+                     bool eye, bool activ, bool other, bool less, bool comm);
+    void addEventSave(QString name, QString description,
+                      bool eye, bool activ, bool other, bool less, bool comm);
 
     void ChangeObject(int id, QString name, QString description);
-    void ChamgeEvent(int id, QString name, QString description);
+    void ChamgeEvent(int id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm);
 
     int getObjectSize();
     int getEventSize();

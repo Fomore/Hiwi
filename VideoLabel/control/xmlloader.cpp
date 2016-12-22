@@ -33,7 +33,7 @@ void XMLLoader::read(const QString filename)
 
 void XMLLoader::processName()
 {
-    mLoader->addEventSave(readNextText(),"");
+    mLoader->addEventSave(readNextText(),"",false,false,false,false,false);
     xml.skipCurrentElement();
 }
 

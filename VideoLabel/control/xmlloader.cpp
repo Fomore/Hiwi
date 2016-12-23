@@ -83,7 +83,7 @@ void XMLLoader::processImage(int frame)
             double pos[3];
             bool isPro = false;
             double proj[4];
-            bool isLand;
+            bool isLand = false;
             double land[5][2];
 
             int O_id = processBox(isOri, orient, isPos, pos, isPro, proj, isLand, land);
@@ -135,7 +135,7 @@ int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos
             proj[0] = att.value("x1").toDouble();
             proj[1] = att.value("y1").toDouble();
             proj[2] = att.value("x2").toDouble();
-            proj[2] = att.value("y2").toDouble();
+            proj[3] = att.value("y2").toDouble();
         }else if(xml.name() == "landmarks"){
             isLand = true;
             processLandmarks(land);

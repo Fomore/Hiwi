@@ -6,7 +6,8 @@
 class ActivModel
 {
 private:
-    QString toInt(int i);
+    QString toStr(int i);
+    QString toStr(double i);
     void setZero();
 public:
     int mID, mEventID, mObjectID;

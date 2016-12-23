@@ -30,9 +30,12 @@ ActivModel::ActivModel(QString data)
     }
 }
 
-QString ActivModel::toInt(int i)
+QString ActivModel::toStr(int i)
 {
     return QString::number(i);
+}
+QString ActivModel::toStr(double i){
+    return QString::number(i,'g',15);
 }
 
 void ActivModel::setZero()
@@ -102,10 +105,10 @@ void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_i
 
 QString ActivModel::getDateAll()
 {
-    return toInt(mID)+"&"+toInt(mObjectID)+"&"+toInt(mEventID)+"&"+toInt(mTimePos)+"&"+toInt(mX)+"&"+toInt(mY)+"&"+toInt(mW)+"&"+toInt(mH)+"&"
-            +mLandmarks[0][0]+"&"+mLandmarks[0][1]+"&"+mLandmarks[1][0]+"&"+mLandmarks[1][1]+"&"
-            +mLandmarks[2][0]+"&"+mLandmarks[2][1]+"&"+mLandmarks[3][0]+"&"+mLandmarks[3][1]+"&"+mLandmarks[4][0]+"&"+mLandmarks[4][1]+"&"
-            +mOrienation[0]+"&"+mOrienation[1]+"&"+mOrienation[2]+"&"
-            +mPosition[0]+"&"+mPosition[1]+"&"+mPosition[2]+"&"
-            +mProjection[0]+"&"+mProjection[1]+"&"+mProjection[2]+"&"+mProjection[3];
+    return toStr(mID)+"&"+toStr(mObjectID)+"&"+toStr(mEventID)+"&"+toStr(mTimePos)+"&"+toStr(mX)+"&"+toStr(mY)+"&"+toStr(mW)+"&"+toStr(mH)+"&"
+            +toStr(mLandmarks[0][0])+"&"+toStr(mLandmarks[0][1])+"&"+toStr(mLandmarks[1][0])+"&"+toStr(mLandmarks[1][1])+"&"
+            +toStr(mLandmarks[2][0])+"&"+toStr(mLandmarks[2][1])+"&"+toStr(mLandmarks[3][0])+"&"+toStr(mLandmarks[3][1])+"&"+toStr(mLandmarks[4][0])+"&"+toStr(mLandmarks[4][1])+"&"
+            +toStr(mOrienation[0])+"&"+toStr(mOrienation[1])+"&"+toStr(mOrienation[2])+"&"
+            +toStr(mPosition[0])+"&"+toStr(mPosition[1])+"&"+toStr(mPosition[2])+"&"
+            +toStr(mProjection[0])+"&"+toStr(mProjection[1])+"&"+toStr(mProjection[2])+"&"+toStr(mProjection[3]);
 }

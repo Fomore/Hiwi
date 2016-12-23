@@ -44,6 +44,11 @@ public:
     int getID(QString name);
 
     void clearAll();
+
+    void setLandmarks(int O_id, double marks[5][2]);
+    void setOrientation(int O_id, double ori[3]);
+    void setPosition(int O_id, double pos[3]);
+    void setProjection(int O_id, double pro[4]);
 };
 
 #endif // LOADER_H

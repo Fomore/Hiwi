@@ -20,7 +20,8 @@ private:
     void processDataset();
     void processImages();
     void processImage(int frame);
-    int processBox();
+    int processBox(bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]);
+    void processLandmarks(double mark[5][2]);
     QString readNextText();
     QString errorString();
 

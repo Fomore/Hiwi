@@ -50,12 +50,11 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     addEventInFrame(nx,ny,nw,nh,frame,E_id,O_iD);
 }
 
-void Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD)
+int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD)
 {
     int pos = getPosition(frame, O_iD);
     if(O_iD >=0 && mEvents.size() > O_iD){
         if(pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
-            std::cout<<"Re-";
             mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size());
         }else{
             mEvents[O_iD].insert(mEvents[O_iD].begin()+pos,ActivModel(x,y,w,h,frame,E_id,O_iD,pos));
@@ -63,6 +62,7 @@ void Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id,
     }else{
         std::cout<<"Object ID Fehler "<<O_iD<<std::endl;
     }
+    return pos;
 }
 
 void Controler::setVideoSize(int w, int h)
@@ -221,4 +221,32 @@ void Controler::changeEvent(int frame, int O_id, int E_id)
             addEvent(x1,y1,x2,y2,frame,E_id,O_id);
         }
     }
+}
+
+void Controler::setLandmarks(int O_id, int E_id, double marks[5][2])
+{
+    if(O_id >= 0 && O_id < mEvents.size()
+            && E_id >= 0 && E_id < mEvents[O_id].size())
+        mEvents[O_id][E_id].setLandmarks(marks);
+}
+
+void Controler::setOrientation(int O_id, int E_id, double ori[3])
+{
+    if(O_id >= 0 && O_id < mEvents.size()
+            && E_id >= 0 && E_id < mEvents[O_id].size())
+    mEvents[O_id][E_id].setOrientation(ori);
+}
+
+void Controler::setPosition(int O_id, int E_id, double pos[3])
+{
+    if(O_id >= 0 && O_id < mEvents.size()
+            && E_id >= 0 && E_id < mEvents[O_id].size())
+    mEvents[O_id][E_id].setPosition(pos);
+}
+
+void Controler::setProjection(int O_id, int E_id, double pro[4])
+{
+    if(O_id >= 0 && O_id < mEvents.size()
+            && E_id >= 0 && E_id < mEvents[O_id].size())
+    mEvents[O_id][E_id].setProjection(pro);
 }

@@ -26,7 +26,7 @@ private:
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
-    void addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD);
+    int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD);
     void setVideoSize(int w, int h);
     void setDisplaySize(int w, int h);
     QRect getRect(int frame, int O_id, int &E_id);
@@ -38,6 +38,11 @@ public:
     void save(QString name, QString path);
     void clearAll();
     void changeEvent(int frame, int O_id, int E_id);
+
+    void setLandmarks(int O_id, int E_id, double marks[5][2]);
+    void setOrientation(int O_id, int E_id, double ori[3]);
+    void setPosition(int O_id, int E_id, double pos[3]);
+    void setProjection(int O_id, int E_id, double pro[4]);
 };
 
 #endif // CONTROLER_H

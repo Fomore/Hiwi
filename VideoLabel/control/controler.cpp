@@ -5,6 +5,7 @@
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
+#include <algorithm>
 
 Controler::Controler()
 {
@@ -47,17 +48,17 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     double nw = w/scall+0.5;
     double nh = h/scall+0.5;
 
-    addEventInFrame(nx,ny,nw,nh,frame,E_id,O_iD);
+    addEventInFrame(nx,ny,nw,nh,frame,E_id,O_iD,true);
 }
 
-int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD)
+int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man)
 {
     int pos = getPosition(frame, O_iD);
     if(O_iD >=0 && mEvents.size() > O_iD){
         if(pos >= 0 && pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
-            mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size());
+            mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size(), man);
         }else{
-            mEvents[O_iD].insert(mEvents[O_iD].begin()+std::max(pos,0),ActivModel(x,y,w,h,frame,E_id,O_iD,pos));
+            mEvents[O_iD].insert(mEvents[O_iD].begin()+std::max(pos,0),ActivModel(x,y,w,h,frame,E_id,O_iD,pos, man));
         }
     }else{
         std::cout<<"Object ID Fehler "<<O_iD<<std::endl;
@@ -115,7 +116,8 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
     int lastID = getPosition(frame, O_id);
 
-    if(lastID < 0){
+    if(lastID < 0 || lastID >= mEvents[O_id].size()){
+        E_id = -1;
         return QRect(0,0,0,0);
     }else if(lastID == mEvents[O_id].size()-1 || mEvents[O_id][lastID].getFrame()==frame){
         int x = mEvents[O_id][lastID].mX;
@@ -154,6 +156,11 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
                      (h+h_diff)*sca);
         */
     }
+}
+
+int Controler::getObjectCount()
+{
+    return mEvents.size();
 }
 
 int Controler::getEventToObject(int frame, int O_id)
@@ -268,4 +275,23 @@ void Controler::setProjection(int O_id, int E_id, double pro[4])
     if(O_id >= 0 && O_id < mEvents.size()
             && E_id >= 0 && E_id < mEvents[O_id].size())
         mEvents[O_id][E_id].setProjection(pro);
+}
+
+bool Controler::getNextSetFrame(int &frame)
+{
+    std::vector<int> next;
+    next.clear();
+
+    for(int i = 0; i < mEvents.size(); i++){
+        int tmp = getPosition(frame,i)+1;
+        if(tmp < mEvents[i].size()){
+            next.push_back(mEvents[i][tmp].getFrame());
+        }
+    }
+    if(next.size() > 0){
+        frame = *std::min_element(next.begin(), next.end());
+        return true;
+    }else{
+        return false;
+    }
 }

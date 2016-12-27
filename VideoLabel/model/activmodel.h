@@ -17,16 +17,19 @@ public:
     double mOrienation[3];
     double mPosition[3];
     double mProjection[4];
+    bool mManuel;
     ActivModel();
     ActivModel(QString data);
-    ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id);
+    ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man);
+
     void setLandmarks(double marks[5][2]);
     void setOrientation(double orien[3]);
     void setPosition(double pos[3]);
     void setProjection(double proj[4]);
-    int getFrame();
-    void setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, int id);
+    void setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man);
+
     QString getDateAll();
+    int getFrame();
 };
 
 #endif // ACTIVMODEL_H

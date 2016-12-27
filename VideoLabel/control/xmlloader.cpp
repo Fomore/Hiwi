@@ -31,6 +31,78 @@ void XMLLoader::read(const QString filename)
     }
 }
 
+void XMLLoader::write(const QString filename)
+{
+    QXmlStreamWriter xmlWriter;
+    QFile file("./data/"+filename+"_Label.xml");
+    file.open(QFile::WriteOnly);
+
+    xmlWriter.setDevice(&file);
+    xmlWriter.setAutoFormatting(true);
+    std::cout<<"Write "<<filename.toStdString()<<std::endl;
+
+    xmlWriter.writeStartDocument();
+    xmlWriter.writeStartElement("dataset");
+
+    xmlWriter.writeStartElement("name");
+    xmlWriter.writeCharacters ("imglab dataset");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("comment");
+    xmlWriter.writeCharacters ("Created by VideoLabel");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("images");
+
+    int frame = -1;
+    while(mControl->getNextSetFrame(frame)){
+        xmlWriter.writeStartElement("image");
+        xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
+        for(int i = 0; i < mControl->getObjectCount(); i++){
+            int E_id = -1;
+            QRect rec = mControl->getRect(frame,i,E_id);
+
+            if(E_id >= 0){
+            xmlWriter.writeStartElement("box");
+            xmlWriter.writeAttribute("height",QString::number(rec.height()));
+            xmlWriter.writeAttribute("left",QString::number(rec.x()));
+            xmlWriter.writeAttribute("top",QString::number(rec.y()));
+            xmlWriter.writeAttribute("width",QString::number(rec.width()));
+
+            QStringList obj = mLoader->getObject(i);
+            xmlWriter.writeStartElement("label");
+            xmlWriter.writeCharacters (obj[0]);
+            xmlWriter.writeStartElement("description");
+            xmlWriter.writeCharacters (obj[2]);
+            xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
+
+            Event ev = mLoader->getEvent(E_id);
+            xmlWriter.writeStartElement("event");
+            xmlWriter.writeAttribute("name",ev.getName());
+            xmlWriter.writeAttribute("EyeContact",QString::number(ev.getEyeVontact()));
+            xmlWriter.writeAttribute("ActiveParticipation",QString::number(ev.getActiveParticipation()));
+            xmlWriter.writeAttribute("OtherActivities",QString::number(ev.getOtherActivities()));
+            xmlWriter.writeAttribute("Restlessness",QString::number(ev.getRestlessness()));
+            xmlWriter.writeAttribute("Communication",QString::number(ev.getCommunication()));
+
+            xmlWriter.writeStartElement("description");
+            xmlWriter.writeCharacters (ev.getDescription());
+            xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
+
+            xmlWriter.writeEndElement();
+            }
+        }
+        xmlWriter.writeEndElement();
+    }
+
+    xmlWriter.writeEndElement();
+    xmlWriter.writeEndDocument();
+
+    std::cout<<"Write "<<filename.toStdString()<<" Ende"<<std::endl;
+}
+
 void XMLLoader::processName()
 {
     mLoader->addEventSave(readNextText(),"",false,false,false,false,false);
@@ -89,7 +161,7 @@ void XMLLoader::processImage(int frame)
             int O_id = processBox(isOri, orient, isPos, pos, isPro, proj, isLand, land);
             if(O_id >= 0){
                 mControl->setObjectSize(O_id+1);
-                int E_id = mControl->addEventInFrame(left,top,width,height,frame,0,O_id);//ToDo: Verknüpfung zum Event besser
+                int E_id = mControl->addEventInFrame(left,top,width,height,frame,0,O_id,manual);//ToDo: Verknüpfung zum Event besser
 
                 if(isLand)
                     mControl->setLandmarks(O_id, E_id,land);
@@ -109,8 +181,10 @@ void XMLLoader::processImage(int frame)
 }
 
 int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]) {
-    if (!xml.isStartElement() || xml.name() != "box")
+    if (!xml.isStartElement() || xml.name() != "box"){
+        std::cout<<"Keine Box"<<std::endl;
         return -1;
+    }
 
     QString label;
 
@@ -149,8 +223,10 @@ int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos
 
     if (!label.isNull()){
         return mLoader->addObjectSave(label,"");
+    }else{
+        std::cout<<"Label ist Null"<<std::endl;
+        return -1;
     }
-    return -1;
 }
 
 void XMLLoader::processLandmarks(double mark[5][2])
@@ -167,7 +243,7 @@ void XMLLoader::processLandmarks(double mark[5][2])
                 mark[id-1][0]=x;
                 mark[id-1][1]=y;
             }
-        xml.skipCurrentElement();
+            xml.skipCurrentElement();
         }
     }
 }

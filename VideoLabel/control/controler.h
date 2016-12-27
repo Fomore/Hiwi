@@ -26,14 +26,11 @@ private:
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
-    int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD);
-    void setVideoSize(int w, int h);
-    void setDisplaySize(int w, int h);
-    QRect getRect(int frame, int O_id, int &E_id);
-    int getEventToObject(int frame, int O_id);
-    void setObjectSize(int anz);
+    int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man);
+
     void loadFromFile(QString name);
     void loadFromFile(QString name, QString path);
+
     void save(QString name);
     void save(QString name, QString path);
     void clearAll();
@@ -43,6 +40,14 @@ public:
     void setOrientation(int O_id, int E_id, double ori[3]);
     void setPosition(int O_id, int E_id, double pos[3]);
     void setProjection(int O_id, int E_id, double pro[4]);
+    void setVideoSize(int w, int h);
+    void setDisplaySize(int w, int h);
+    void setObjectSize(int anz);
+
+    bool getNextSetFrame(int &frame);
+    int getEventToObject(int frame, int O_id);
+    QRect getRect(int frame, int O_id, int &E_id);
+    int getObjectCount();
 };
 
 #endif // CONTROLER_H

@@ -65,7 +65,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionOpen_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this,tr("Open Video"), "~", tr("Video Files (*.avi *.mp4 *.wmv);; All (*.*)"));
-    if(!filename.isEmpty()){
+    if(!filename.isEmpty() && filename.size() > 0){
         QFileInfo fi(filename);
 
         this->setWindowTitle("VideoLabel - " + fi.fileName());
@@ -287,6 +287,7 @@ void MainWindow::newVideoFrame(QImage frame)
 
 void MainWindow::on_actionSave_triggered()
 {
+    mXMLLoader->write(mFileName);
     mLoader.save(mFileName);
     mControler.save(mFileName);
 }

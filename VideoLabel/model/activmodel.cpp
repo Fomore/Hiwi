@@ -20,6 +20,7 @@ ActivModel::ActivModel(QString data)
         mY = data_list[5].toInt();
         mW = data_list[6].toInt();
         mH = data_list[7].toInt();
+        mManuel = true;
         setZero();
         if(data_list.size() == 8){
 
@@ -49,9 +50,9 @@ void ActivModel::setZero()
     setProjection(zero4);
 }
 
-ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id)
+ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man)
 {
-    setAll(x,y,w,h,frame,E_id,O_id,id);
+    setAll(x,y,w,h,frame,E_id,O_id,id, man);
     setZero();
 }
 
@@ -89,7 +90,7 @@ int ActivModel::getFrame(){
     return mTimePos;
 }
 
-void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, int id)
+void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man)
 {
     mX = x;
     mY = y;
@@ -101,6 +102,8 @@ void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_i
     mEventID = E_id;
     mObjectID = O_id;
     mID = id;
+
+    mManuel = man;
 }
 
 QString ActivModel::getDateAll()

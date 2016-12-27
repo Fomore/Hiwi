@@ -100,7 +100,7 @@ void XMLLoader::processImage(int frame)
                 if(isPro)
                     mControl->setProjection(O_id, E_id,proj);
             }else{
-                std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<std::endl;
+                std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
             }
         }
         else

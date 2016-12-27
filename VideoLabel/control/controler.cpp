@@ -54,10 +54,10 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
 {
     int pos = getPosition(frame, O_iD);
     if(O_iD >=0 && mEvents.size() > O_iD){
-        if(pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
+        if(pos >= 0 && pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
             mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size());
         }else{
-            mEvents[O_iD].insert(mEvents[O_iD].begin()+pos,ActivModel(x,y,w,h,frame,E_id,O_iD,pos));
+            mEvents[O_iD].insert(mEvents[O_iD].begin()+std::max(pos,0),ActivModel(x,y,w,h,frame,E_id,O_iD,pos));
         }
     }else{
         std::cout<<"Object ID Fehler "<<O_iD<<std::endl;
@@ -82,19 +82,38 @@ void Controler::setDisplaySize(int w, int h)
 
 int Controler::getPosition(int frame, int O_id)
 {
-    int i = -1;
-    if(O_id >= 0 && O_id < mEvents.size() ){
-        i = 0;
-        while(i < mEvents[O_id].size() && mEvents[O_id][i].getFrame() < frame){
-            i++;
+    if(O_id >= 0 && O_id < mEvents.size() && mEvents[O_id].size() > 0){
+        int top = mEvents[O_id].size()-1;
+        int down = 0;
+        if(mEvents[O_id][top].getFrame() == frame){
+            return top;
+        }else if(mEvents[O_id][top].getFrame() < frame){
+            return top+1;
+        }else if(mEvents[O_id][down].getFrame() == frame){
+            return down;
+        }else if(mEvents[O_id][down].getFrame() > frame){
+            return -1;
+        }else{
+            while(top-down >1){
+                int middle = (top+down)/2;
+                int m_frame = mEvents[O_id][middle].getFrame();
+                if(m_frame == frame){
+                    return middle;
+                }else if(m_frame > frame){
+                    top = middle;
+                }else{
+                    down = middle;
+                }
+            }
+            return down;
         }
     }
-    return i;
+    return -1;
 }
 
 QRect Controler::getRect(int frame, int O_id, int &E_id){
 
-    int lastID = getPosition(frame, O_id)-1;
+    int lastID = getPosition(frame, O_id);
 
     if(lastID < 0){
         return QRect(0,0,0,0);
@@ -107,7 +126,7 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
         E_id = mEvents[O_id][lastID].mEventID;
 
         double s = getScall();
-//        return QRect(x*s+mShiftX,y*s+mShiftY,w*s,h*s);
+        //        return QRect(x*s+mShiftX,y*s+mShiftY,w*s,h*s);
         return QRect(x,y,w,h);
     }else{
         double sca = getScall(); // ToDO: skallieren ins Kammerasystem
@@ -139,7 +158,7 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
 int Controler::getEventToObject(int frame, int O_id)
 {
-    int i = getPosition(frame, O_id)-1;
+    int i = getPosition(frame, O_id);
     if(i >= 0 && i < mEvents[O_id].size()){
         return mEvents[O_id][i].mEventID;
     }
@@ -207,7 +226,7 @@ void Controler::clearAll()
 
 void Controler::changeEvent(int frame, int O_id, int E_id)
 {
-    int i = getPosition(frame, O_id)-1;
+    int i = getPosition(frame, O_id);
     if(i >= 0 && i < mEvents[O_id].size()){
         if(frame == mEvents[O_id][i].mTimePos){
             mEvents[O_id][i].mEventID = E_id;
@@ -234,19 +253,19 @@ void Controler::setOrientation(int O_id, int E_id, double ori[3])
 {
     if(O_id >= 0 && O_id < mEvents.size()
             && E_id >= 0 && E_id < mEvents[O_id].size())
-    mEvents[O_id][E_id].setOrientation(ori);
+        mEvents[O_id][E_id].setOrientation(ori);
 }
 
 void Controler::setPosition(int O_id, int E_id, double pos[3])
 {
     if(O_id >= 0 && O_id < mEvents.size()
             && E_id >= 0 && E_id < mEvents[O_id].size())
-    mEvents[O_id][E_id].setPosition(pos);
+        mEvents[O_id][E_id].setPosition(pos);
 }
 
 void Controler::setProjection(int O_id, int E_id, double pro[4])
 {
     if(O_id >= 0 && O_id < mEvents.size()
             && E_id >= 0 && E_id < mEvents[O_id].size())
-    mEvents[O_id][E_id].setProjection(pro);
+        mEvents[O_id][E_id].setProjection(pro);
 }

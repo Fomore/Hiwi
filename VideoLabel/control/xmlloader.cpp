@@ -16,8 +16,11 @@ void XMLLoader::read(const QString filename)
     if(xmlFile.open(QIODevice::ReadOnly)){
         xml.setDevice(&xmlFile);
 
-        if (xml.readNextStartElement() && xml.name() == "dataset")
+        if (xml.readNextStartElement() && xml.name() == "dataset"){
             processDataset();
+        }else{
+            std::cout<<"Fehler bei Name dataset: "<<xml.name().toString().toStdString()<<std::endl;
+        }
 
         if (xml.tokenType() == QXmlStreamReader::Invalid)
             xml.readNext();
@@ -63,35 +66,35 @@ void XMLLoader::write(const QString filename, const QString path)
             QRect rec = mControl->getRect(frame,i,E_id);
 
             if(E_id >= 0){
-            xmlWriter.writeStartElement("box");
-            xmlWriter.writeAttribute("height",QString::number(rec.height()));
-            xmlWriter.writeAttribute("left",QString::number(rec.x()));
-            xmlWriter.writeAttribute("top",QString::number(rec.y()));
-            xmlWriter.writeAttribute("width",QString::number(rec.width()));
+                xmlWriter.writeStartElement("box");
+                xmlWriter.writeAttribute("height",QString::number(rec.height()));
+                xmlWriter.writeAttribute("left",QString::number(rec.x()));
+                xmlWriter.writeAttribute("top",QString::number(rec.y()));
+                xmlWriter.writeAttribute("width",QString::number(rec.width()));
 
-            QStringList obj = mLoader->getObject(i);
-            xmlWriter.writeStartElement("label");
-            xmlWriter.writeCharacters (obj[0]);
-            xmlWriter.writeStartElement("description");
-            xmlWriter.writeCharacters (obj[2]);
-            xmlWriter.writeEndElement();
-            xmlWriter.writeEndElement();
+                QStringList obj = mLoader->getObject(i);
+                xmlWriter.writeStartElement("label");
+                xmlWriter.writeCharacters (obj[0]);
+                xmlWriter.writeStartElement("description");
+                xmlWriter.writeCharacters (obj[2]);
+                xmlWriter.writeEndElement();
+                xmlWriter.writeEndElement();
 
-            Event ev = mLoader->getEvent(E_id);
-            xmlWriter.writeStartElement("event");
-            xmlWriter.writeAttribute("name",ev.getName());
-            xmlWriter.writeAttribute("EyeContact",QString::number(ev.getEyeVontact()));
-            xmlWriter.writeAttribute("ActiveParticipation",QString::number(ev.getActiveParticipation()));
-            xmlWriter.writeAttribute("OtherActivities",QString::number(ev.getOtherActivities()));
-            xmlWriter.writeAttribute("Restlessness",QString::number(ev.getRestlessness()));
-            xmlWriter.writeAttribute("Communication",QString::number(ev.getCommunication()));
+                Event ev = mLoader->getEvent(E_id);
+                xmlWriter.writeStartElement("event");
+                xmlWriter.writeAttribute("name",ev.getName());
+                xmlWriter.writeAttribute("EyeContact",QString::number(ev.getEyeVontact()));
+                xmlWriter.writeAttribute("ActiveParticipation",QString::number(ev.getActiveParticipation()));
+                xmlWriter.writeAttribute("OtherActivities",QString::number(ev.getOtherActivities()));
+                xmlWriter.writeAttribute("Restlessness",QString::number(ev.getRestlessness()));
+                xmlWriter.writeAttribute("Communication",QString::number(ev.getCommunication()));
 
-            xmlWriter.writeStartElement("description");
-            xmlWriter.writeCharacters (ev.getDescription());
-            xmlWriter.writeEndElement();
-            xmlWriter.writeEndElement();
+                xmlWriter.writeStartElement("description");
+                xmlWriter.writeCharacters (ev.getDescription());
+                xmlWriter.writeEndElement();
+                xmlWriter.writeEndElement();
 
-            xmlWriter.writeEndElement();
+                xmlWriter.writeEndElement();
             }
         }
         xmlWriter.writeEndElement();
@@ -103,12 +106,6 @@ void XMLLoader::write(const QString filename, const QString path)
     std::cout<<"Write "<<filename.toStdString()<<" Ende"<<std::endl;
 }
 
-void XMLLoader::processName()
-{
-    mLoader->addEventSave(readNextText(),"",false,false,false,false,false);
-    xml.skipCurrentElement();
-}
-
 void XMLLoader::processDataset()
 {
     if (!xml.isStartElement() || xml.name() != "dataset")
@@ -116,10 +113,10 @@ void XMLLoader::processDataset()
     while (xml.readNextStartElement()) {
         if (xml.name() == "images")
             processImages();
-        else if (xml.name() == "name")
-            processName();
-        else
+        else{
+            std::cout<<"Überspringe in Dataset mit "<<xml.name().toString().toStdString()<<std::endl;
             xml.skipCurrentElement();
+        }
     }
 }
 
@@ -134,8 +131,10 @@ void XMLLoader::processImages() {
                 frame = filnameToFrame(file);
             processImage(frame);
         }
-        else
+        else{
+            std::cout<<"Überspringe in Images mit "<<xml.name().toString().toStdString()<<std::endl;
             xml.skipCurrentElement();
+        }
     }
 }
 
@@ -159,24 +158,36 @@ void XMLLoader::processImage(int frame)
             double land[5][2];
 
             int O_id = processBox(isOri, orient, isPos, pos, isPro, proj, isLand, land);
+
             if(O_id >= 0){
                 mControl->setObjectSize(O_id+1);
                 int E_id = mControl->addEventInFrame(left,top,width,height,frame,0,O_id,manual);//ToDo: Verknüpfung zum Event besser
 
-                if(isLand)
+                std::cout<<"ActionEvent: "<<left<<" "<<top<<" "<<width<<" "<<height<<" "<<frame<<" "<<O_id<<" "<<manual;
+                if(isLand){
+                    std::cout<<" Land "<<land[0][0]<<" "<<land[0][1]<<" "<<land[1][0]<<" "<<land[1][1]<<" "
+                                                                                                     <<land[2][0]<<" "<<land[2][1]<<" "<<land[3][0]<<" "<<land[3][1]<<" "
+                                                                                                                                                                   <<land[4][0]<<" "<<land[4][1];
                     mControl->setLandmarks(O_id, E_id,land);
-                if(isOri)
+                }if(isOri){
+                    std::cout<<" Ori "<<orient[0]<<" "<<orient[1]<<" "<<orient[2];
                     mControl->setOrientation(O_id, E_id,orient);
-                if(isPos)
+                }if(isPos){
+                    std::cout<<" Pos "<<pos[0]<<" "<<pos[1]<<" "<<pos[2];
                     mControl->setPosition(O_id, E_id,pos);
-                if(isPro)
+                }if(isPro){
+                    std::cout<<" Pro "<<proj[0]<<" "<<proj[1]<<" "<<proj[2]<<" "<<proj[3];
                     mControl->setProjection(O_id, E_id,proj);
+                }
+                std::cout<<std::endl;
             }else{
                 std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
             }
         }
-        else
+        else{
+            std::cout<<"Überspringe in Image mit "<<xml.name().toString().toStdString()<<" "<<xml.lineNumber()<<std::endl;
             xml.skipCurrentElement();
+        }
     }
 }
 
@@ -213,12 +224,25 @@ int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos
         }else if(xml.name() == "landmarks"){
             isLand = true;
             processLandmarks(land);
+        }else if(xml.name() == "event"){
+            QXmlStreamAttributes att = xml.attributes();
+            QString name = att.value("name").toString();
+            QString desc = "";
+            bool EyeContact=att.value("EyeContact").toInt()==1;
+            bool ActiveParticipation=att.value("ActiveParticipation").toInt()==1;
+            bool OtherActivities=att.value("OtherActivities").toInt()==1;
+            bool Restlessness=att.value("Restlessness").toInt()==1;
+            bool Communication=att.value("Communication").toInt()==1;
+            xml.readNextStartElement();
+            if(xml.name() == "description"){
+                desc = readNextText();
+            }
+            mLoader->addEventSave(name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication);
+            xml.skipCurrentElement();
         }else{
-            std::cout<<"Fehler: "<<xml.lineNumber()<<" "<<xml.name().toString().toStdString()<<std::endl;
+            std::cout<<"Fehler in Box, Zeile "<<xml.lineNumber()<<": "<<xml.name().toString().toStdString()<<std::endl;
         }
-#ifndef USE_READ_ELEMENT_TEXT
         xml.skipCurrentElement();
-#endif
     }
 
     if (!label.isNull()){
@@ -243,8 +267,8 @@ void XMLLoader::processLandmarks(double mark[5][2])
                 mark[id-1][0]=x;
                 mark[id-1][1]=y;
             }
-            xml.skipCurrentElement();
         }
+        xml.skipCurrentElement();
     }
 }
 

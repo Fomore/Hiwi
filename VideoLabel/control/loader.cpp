@@ -7,10 +7,6 @@ Loader::Loader()
 {
 }
 
-void Loader::loadFromFile(QString name){
-    loadFromFile(name,"./data/");
-}
-
 void Loader::loadFromFile(QString name, QString path){
     QFile file_event(path+name+"_event.txt");
     if(!file_event.open(QIODevice::ReadOnly)) {
@@ -63,10 +59,6 @@ QStringList Loader::getEventAllName(){
         ret.push_back(mEvents[i].getName());
     }
     return ret;
-}
-
-void Loader::save(QString name){
-    save(name, "./data/");
 }
 
 void Loader::save(QString name, QString path)
@@ -155,18 +147,6 @@ int Loader::getObjectSize()
 int Loader::getEventSize()
 {
     return mEvents.size();
-}
-
-int Loader::getID(QString name)
-{
-    int ret = -1;
-    for(int i = 0; i < mObjects.size(); i++){
-        if(name == mObjects[i].getName()){
-            ret = i;
-            break;
-        }
-    }
-    return ret;
 }
 
 void Loader::clearAll()

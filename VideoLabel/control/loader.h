@@ -15,7 +15,6 @@ private:
     std::vector<Object> mObjects;
 public:
     Loader();
-    void loadFromFile(QString name);
     void loadFromFile(QString name, QString path);
 
     QStringList getObject(int id);
@@ -24,7 +23,6 @@ public:
     QStringList getObjectAllName();
     QStringList getEventAllName();
 
-    void save(QString name);
     void save(QString name, QString path);
 
     void addNewObject(QString name, QString description);
@@ -41,14 +39,7 @@ public:
     int getObjectSize();
     int getEventSize();
 
-    int getID(QString name);
-
     void clearAll();
-
-    void setLandmarks(int O_id, double marks[5][2]);
-    void setOrientation(int O_id, double ori[3]);
-    void setPosition(int O_id, double pos[3]);
-    void setProjection(int O_id, double pro[4]);
 };
 
 #endif // LOADER_H

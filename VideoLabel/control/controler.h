@@ -10,31 +10,29 @@ class Controler
 {
 private:
     std::vector<std::vector<ActivModel>> mEvents;
+    std::vector<std::vector<ActivModel>> mActionEvents;
 
     int VideoWidth, VideoHeight;
     int DisplayWidth, DisplayHeight;
 
     double mScall;
-    int mShiftX, mShiftY;
 
     double getScall();
     void calculateParameter();
 
     int getPosition(int frame, int O_id);
-    void addEvent();
+    void addEventVector();
 
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
     int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man);
 
-    void loadFromFile(QString name);
     void loadFromFile(QString name, QString path);
 
-    void save(QString name);
     void save(QString name, QString path);
+
     void clearAll();
-    void changeEvent(int frame, int O_id, int E_id);
 
     void setLandmarks(int O_id, int E_id, double marks[5][2]);
     void setOrientation(int O_id, int E_id, double ori[3]);
@@ -47,7 +45,6 @@ public:
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
     QRect getRect(int frame, int O_id, int &E_id);
-    int getObjectCount();
 };
 
 #endif // CONTROLER_H

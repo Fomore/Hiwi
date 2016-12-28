@@ -14,7 +14,7 @@ public:
     XMLLoader(Loader *loader=0, Controler *control=0);
 
     void read(const QString filename);
-    void write(const QString filename);
+    void write(const QString filename, const QString path);
 
 private:
     void processName();

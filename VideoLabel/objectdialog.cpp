@@ -44,7 +44,7 @@ void ObjectDialog::on_buttonBox_accepted()
     }
 }
 
-void ObjectDialog::setEvOb(int id, QString name, QString desc)
+void ObjectDialog::setAttribute(int id, QString name, QString desc)
 {
     setID(id);
     ui->lineEditName->setText(name);

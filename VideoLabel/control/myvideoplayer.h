@@ -30,6 +30,7 @@ public:
 
     double getVideoWidth();
     double getVideoHeight();
+
 public slots:
     void play();
     void pause();
@@ -40,10 +41,10 @@ public slots:
     void skipForward();
     void skipBackward();
 
-    void setPosition(double pos, bool show = true);
+    void setPosition(double pos, bool show);
     void setPosition(int pos);
 signals:
-   void legthChanged(const int &length);
+    void legthChanged(const int &length);
     void positionChanger(const int &pos);
     void isNewImage(const QImage &image);
 };

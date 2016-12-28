@@ -44,26 +44,26 @@ void MyVideoPlayer::stop()
 
 void MyVideoPlayer::forward()
 {
-    setPosition(video.get(CV_CAP_PROP_POS_FRAMES));
+    setPosition(video.get(CV_CAP_PROP_POS_FRAMES),true);
 }
 
 void MyVideoPlayer::backward()
 {
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
-    setPosition(std::max(-1.0, pos-2));
+    setPosition(std::max(-1.0, pos-2),true);
 }
 
 void MyVideoPlayer::skipForward()
 {
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
     double mx = video.get(CV_CAP_PROP_FRAME_COUNT);
-    setPosition(std::min(mx, pos+frameRate*10.0));
+    setPosition(std::min(mx, pos+frameRate*10.0),true);
 }
 
 void MyVideoPlayer::skipBackward()
 {
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
-    setPosition(std::max(-1.0, pos-frameRate*10.0-2));
+    setPosition(std::max(-1.0, pos-frameRate*10.0-2),true);
 }
 
 void MyVideoPlayer::setPosition(double pos, bool show)

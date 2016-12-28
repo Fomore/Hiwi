@@ -13,8 +13,6 @@ Controler::Controler()
     DisplayHeight = DisplayWidth = 0;
     mEvents.clear();
     mScall = 1.0;
-    mShiftX = 0;
-    mShiftY = 0;
 }
 
 double Controler::getScall()
@@ -25,9 +23,6 @@ double Controler::getScall()
 void Controler::calculateParameter()
 {
     mScall = std::min((double)DisplayHeight/(double)VideoHeight,(double)DisplayWidth/(double)VideoWidth);
-    mShiftX = std::max(0.0,(DisplayWidth-VideoWidth*mScall)/2);
-    mShiftY = std::max(0.0,(DisplayHeight-VideoHeight*mScall)/2);
-
 }
 
 void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD)
@@ -43,8 +38,8 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     int h = std::max(y1,y2)-y;
 
     double scall = getScall();
-    double nx = (x-mShiftX)/scall+0.5;
-    double ny = (y-mShiftY)/scall+0.5;
+    double nx = x/scall+0.5;
+    double ny = y/scall+0.5;
     double nw = w/scall+0.5;
     double nh = h/scall+0.5;
 
@@ -127,11 +122,8 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
 
         E_id = mEvents[O_id][lastID].mEventID;
 
-        double s = getScall();
-        //        return QRect(x*s+mShiftX,y*s+mShiftY,w*s,h*s);
         return QRect(x,y,w,h);
     }else{
-        double sca = getScall(); // ToDO: skallieren ins Kammerasystem
         double x = mEvents[O_id][lastID].mX;
         double y = mEvents[O_id][lastID].mY;
         double w = mEvents[O_id][lastID].mW;
@@ -149,18 +141,7 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
         E_id = mEvents[O_id][lastID].mEventID;
 
         return QRect((x+x_diff), (y+y_diff), (w+w_diff), (h+h_diff));
-        /*
-        return QRect((x+x_diff)*sca+mShiftX,
-                     (y+y_diff)*sca+mShiftY,
-                     (w+w_diff)*sca,
-                     (h+h_diff)*sca);
-        */
     }
-}
-
-int Controler::getObjectCount()
-{
-    return mEvents.size();
 }
 
 int Controler::getEventToObject(int frame, int O_id)
@@ -172,7 +153,7 @@ int Controler::getEventToObject(int frame, int O_id)
     return -1;
 }
 
-void Controler::addEvent()
+void Controler::addEventVector()
 {
     mEvents.push_back(std::vector<ActivModel>());
     mEvents.back().clear();
@@ -181,12 +162,8 @@ void Controler::addEvent()
 void Controler::setObjectSize(int anz)
 {
     for(int i = mEvents.size(); i < anz; i++){
-        addEvent();
+        addEventVector();
     }
-}
-
-void Controler::loadFromFile(QString name){
-    loadFromFile(name, "./data/");
 }
 
 void Controler::loadFromFile(QString name, QString path){
@@ -199,16 +176,12 @@ void Controler::loadFromFile(QString name, QString path){
             QString line = in.readLine();
             ActivModel am(line);
             while(am.mObjectID >= mEvents.size()){
-                addEvent();
+                addEventVector();
             }
             mEvents[am.mObjectID].push_back(am);
         }
     }
     file_object.close();
-}
-
-void Controler::save(QString name){
-    save(name,"./data/");
 }
 
 void Controler::save(QString name, QString path)
@@ -228,25 +201,10 @@ void Controler::save(QString name, QString path)
 
 void Controler::clearAll()
 {
-    mEvents.clear();
-}
-
-void Controler::changeEvent(int frame, int O_id, int E_id)
-{
-    int i = getPosition(frame, O_id);
-    if(i >= 0 && i < mEvents[O_id].size()){
-        if(frame == mEvents[O_id][i].mTimePos){
-            mEvents[O_id][i].mEventID = E_id;
-        }else {
-            int lasE_id;
-            QRect rec = getRect(frame, O_id, lasE_id);
-            int x1= rec.x();
-            int y1= rec.y();
-            int x2= rec.x()+rec.width();
-            int y2= rec.y()+rec.height();
-            addEvent(x1,y1,x2,y2,frame,E_id,O_id);
-        }
+    for(int i = 0; i < mEvents.size(); i++){
+        mEvents[i].clear();
     }
+    mEvents.clear();
 }
 
 void Controler::setLandmarks(int O_id, int E_id, double marks[5][2])

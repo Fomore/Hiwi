@@ -73,8 +73,8 @@ void MainWindow::on_actionOpen_triggered()
 
         clearAll();
 
-        mLoader.loadFromFile(mFileName);
-        mControler.loadFromFile(mFileName);
+        mLoader.loadFromFile(mFileName,"./data/");
+        mControler.loadFromFile(mFileName, "./data/");
 
         updateView();
 
@@ -287,9 +287,9 @@ void MainWindow::newVideoFrame(QImage frame)
 
 void MainWindow::on_actionSave_triggered()
 {
-    mXMLLoader->write(mFileName);
-    mLoader.save(mFileName);
-    mControler.save(mFileName);
+    mXMLLoader->write(mFileName,"./data/");
+    mLoader.save(mFileName,"./data/");
+    mControler.save(mFileName,"./data/");
 }
 
 void MainWindow::on_actionAddEvent_triggered()
@@ -348,7 +348,7 @@ void MainWindow::Eventchange()
     int id = ui->listWidget_2->currentIndex().row();
     Event ev = mLoader.getEvent(id);
     mEventDialog->setWindowTitle("Change Event");
-    mEventDialog->setEvOb(id, ev.getName(), ev.getDescription());
+    mEventDialog->setAttribute(id, ev.getName(), ev.getDescription());
     mEventDialog->show();
 }
 
@@ -356,7 +356,7 @@ void MainWindow::Objectchange(){
     int id = ui->listWidget_1->currentIndex().row();
     QStringList all = mLoader.getObject(id);
     mObjectDialog->setWindowTitle("Change Object");
-    mObjectDialog->setEvOb(id, all[0], all[2]);
+    mObjectDialog->setAttribute(id, all[0], all[2]);
     mObjectDialog->show();
 }
 

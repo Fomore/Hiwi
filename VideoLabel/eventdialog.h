@@ -19,7 +19,7 @@ public:
 
     void clear();
 
-    void setEvOb(int id, QString name, QString desc);
+    void setAttribute(int id, QString name, QString desc);
     void setID(int id);
 
 private slots:

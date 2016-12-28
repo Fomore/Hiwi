@@ -46,7 +46,7 @@ void EventDialog::on_buttonBox_accepted()
     }
 }
 
-void EventDialog::setEvOb(int id, QString name, QString desc)
+void EventDialog::setAttribute(int id, QString name, QString desc)
 {
     setID(id);
     ui->lineEditName->setText(name);

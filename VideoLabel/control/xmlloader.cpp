@@ -31,10 +31,10 @@ void XMLLoader::read(const QString filename)
     }
 }
 
-void XMLLoader::write(const QString filename)
+void XMLLoader::write(const QString filename, const QString path)
 {
     QXmlStreamWriter xmlWriter;
-    QFile file("./data/"+filename+"_Label.xml");
+    QFile file(path+filename+"_Label.xml");
     file.open(QFile::WriteOnly);
 
     xmlWriter.setDevice(&file);
@@ -58,7 +58,7 @@ void XMLLoader::write(const QString filename)
     while(mControl->getNextSetFrame(frame)){
         xmlWriter.writeStartElement("image");
         xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
-        for(int i = 0; i < mControl->getObjectCount(); i++){
+        for(int i = 0; i < mLoader->getObjectSize(); i++){
             int E_id = -1;
             QRect rec = mControl->getRect(frame,i,E_id);
 

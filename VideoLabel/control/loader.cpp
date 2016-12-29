@@ -149,6 +149,26 @@ int Loader::getEventSize()
     return mEvents.size();
 }
 
+int Loader::getEventID(QString name)
+{
+    for(int i = 0; i < mEvents.size(); i++){
+        if(mEvents[i].getName() == name){
+            return i;
+        }
+    }
+    return -1;
+}
+
+int Loader::getObjectID(QString name)
+{
+    for(int i = 0; i < mObjects.size(); i++){
+        if(mObjects[i].getName() == name){
+            return i;
+        }
+    }
+    return -1;
+}
+
 void Loader::clearAll()
 {
     mEvents.clear();

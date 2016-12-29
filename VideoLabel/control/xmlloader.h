@@ -21,8 +21,11 @@ private:
     void processDataset();
     void processImages();
     void processImage(int frame);
-    int processBox(bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]);
+    int processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]);
     void processLandmarks(double mark[5][2]);
+    int processEvent();
+    int processPerson();
+
     QString readNextText();
     QString errorString();
 

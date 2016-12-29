@@ -38,6 +38,8 @@ public:
 
     int getObjectSize();
     int getEventSize();
+    int getEventID(QString name);
+    int getObjectID(QString name);
 
     void clearAll();
 };

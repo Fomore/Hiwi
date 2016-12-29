@@ -111,9 +111,16 @@ void XMLLoader::processDataset()
     if (!xml.isStartElement() || xml.name() != "dataset")
         return;
     while (xml.readNextStartElement()) {
-        if (xml.name() == "images")
+        if (xml.name() == "images"){
             processImages();
-        else{
+        }else if(xml.name() == "event"){
+            std::cout<<"Event einlesen"<<std::endl;
+            processEvent();
+            xml.skipCurrentElement();
+        }else if(xml.name() == "person"){
+            std::cout<<"Person einlesen"<<std::endl;
+            xml.skipCurrentElement();
+        }else{
             std::cout<<"Überspringe in Dataset mit "<<xml.name().toString().toStdString()<<std::endl;
             xml.skipCurrentElement();
         }
@@ -130,8 +137,7 @@ void XMLLoader::processImages() {
             if(!file.isNull())
                 frame = filnameToFrame(file);
             processImage(frame);
-        }
-        else{
+        }else{
             std::cout<<"Überspringe in Images mit "<<xml.name().toString().toStdString()<<std::endl;
             xml.skipCurrentElement();
         }
@@ -157,17 +163,18 @@ void XMLLoader::processImage(int frame)
             bool isLand = false;
             double land[5][2];
 
-            int O_id = processBox(isOri, orient, isPos, pos, isPro, proj, isLand, land);
+            int E_id = -1;
+            int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land);
 
             if(O_id >= 0){
                 mControl->setObjectSize(O_id+1);
-                int E_id = mControl->addEventInFrame(left,top,width,height,frame,0,O_id,manual);//ToDo: Verknüpfung zum Event besser
+                int E_id = mControl->addEventInFrame(left,top,width,height,frame,E_id,O_id,manual);//ToDo: Verknüpfung zum Event besser
 
                 std::cout<<"ActionEvent: "<<left<<" "<<top<<" "<<width<<" "<<height<<" "<<frame<<" "<<O_id<<" "<<manual;
                 if(isLand){
                     std::cout<<" Land "<<land[0][0]<<" "<<land[0][1]<<" "<<land[1][0]<<" "<<land[1][1]<<" "
-                                                                                                     <<land[2][0]<<" "<<land[2][1]<<" "<<land[3][0]<<" "<<land[3][1]<<" "
-                                                                                                                                                                   <<land[4][0]<<" "<<land[4][1];
+                             <<land[2][0]<<" "<<land[2][1]<<" "<<land[3][0]<<" "<<land[3][1]<<" "
+                             <<land[4][0]<<" "<<land[4][1];
                     mControl->setLandmarks(O_id, E_id,land);
                 }if(isOri){
                     std::cout<<" Ori "<<orient[0]<<" "<<orient[1]<<" "<<orient[2];
@@ -191,7 +198,7 @@ void XMLLoader::processImage(int frame)
     }
 }
 
-int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]) {
+int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]) {
     if (!xml.isStartElement() || xml.name() != "box"){
         std::cout<<"Keine Box"<<std::endl;
         return -1;
@@ -202,18 +209,21 @@ int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos
     while (xml.readNextStartElement()) {
         if (xml.name() == "label"){
             label = readNextText();
+            xml.skipCurrentElement();
         }else if (xml.name() == "orientation"){
             isOri = true;
             QXmlStreamAttributes att = xml.attributes();
             orient[0] = att.value("x").toDouble();
             orient[1] = att.value("y").toDouble();
             orient[2] = att.value("z").toDouble();
+            xml.skipCurrentElement();
         }else if (xml.name() == "position"){
             isPos = true;
             QXmlStreamAttributes att = xml.attributes();
             pos[0] = att.value("x").toDouble();
             pos[1] = att.value("y").toDouble();
             pos[2] = att.value("z").toDouble();
+            xml.skipCurrentElement();
         }else if (xml.name() == "projection"){
             isPro = true;
             QXmlStreamAttributes att = xml.attributes();
@@ -221,28 +231,17 @@ int XMLLoader::processBox(bool &isOri, double orient[3], bool &isPos, double pos
             proj[1] = att.value("y1").toDouble();
             proj[2] = att.value("x2").toDouble();
             proj[3] = att.value("y2").toDouble();
+            xml.skipCurrentElement();
         }else if(xml.name() == "landmarks"){
             isLand = true;
             processLandmarks(land);
         }else if(xml.name() == "event"){
-            QXmlStreamAttributes att = xml.attributes();
-            QString name = att.value("name").toString();
-            QString desc = "";
-            bool EyeContact=att.value("EyeContact").toInt()==1;
-            bool ActiveParticipation=att.value("ActiveParticipation").toInt()==1;
-            bool OtherActivities=att.value("OtherActivities").toInt()==1;
-            bool Restlessness=att.value("Restlessness").toInt()==1;
-            bool Communication=att.value("Communication").toInt()==1;
-            xml.readNextStartElement();
-            if(xml.name() == "description"){
-                desc = readNextText();
-            }
-            mLoader->addEventSave(name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication);
+            E_id = processEvent();
             xml.skipCurrentElement();
         }else{
             std::cout<<"Fehler in Box, Zeile "<<xml.lineNumber()<<": "<<xml.name().toString().toStdString()<<std::endl;
+            xml.skipCurrentElement();
         }
-        xml.skipCurrentElement();
     }
 
     if (!label.isNull()){
@@ -257,7 +256,7 @@ void XMLLoader::processLandmarks(double mark[5][2])
 {
     if (!xml.isStartElement() || xml.name() != "landmarks")
         return;
-    for(int i = 0; i < 5 && xml.readNextStartElement(); i++){
+    while(xml.readNextStartElement()){
         if (xml.name() == "point"){
             QXmlStreamAttributes att = xml.attributes();
             int id = att.value("idx").toInt();
@@ -269,6 +268,35 @@ void XMLLoader::processLandmarks(double mark[5][2])
             }
         }
         xml.skipCurrentElement();
+    }
+}
+
+int XMLLoader::processEvent()
+{
+    if (!xml.isStartElement() || xml.name() != "event")
+        return -1;
+    QXmlStreamAttributes att = xml.attributes();
+    QString name = att.value("name").toString();
+
+    int pos = mLoader->getEventID(name);
+    if(pos >= 0){
+        return pos;
+    }else{
+        QString desc = "";
+        bool EyeContact=att.value("EyeContact").toInt()==1;
+        bool ActiveParticipation=att.value("ActiveParticipation").toInt()==1;
+        bool OtherActivities=att.value("OtherActivities").toInt()==1;
+        bool Restlessness=att.value("Restlessness").toInt()==1;
+        bool Communication=att.value("Communication").toInt()==1;
+        while(xml.readNextStartElement()){
+            if(xml.name() == "description"){
+                desc = readNextText();
+            }else{
+                xml.skipCurrentElement();
+            }
+        }
+        mLoader->addEventSave(name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication);
+        return mLoader->getEventID(name);
     }
 }
 

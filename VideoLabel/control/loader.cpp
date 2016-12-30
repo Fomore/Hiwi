@@ -126,6 +126,7 @@ void Loader::addEventSave(QString name, QString description, bool eye, bool acti
     }
     if(!exist){
         addNewEvent(name, description, eye, activ, other, less, comm);
+        std::cout<<"Event: "<<name.toStdString()<<std::endl;
     }
 }
 

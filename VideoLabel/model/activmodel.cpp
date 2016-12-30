@@ -5,11 +5,15 @@
 
 ActivModel::ActivModel()
 {
+    mID = mObjectID = mEventID = mTimePos = mX = mY = mW = mH = -1;
+    mManuel = false;
+    setZero();
 }
 
 ActivModel::ActivModel(QString data)
 {
     QStringList data_list = data.split("&");
+    setZero();
 
     if(data_list.size() >= 8){
         mID = data_list[0].toInt();
@@ -21,11 +25,6 @@ ActivModel::ActivModel(QString data)
         mW = data_list[6].toInt();
         mH = data_list[7].toInt();
         mManuel = true;
-        setZero();
-        if(data_list.size() == 8){
-
-        }else
-            setZero();
     }else{
         std::cout<<"Fehler in Event-Datei: "<<data.toStdString()<<std::endl;
     }
@@ -48,16 +47,18 @@ void ActivModel::setZero()
     setOrientation(zero3);
     setPosition(zero3);
     setProjection(zero4);
+    mSetLandmarks = mSetOrienation = mSetPosition = mSetProjection = false;
 }
 
 ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man)
 {
-    setAll(x,y,w,h,frame,E_id,O_id,id, man);
     setZero();
+    setAll(x,y,w,h,frame,E_id,O_id,id, man);
 }
 
 void ActivModel::setLandmarks(double marks[5][2])
 {
+    mSetLandmarks = true;
     for(int i = 0; i < 5; i++){
         mLandmarks[i][0] = marks[i][0];
         mLandmarks[i][1] = marks[i][1];
@@ -66,6 +67,7 @@ void ActivModel::setLandmarks(double marks[5][2])
 
 void ActivModel::setOrientation(double orien[3])
 {
+    mSetOrienation = true;
     mOrienation[0]=orien[0];
     mOrienation[1]=orien[1];
     mOrienation[2]=orien[2];
@@ -73,6 +75,7 @@ void ActivModel::setOrientation(double orien[3])
 
 void ActivModel::setPosition(double pos[3])
 {
+    mSetPosition = true;
     mPosition[0]=pos[0];
     mPosition[1]=pos[1];
     mPosition[2]=pos[2];
@@ -80,6 +83,7 @@ void ActivModel::setPosition(double pos[3])
 
 void ActivModel::setProjection(double proj[4])
 {
+    mSetProjection = true;
     mProjection[0]=proj[0];
     mProjection[1]=proj[1];
     mProjection[2]=proj[2];
@@ -114,4 +118,26 @@ QString ActivModel::getDateAll()
             +toStr(mOrienation[0])+"&"+toStr(mOrienation[1])+"&"+toStr(mOrienation[2])+"&"
             +toStr(mPosition[0])+"&"+toStr(mPosition[1])+"&"+toStr(mPosition[2])+"&"
             +toStr(mProjection[0])+"&"+toStr(mProjection[1])+"&"+toStr(mProjection[2])+"&"+toStr(mProjection[3]);
+}
+
+QString ActivModel::printAll()
+{
+    QString ret = "["+toStr(mObjectID)+","+toStr(mEventID)+" - "+toStr(mTimePos)+"] ["+toStr(mX)+", "+toStr(mY)+", "+toStr(mW)+", "+toStr(mH)+"] ";
+    if(mSetOrienation){
+        ret += ", Ori ["+toStr(mOrienation[0])+","+toStr(mOrienation[1])+", "+toStr(mOrienation[2])+"]";
+    }
+    if(mSetPosition){
+        ret += ", Pos ["+toStr(mPosition[0])+", "+toStr(mPosition[1])+", "+toStr(mPosition[2])+"]";
+    }
+    if(mSetProjection){
+        ret += ", Poj ["+toStr(mProjection[0])+", "+toStr(mProjection[1])+", "+toStr(mProjection[2])+", "+toStr(mProjection[3])+"]";
+    }
+    if(mSetLandmarks){
+        ret += "Land: ["+toStr(mLandmarks[0][0])+", "+toStr(mLandmarks[0][1])+" | "
+                +toStr(mLandmarks[1][0])+", "+toStr(mLandmarks[1][1])+" | "
+                +toStr(mLandmarks[2][0])+", "+toStr(mLandmarks[2][1])+" | "
+                +toStr(mLandmarks[3][0])+", "+toStr(mLandmarks[3][1])+" | "
+                +toStr(mLandmarks[4][0])+", "+toStr(mLandmarks[4][1])+"]";
+    }
+    return ret;
 }

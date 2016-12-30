@@ -10,7 +10,6 @@ class Controler
 {
 private:
     std::vector<std::vector<ActivModel>> mEvents;
-    std::vector<std::vector<ActivModel>> mActionEvents;
 
     int VideoWidth, VideoHeight;
     int DisplayWidth, DisplayHeight;
@@ -34,7 +33,7 @@ public:
 
     void clearAll();
 
-    void setLandmarks(int O_id, int E_id, double marks[5][2]);
+    void setLandmarks(int O_id, int pos, double marks[5][2]);
     void setOrientation(int O_id, int E_id, double ori[3]);
     void setPosition(int O_id, int E_id, double pos[3]);
     void setProjection(int O_id, int E_id, double pro[4]);
@@ -45,6 +44,9 @@ public:
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
     QRect getRect(int frame, int O_id, int &E_id);
+    ActivModel getActivModel(int frame, int o_id);
+
+    void printAll();
 };
 
 #endif // CONTROLER_H

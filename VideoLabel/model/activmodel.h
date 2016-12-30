@@ -8,7 +8,8 @@ class ActivModel
 private:
     QString toStr(int i);
     QString toStr(double i);
-    void setZero();
+    virtual void setZero();
+
 public:
     int mID, mEventID, mObjectID;
     int mX,mY,mW,mH;
@@ -17,7 +18,7 @@ public:
     double mOrienation[3];
     double mPosition[3];
     double mProjection[4];
-    bool mManuel;
+    bool mManuel, mSetLandmarks, mSetOrienation, mSetPosition, mSetProjection;
     ActivModel();
     ActivModel(QString data);
     ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man);
@@ -29,6 +30,7 @@ public:
     void setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man);
 
     QString getDateAll();
+    QString printAll();
     int getFrame();
 };
 

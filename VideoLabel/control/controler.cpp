@@ -50,10 +50,16 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
 {
     int pos = getPosition(frame, O_iD);
     if(O_iD >=0 && mEvents.size() > O_iD){
-        if(pos >= 0 && pos < mEvents[O_iD].size() && mEvents[O_iD][pos].getFrame() == frame){
+        if(pos >= (int)mEvents[O_iD].size()){
+            pos = mEvents[O_iD].size();
+            mEvents[O_iD].push_back(ActivModel(x,y,w,h,frame,E_id,O_iD,pos, man));
+        }else if(pos < 0){
+            pos = 0;
+            mEvents[O_iD].insert(mEvents[O_iD].begin(),ActivModel(x,y,w,h,frame,E_id,O_iD,pos, man));
+        }else if(mEvents[O_iD][pos].getFrame() == frame){
             mEvents[O_iD][pos].setAll(x,y,w,h,frame,E_id,O_iD,mEvents[O_iD].size(), man);
         }else{
-            mEvents[O_iD].insert(mEvents[O_iD].begin()+std::max(pos,0),ActivModel(x,y,w,h,frame,E_id,O_iD,pos, man));
+            mEvents[O_iD].insert(mEvents[O_iD].begin()+pos,ActivModel(x,y,w,h,frame,E_id,O_iD,pos, man));
         }
     }else{
         std::cout<<"Object ID Fehler "<<O_iD<<std::endl;
@@ -144,6 +150,26 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
     }
 }
 
+ActivModel Controler::getActivModel(int frame, int o_id)
+{
+    int pos = getPosition(frame,o_id);
+    if(pos >= 0 && mEvents[o_id].size()){
+        return mEvents[o_id][pos];
+    }else{
+        return ActivModel();
+    }
+}
+
+void Controler::printAll()
+{
+    for(int i = 0; i < mEvents.size(); i++){
+        for(int j = 0; j<mEvents[i].size(); j++){
+            std::cout<<"["<<i<<","<<j<<"] "<<mEvents[i][j].printAll().toStdString()<<std::endl;
+        }
+        std::cout<<std::endl;
+    }
+}
+
 int Controler::getEventToObject(int frame, int O_id)
 {
     int i = getPosition(frame, O_id);
@@ -207,11 +233,12 @@ void Controler::clearAll()
     mEvents.clear();
 }
 
-void Controler::setLandmarks(int O_id, int E_id, double marks[5][2])
+void Controler::setLandmarks(int O_id, int pos, double marks[5][2])
 {
     if(O_id >= 0 && O_id < mEvents.size()
-            && E_id >= 0 && E_id < mEvents[O_id].size())
-        mEvents[O_id][E_id].setLandmarks(marks);
+            && pos >= 0 && pos < mEvents[O_id].size()){
+        mEvents[O_id][pos].setLandmarks(marks);
+    }
 }
 
 void Controler::setOrientation(int O_id, int E_id, double ori[3])
@@ -247,8 +274,11 @@ bool Controler::getNextSetFrame(int &frame)
         }
     }
     if(next.size() > 0){
-        frame = *std::min_element(next.begin(), next.end());
-        return true;
+        int nframe = *std::min_element(next.begin(), next.end());
+        std::cout<<"Next "<<frame<<" -> "<<nframe<<std::endl;
+        bool ret = frame < nframe;
+        frame = nframe;
+        return ret && frame >=0;
     }else{
         return false;
     }

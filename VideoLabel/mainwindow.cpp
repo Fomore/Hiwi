@@ -73,8 +73,9 @@ void MainWindow::on_actionOpen_triggered()
 
         clearAll();
 
-        mLoader.loadFromFile(mFileName,"./data/");
-        mControler.loadFromFile(mFileName, "./data/");
+        //mLoader.loadFromFile(mFileName,"./data/");
+        //mControler.loadFromFile(mFileName, "./data/");
+        mXMLLoader->read(mFileName, "./data/");
 
         updateView();
 
@@ -194,6 +195,7 @@ void MainWindow::updateSelection()
         ui->listWidget_2->item(E_id)->setSelected(true);
     }else{
         ui->listWidget_2->clearFocus();
+        ui->listWidget_2->clearSelection();
     }
 }
 
@@ -220,7 +222,7 @@ void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
 {
     displayEvent(index.row());
     if(ui->checkBoxEvent->isChecked()){
-        std::cout<<"Ändere Event"<<std::endl;
+        mControler.addEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
     }
 }
 

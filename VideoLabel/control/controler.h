@@ -17,7 +17,6 @@ private:
 
     double mScall;
 
-    double getScall();
     void calculateParameter();
 
     int getPosition(int frame, int O_id);
@@ -26,6 +25,7 @@ private:
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
+    void addEvent(int frame, int O_id, int E_id);
     int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man);
 
     void loadFromFile(QString name, QString path);

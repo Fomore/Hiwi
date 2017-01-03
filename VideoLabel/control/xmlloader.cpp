@@ -10,6 +10,10 @@ XMLLoader::XMLLoader(Loader *loader, Controler *control)
     mControl = control;
 }
 
+void XMLLoader::read(const QString filename, QString path){
+    read(path+filename+"_Label.xml");
+}
+
 void XMLLoader::read(const QString filename)
 {
     QFile xmlFile(filename);
@@ -36,7 +40,7 @@ void XMLLoader::read(const QString filename)
 
 void XMLLoader::write(const QString filename, const QString path)
 {
-    mControl->printAll();
+//    mControl->printAll();
 
     QXmlStreamWriter xmlWriter;
     QFile file(path+filename+"_Label.xml");

@@ -104,10 +104,12 @@ double MyVideoPlayer::getVideoHeight()
 void MyVideoPlayer::getFrame()
 {
     cv::Mat frame;
-    video.read(frame);
-    if(!frame.empty()){
-        showImage(frame, false);
-        video.set(CV_CAP_PROP_POS_FRAMES,video.get(CV_CAP_PROP_POS_FRAMES)-1.0);
+    if(mStop){
+        video.read(frame);
+        if(!frame.empty()){
+            showImage(frame, false);
+            video.set(CV_CAP_PROP_POS_FRAMES,video.get(CV_CAP_PROP_POS_FRAMES)-1.0);
+        }
     }
 }
 

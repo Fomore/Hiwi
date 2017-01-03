@@ -16,11 +16,6 @@ Controler::Controler()
     mScall = 1.0;
 }
 
-double Controler::getScall()
-{
-    return mScall;
-}
-
 void Controler::calculateParameter()
 {
     mScall = std::min((double)DisplayHeight/(double)VideoHeight,(double)DisplayWidth/(double)VideoWidth);
@@ -43,7 +38,7 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     x -= ShiftX;
     y -= ShiftY;
 
-    double scall = getScall();
+    double scall = mScall;
     double nx = x/scall+0.5;
     double ny = y/scall+0.5;
     double nw = w/scall+0.5;
@@ -52,10 +47,23 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     addEventInFrame(nx,ny,nw,nh,frame,E_id,O_iD,true);
 }
 
+void Controler::addEvent(int frame, int O_id, int E_id)
+{
+    if(O_id >= 0 && E_id >= 0 && (int) mEvents.size() > O_id){
+        int pos = getPosition(frame, O_id);
+        if(pos >= 0 && pos <(int)mEvents[O_id].size()){
+            mEvents[O_id][pos].mEventID = E_id;
+            std::cout<<"Ändere Event "<<frame<<"["<<O_id<<", "<<E_id<<"]"<<std::endl;
+        }else{
+            std::cout<<"Fehler bei Ändere Event "<<frame<<" ["<<O_id<<", "<<E_id<<"]"<<std::endl;
+        }
+    }
+}
+
 int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man)
 {
     int pos = getPosition(frame, O_iD);
-    if(O_iD >=0 && mEvents.size() > O_iD){
+    if(O_iD >=0 && (int) mEvents.size() > O_iD){
         if(pos >= (int)mEvents[O_iD].size()){
             pos = mEvents[O_iD].size();
             mEvents[O_iD].push_back(ActivModel(x,y,w,h,frame,E_id,O_iD,pos, man));
@@ -281,7 +289,7 @@ bool Controler::getNextSetFrame(int &frame)
     }
     if(next.size() > 0){
         int nframe = *std::min_element(next.begin(), next.end());
-        std::cout<<"Next "<<frame<<" -> "<<nframe<<std::endl;
+//        std::cout<<"Next "<<frame<<" -> "<<nframe<<std::endl;
         bool ret = frame < nframe;
         frame = nframe;
         return ret && frame >=0;

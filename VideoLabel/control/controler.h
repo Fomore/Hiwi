@@ -13,6 +13,7 @@ private:
 
     int VideoWidth, VideoHeight;
     int DisplayWidth, DisplayHeight;
+    int ShiftX, ShiftY;
 
     double mScall;
 

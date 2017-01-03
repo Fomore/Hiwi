@@ -11,6 +11,7 @@ Controler::Controler()
 {
     VideoHeight = VideoWidth = 0;
     DisplayHeight = DisplayWidth = 0;
+    ShiftX = ShiftY = 0;
     mEvents.clear();
     mScall = 1.0;
 }
@@ -23,6 +24,8 @@ double Controler::getScall()
 void Controler::calculateParameter()
 {
     mScall = std::min((double)DisplayHeight/(double)VideoHeight,(double)DisplayWidth/(double)VideoWidth);
+    ShiftX = (DisplayWidth-VideoWidth*mScall)/2;
+    ShiftY = (DisplayHeight-VideoHeight*mScall)/2;
 }
 
 void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD)
@@ -36,6 +39,9 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     int w = std::max(x1,x2)-x;
     int y = std::min(y1,y2);
     int h = std::max(y1,y2)-y;
+
+    x -= ShiftX;
+    y -= ShiftY;
 
     double scall = getScall();
     double nx = x/scall+0.5;

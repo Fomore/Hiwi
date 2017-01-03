@@ -53,7 +53,7 @@ void Controler::addEvent(int frame, int O_id, int E_id)
         int pos = getPosition(frame, O_id);
         if(pos >= 0 && pos <(int)mEvents[O_id].size()){
             mEvents[O_id][pos].mEventID = E_id;
-            std::cout<<"Ändere Event "<<frame<<"["<<O_id<<", "<<E_id<<"]"<<std::endl;
+//            std::cout<<"Ändere Event "<<frame<<"["<<O_id<<", "<<E_id<<"]"<<std::endl;
         }else{
             std::cout<<"Fehler bei Ändere Event "<<frame<<" ["<<O_id<<", "<<E_id<<"]"<<std::endl;
         }

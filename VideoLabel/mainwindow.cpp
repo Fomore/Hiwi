@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *strgS =new QAction("save",this);
     strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     connect(strgS, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
-}
+    }
 
 MainWindow::~MainWindow()
 {
@@ -209,6 +209,16 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         }else if(ui->actionPause->isVisible()){
             on_actionPause_triggered();
         }
+    }else if(event->key() == Qt::Key_D){
+        on_actionStepForward_triggered();
+    }else if(event->key() == Qt::Key_A){
+        on_actionStepBackward_triggered();
+    }else if(event->key() == Qt::Key_W){
+        on_actionSkipForward_triggered();
+    }else if(event->key() == Qt::Key_S){
+        on_actionSkipBackward_triggered();
+    }else if(event->key() == Qt::Key_N){
+        on_actionAdd_Object_triggered();
     }
 }
 
@@ -223,6 +233,7 @@ void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
     displayEvent(index.row());
     if(ui->checkBoxEvent->isChecked()){
         mControler.addEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
+        ui->listWidget_2->clearFocus();
     }
 }
 

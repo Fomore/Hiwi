@@ -101,6 +101,16 @@ double MyVideoPlayer::getVideoHeight()
     return video.get(CV_CAP_PROP_FRAME_HEIGHT);
 }
 
+void MyVideoPlayer::getFrame()
+{
+    cv::Mat frame;
+    video.read(frame);
+    if(!frame.empty()){
+        showImage(frame, false);
+        video.set(CV_CAP_PROP_POS_FRAMES,video.get(CV_CAP_PROP_POS_FRAMES)-1.0);
+    }
+}
+
 void MyVideoPlayer::run()
 {
     clock_t last = clock();

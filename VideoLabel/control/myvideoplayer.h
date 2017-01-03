@@ -31,6 +31,8 @@ public:
     double getVideoWidth();
     double getVideoHeight();
 
+    void getFrame();
+
 public slots:
     void play();
     void pause();

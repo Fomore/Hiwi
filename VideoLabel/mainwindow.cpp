@@ -81,6 +81,7 @@ void MainWindow::on_actionOpen_triggered()
         on_actionStop_triggered();
 
         mPlayer->setPath(filename);
+        mPlayer->getFrame();
 
         mControler.setDisplaySize(ui->labelVideo->size().width(),ui->labelVideo->size().height());
 
@@ -227,6 +228,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     QMainWindow::resizeEvent(ev);
     mControler.setDisplaySize(ui->labelVideo->size().width(),ui->labelVideo->size().height());
+    mPlayer->getFrame();
 }
 
 

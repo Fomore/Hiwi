@@ -47,6 +47,13 @@ public:
     QRect getRect(int frame, int O_id, int &E_id);
     ActivModel getActivModel(int frame, int o_id);
 
+
+    bool getEventUsed(int id);
+    bool getObjectUsed(int id);
+    void deleteEvent(int id);
+    void deleteObject(int id);
+    void deleteActionEvent(int O_id, int frame);
+
     void printAll();
 };
 

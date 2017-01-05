@@ -297,3 +297,56 @@ bool Controler::getNextSetFrame(int &frame)
         return false;
     }
 }
+
+
+bool Controler::getEventUsed(int id)
+{
+    for(int i = 0; i < mEvents.size(); i++){
+        for(int j = 0; j < mEvents[i].size();j++){
+            if(mEvents[i][j].mEventID == id)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool Controler::getObjectUsed(int id)
+{
+    return mEvents[id].size() == 0;
+}
+
+void Controler::deleteEvent(int id)
+{
+    for(int i = 0; i < mEvents.size(); i++){
+        for(int j = 0; j < mEvents[i].size();j++){
+            if(mEvents[i][j].mEventID == id){
+                mEvents[i][j].mEventID = -1;
+            }else if(mEvents[i][j].mEventID > id){
+                mEvents[i][j].mEventID--;
+            }
+        }
+    }
+}
+
+void Controler::deleteObject(int id)
+{
+    for(int i = 0; i < mEvents.size(); i++){
+        for(int j = 0; j < mEvents[i].size();j++){
+            if(mEvents[i][j].mObjectID == id){
+                mEvents[i][j].mObjectID = -1;
+            }else if(mEvents[i][j].mObjectID > id){
+                mEvents[i][j].mObjectID--;
+            }
+        }
+    }
+}
+
+void Controler::deleteActionEvent(int O_id, int frame)
+{
+    for(int j = 0; j < mEvents[O_id].size();j++){
+        if(mEvents[O_id][j].getFrame() == frame){
+            mEvents[O_id].erase(mEvents[O_id].begin() + j);
+            j--;
+        }
+    }
+}

@@ -170,6 +170,16 @@ int Loader::getObjectID(QString name)
     return -1;
 }
 
+void Loader::deleteEvent(int id)
+{
+    mEvents.erase(mEvents.begin() + id);
+}
+
+void Loader::deleteObject(int id)
+{
+    mObjects.erase(mObjects.begin() + id);
+}
+
 void Loader::clearAll()
 {
     mEvents.clear();

@@ -41,6 +41,9 @@ public:
     int getEventID(QString name);
     int getObjectID(QString name);
 
+    void deleteEvent(int id);
+    void deleteObject(int id);
+
     void clearAll();
 };
 

@@ -4,6 +4,7 @@
 #include "mylabel.h"
 #include <QPainter>
 #include <QFileInfo>
+#include <QMessageBox>
 
 #include "model/event.h"
 
@@ -40,14 +41,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->listWidget_2, SIGNAL(customContextMenuRequested(const QPoint)),this,
             SLOT(contextEventMenuRequested(const QPoint)));
     mEventMenueAction.push_back(mEventMenu->addAction("Ändern"));
+    mEventMenueAction.push_back(mEventMenu->addAction("Löschen"));
     connect(mEventMenueAction[0],SIGNAL(triggered()),this,SLOT(Eventchange()));
+    connect(mEventMenueAction[1],SIGNAL(triggered()),this,SLOT(Eventdelete()));
 
     mObjectMenu = new QMenu(ui->listWidget_1);
     ui->listWidget_1->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->listWidget_1, SIGNAL(customContextMenuRequested(const QPoint)),this,
             SLOT(contextObjectMenuRequested(const QPoint)));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(Objectchange()));
+    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
 
@@ -367,12 +372,47 @@ void MainWindow::Eventchange()
     mEventDialog->show();
 }
 
+void MainWindow::Eventdelete()
+{
+    int id = ui->listWidget_2->currentIndex().row();
+    Event ev = mLoader.getEvent(id);
+    bool dell = true;
+    if(mControler.getEventUsed(id)){
+        dell = QMessageBox::question(this, "Lösche Event", "Das Event \""+ev.getName()+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
+                              QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
+    }
+    if(dell){
+        mControler.deleteEvent(id);
+        mLoader.deleteEvent(id);
+        updateView();
+        std::cout<<"Löschen Ev"<<std::endl;
+    }
+}
+
 void MainWindow::Objectchange(){
     int id = ui->listWidget_1->currentIndex().row();
     QStringList all = mLoader.getObject(id);
     mObjectDialog->setWindowTitle("Change Object");
     mObjectDialog->setAttribute(id, all[0], all[2]);
     mObjectDialog->show();
+}
+
+void MainWindow::Objectdelete()
+{
+    int id = ui->listWidget_1->currentIndex().row();
+    QStringList all = mLoader.getObject(id);
+    bool dell = true;
+    if(mControler.getEventUsed(id)){
+        dell = QMessageBox::question(this, "Lösche Qbjekt", "Das Object \""+all[0]+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
+                              QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
+    }
+
+    if(dell){
+        mControler.deleteObject(id);
+        mLoader.deleteObject(id);
+        updateView();
+        std::cout<<"Löschen Ob"<<std::endl;
+    }
 }
 
 void MainWindow::on_actionImport_XML_triggered()

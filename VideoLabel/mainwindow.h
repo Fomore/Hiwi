@@ -68,7 +68,11 @@ private slots:
 
     void Eventchange();
 
+    void Eventdelete();
+
     void Objectchange();
+
+    void Objectdelete();
 
     void on_actionImport_XML_triggered();
 
@@ -104,7 +108,6 @@ private:
     void clearAll();
 
     void updateSelection();
-    void updateRects();
 
     void keyPressEvent(QKeyEvent *);
 

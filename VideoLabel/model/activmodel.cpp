@@ -30,6 +30,27 @@ ActivModel::ActivModel(QString data)
     }
 }
 
+ActivModel::ActivModel(ActivModel *p)
+{
+    mID = p->mID;
+    mObjectID = p->mObjectID;
+    mEventID = p->mEventID;
+    mTimePos = p->mTimePos;
+    mX = p->mX;
+    mY = p->mY;
+    mW = p->mW;
+    mH = p->mH;
+    mManuel = p->mManuel;
+    setLandmarks(p->mLandmarks);
+    setOrientation(p->mOrienation);
+    setPosition(p->mPosition);
+    setProjection(p->mProjection);
+    mSetLandmarks = p->mSetLandmarks;
+    mSetOrienation = p->mSetOrienation;
+    mSetPosition = p->mSetPosition;
+    mSetProjection = p->mSetProjection;
+}
+
 QString ActivModel::toStr(int i)
 {
     return QString::number(i);

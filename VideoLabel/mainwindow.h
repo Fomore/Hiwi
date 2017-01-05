@@ -112,6 +112,8 @@ private:
     void keyPressEvent(QKeyEvent *);
 
     MyVideoPlayer* mPlayer;
+
+    int lastObject,lastEvent;
 };
 
 #endif // MAINWINDOW_H

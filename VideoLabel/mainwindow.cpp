@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *strgS =new QAction("save",this);
     strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     connect(strgS, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
-    }
+}
 
 MainWindow::~MainWindow()
 {
@@ -230,6 +230,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 {
     displayObject(index.row());
+    if(ui->checkBoxEvent->isChecked()){
+        mControler.changeObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
+        ui->listWidget_1->item(lastObject)->setSelected(true);
+    }else{
+        lastObject = ui->listWidget_1->currentRow();
+    }
     updateSelection();
 }
 
@@ -240,6 +246,7 @@ void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
         mControler.addEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
         ui->listWidget_2->clearFocus();
     }
+    lastEvent = ui->listWidget_2->currentRow();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
@@ -302,7 +309,9 @@ void MainWindow::newVideoFrame(QImage frame)
                               Qt::KeepAspectRatio,Qt::SmoothTransformation);
     ui->labelVideo->setPixmap(img2);
 
-    updateSelection();
+    if(!ui->checkBoxEvent->isChecked()){
+        updateSelection();
+    }
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -379,13 +388,12 @@ void MainWindow::Eventdelete()
     bool dell = true;
     if(mControler.getEventUsed(id)){
         dell = QMessageBox::question(this, "Lösche Event", "Das Event \""+ev.getName()+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
-                              QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
+                                     QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
     }
     if(dell){
         mControler.deleteEvent(id);
         mLoader.deleteEvent(id);
         updateView();
-        std::cout<<"Löschen Ev"<<std::endl;
     }
 }
 
@@ -404,14 +412,13 @@ void MainWindow::Objectdelete()
     bool dell = true;
     if(mControler.getEventUsed(id)){
         dell = QMessageBox::question(this, "Lösche Qbjekt", "Das Object \""+all[0]+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
-                              QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
+                QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
     }
 
     if(dell){
         mControler.deleteObject(id);
         mLoader.deleteObject(id);
         updateView();
-        std::cout<<"Löschen Ob"<<std::endl;
     }
 }
 
@@ -425,6 +432,10 @@ void MainWindow::on_actionImport_XML_triggered()
 void MainWindow::on_actionStepForward_triggered()
 {
     mPlayer->forward();
+    if(ui->checkBoxEvent->isChecked()){
+        mControler.addEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),lastEvent);
+        mControler.changeObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
+    }
 }
 
 void MainWindow::on_actionStepBackward_triggered()

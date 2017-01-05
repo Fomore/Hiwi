@@ -28,6 +28,8 @@ public:
     void addEvent(int frame, int O_id, int E_id);
     int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man);
 
+    bool changeObject(int frame, int lastO_id, int newO_id);
+
     void loadFromFile(QString name, QString path);
 
     void save(QString name, QString path);

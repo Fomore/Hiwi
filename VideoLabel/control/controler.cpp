@@ -53,7 +53,7 @@ void Controler::addEvent(int frame, int O_id, int E_id)
         int pos = getPosition(frame, O_id);
         if(pos >= 0 && pos <(int)mEvents[O_id].size()){
             mEvents[O_id][pos].mEventID = E_id;
-//            std::cout<<"Ändere Event "<<frame<<"["<<O_id<<", "<<E_id<<"]"<<std::endl;
+            //            std::cout<<"Ändere Event "<<frame<<"["<<O_id<<", "<<E_id<<"]"<<std::endl;
         }else{
             std::cout<<"Fehler bei Ändere Event "<<frame<<" ["<<O_id<<", "<<E_id<<"]"<<std::endl;
         }
@@ -79,6 +79,42 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
         std::cout<<"Object ID Fehler "<<O_iD<<std::endl;
     }
     return pos;
+}
+
+bool Controler::changeObject(int frame, int lastO_id, int newO_id)
+{
+    printAll();
+    std::cout<<"Change Obj "<<frame<<" ["<<lastO_id<<", "<<newO_id<<"] ";
+    int lastpos = getPosition(frame, lastO_id);
+    int newpos = getPosition(frame, newO_id);
+    if(lastpos >= 0 && lastO_id != newO_id
+            && lastpos < (int)mEvents[lastO_id].size()
+            && mEvents[lastO_id][lastpos].getFrame() == frame){
+        if(newpos < 0){
+            mEvents[newO_id].insert(mEvents[newO_id].begin(),ActivModel(mEvents[lastO_id][lastpos]));
+            mEvents[lastO_id].erase(mEvents[lastO_id].begin() + lastpos);
+            mEvents[newO_id][0].mObjectID = newO_id;
+        }else if(newpos >= (int)mEvents[newO_id].size()){
+            mEvents[newO_id].push_back(ActivModel(mEvents[lastO_id][lastpos]));
+            mEvents[lastO_id].erase(mEvents[lastO_id].begin() + lastpos);
+            mEvents[newO_id][mEvents[newO_id].size()-1].mObjectID = newO_id;
+        }else if(mEvents[newO_id][newpos].getFrame() == frame){
+            std::cout<<"f"<<std::endl;
+            printAll();
+            return false;
+        }else{
+            mEvents[newO_id].insert(mEvents[newO_id].begin()+newpos,ActivModel(mEvents[lastO_id][lastpos]));
+            mEvents[lastO_id].erase(mEvents[lastO_id].begin() + lastpos);
+            mEvents[newO_id][newpos].mObjectID = newO_id;
+        }
+        std::cout<<"+"<<std::endl;
+        printAll();
+        return true;
+    }else{
+        std::cout<<"f"<<std::endl;
+        printAll();
+        return false;
+    }
 }
 
 void Controler::setVideoSize(int w, int h)
@@ -289,7 +325,7 @@ bool Controler::getNextSetFrame(int &frame)
     }
     if(next.size() > 0){
         int nframe = *std::min_element(next.begin(), next.end());
-//        std::cout<<"Next "<<frame<<" -> "<<nframe<<std::endl;
+        //        std::cout<<"Next "<<frame<<" -> "<<nframe<<std::endl;
         bool ret = frame < nframe;
         frame = nframe;
         return ret && frame >=0;

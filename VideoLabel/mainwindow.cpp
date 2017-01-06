@@ -49,10 +49,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->listWidget_1->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->listWidget_1, SIGNAL(customContextMenuRequested(const QPoint)),this,
             SLOT(contextObjectMenuRequested(const QPoint)));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo No Label"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
-    connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(Objectchange()));
-    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(Objectdelete()));
+    connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(setNoLabelPosition()));
+    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(Objectchange()));
+    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
 
@@ -351,6 +353,15 @@ void MainWindow::updateView()
     }
 }
 
+void MainWindow::setNoLabelPosition()
+{
+    int id = ui->listWidget_1->currentIndex().row();
+    int pos = mControler.getLastLabel(id);
+    std::cout<<pos<<std::endl;
+    ui->horizontalSlider->setValue(pos);
+    mPlayer->setPosition(pos);
+}
+
 void MainWindow::contextEventMenuRequested(const QPoint &point)
 {
     QModelIndex t = ui->listWidget_2->indexAt(point);
@@ -448,4 +459,12 @@ void MainWindow::on_actionSkipForward_triggered()
 void MainWindow::on_actionSkipBackward_triggered()
 {
     mPlayer->skipBackward();
+}
+
+void MainWindow::on_actionGoTo_No_Label_triggered()
+{
+    int pos = mControler.getLastLabel(-1);
+    std::cout<<pos<<std::endl;
+    ui->horizontalSlider->setValue(pos);
+    mPlayer->setPosition(pos);
 }

@@ -181,6 +181,18 @@ ActivModel Controler::getActivModel(int frame, int O_id)
     return ActivModel();
 }
 
+int Controler::getLastLabel(int O_id)
+{
+    for(int i = 0; i < mActivModel.size(); i++){
+        for(int j = 0; j<mActivModel[i].size(); j++){
+            if(mActivModel[i][j].mEventID == -1
+                    && (O_id == -1 || mActivModel[i][j].mObjectID == O_id) ){
+                return mActivModel[i][j].getFrame();
+            }
+        }
+    }
+}
+
 void Controler::printAll()
 {
     for(int i = 0; i < mActivModel.size(); i++){

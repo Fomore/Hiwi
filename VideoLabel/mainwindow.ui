@@ -91,6 +91,7 @@
     <addaction name="actionPlay"/>
     <addaction name="actionPause"/>
     <addaction name="actionStop"/>
+    <addaction name="actionGoTo_No_Label"/>
    </widget>
    <widget class="QMenu" name="menuLabel">
     <property name="title">
@@ -218,6 +219,11 @@
   <action name="actionImport_XML">
    <property name="text">
     <string>Import XML</string>
+   </property>
+  </action>
+  <action name="actionGoTo_No_Label">
+   <property name="text">
+    <string>GoTo No Label</string>
    </property>
   </action>
  </widget>

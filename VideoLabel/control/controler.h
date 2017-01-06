@@ -45,7 +45,7 @@ public:
     int getEventToObject(int frame, int O_id);
     QRect getRect(int frame, int O_id, int &E_id);
     ActivModel getActivModel(int frame, int O_id);
-
+    int getLastLabel(int O_id);
 
     bool isEventUsed(int id);
     bool isObjectUsed(int id);

@@ -62,6 +62,8 @@ private slots:
 
     void updateView();
 
+    void setNoLabelPosition();
+
     void contextEventMenuRequested(const QPoint& point);
 
     void contextObjectMenuRequested(const QPoint& point);
@@ -83,6 +85,8 @@ private slots:
     void on_actionSkipForward_triggered();
 
     void on_actionSkipBackward_triggered();
+
+    void on_actionGoTo_No_Label_triggered();
 
 private:
     Ui::MainWindow *ui;

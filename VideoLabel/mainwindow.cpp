@@ -78,7 +78,6 @@ void MainWindow::on_actionOpen_triggered()
 
         clearAll();
 
-        //mLoader.loadFromFile(mFileName,"./data/");
         mXMLLoader->read(mFileName, "./data/");
 
         updateView();
@@ -293,7 +292,7 @@ void MainWindow::newVideoFrame(QImage frame)
         QRect rec = mControler.getRect(newPos,i, evID);
         if(i == ui->listWidget_1->currentIndex().row()){
             if(evID == ui->listWidget_2->currentIndex().row()){
-                paint.setPen(QColor(Qt::blue));
+                paint.setPen(QPen(QColor(Qt::blue), 3, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin));
             }else{
                 paint.setPen(QColor(255,0,255,255));
             }

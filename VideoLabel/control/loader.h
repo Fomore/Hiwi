@@ -15,7 +15,6 @@ private:
     std::vector<Object> mObjects;
 public:
     Loader();
-    void loadFromFile(QString name, QString path);
 
     QStringList getObject(int id);
     Event getEvent(int id);

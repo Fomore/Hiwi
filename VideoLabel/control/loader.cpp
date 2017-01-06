@@ -7,32 +7,6 @@ Loader::Loader()
 {
 }
 
-void Loader::loadFromFile(QString name, QString path){
-    QFile file_event(path+name+"_event.txt");
-    if(!file_event.open(QIODevice::ReadOnly)) {
-        std::cout<<"Datei "<<(path+name+"_event.txt").toStdString()<<" nicht gefunden"<<std::endl;
-    }else{
-        QTextStream in(&file_event);
-        while(!in.atEnd()) {
-            QString line = in.readLine();
-            mEvents.push_back(Event(line));
-        }
-    }
-    file_event.close();
-
-    QFile file_object(path+name+"_object.txt");
-    if(!file_object.open(QIODevice::ReadOnly)) {
-        std::cout<<"Datei "<<(path+name+"_object.txt").toStdString()<<" nicht gefunden"<<std::endl;
-    }else{
-        QTextStream in(&file_object);
-        while(!in.atEnd()) {
-            QString line = in.readLine();
-            mObjects.push_back(Object(line));
-        }
-    }
-    file_object.close();
-}
-
 Event Loader::getEvent(int id){
     return mEvents[id];
 }

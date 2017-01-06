@@ -9,7 +9,7 @@
 class Controler
 {
 private:
-    std::vector<std::vector<ActivModel>> mEvents;
+    std::vector<std::vector<ActivModel>> mActivModel;
 
     int VideoWidth, VideoHeight;
     int DisplayWidth, DisplayHeight;
@@ -19,39 +19,37 @@ private:
 
     void calculateParameter();
 
-    int getPosition(int frame, int O_id);
-    void addEventVector();
+    int getObjectPosInVector(int frame, int O_id);
+    int getFramePosInVector(int frame);
 
 public:
     Controler();
-    void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_iD);
-    void addEvent(int frame, int O_id, int E_id);
-    int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_iD, bool man);
-
-    bool changeObject(int frame, int lastO_id, int newO_id);
-
-    void loadFromFile(QString name, QString path);
+    void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_id);
+    int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
 
     void save(QString name, QString path);
 
     void clearAll();
 
-    void setLandmarks(int O_id, int pos, double marks[5][2]);
-    void setOrientation(int O_id, int E_id, double ori[3]);
-    void setPosition(int O_id, int E_id, double pos[3]);
-    void setProjection(int O_id, int E_id, double pro[4]);
+    void setObject(int frame, int lastO_id, int newO_id);
+    void setEvent(int frame, int O_id, int E_id);
+    void setLandmarks(int pos, int O_id, double marks[5][2]);
+    void setOrientation(int pos, int O_id, double ori[3]);
+    void setPosition(int frame_pos, int O_id, double pos[3]);
+    void setProjection(int pos, int O_id, double pro[4]);
+
     void setVideoSize(int w, int h);
     void setDisplaySize(int w, int h);
-    void setObjectSize(int anz);
 
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
     QRect getRect(int frame, int O_id, int &E_id);
-    ActivModel getActivModel(int frame, int o_id);
+    ActivModel getActivModel(int frame, int O_id);
 
 
-    bool getEventUsed(int id);
-    bool getObjectUsed(int id);
+    bool isEventUsed(int id);
+    bool isObjectUsed(int id);
+
     void deleteEvent(int id);
     void deleteObject(int id);
     void deleteActionEvent(int O_id, int frame);

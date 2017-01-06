@@ -91,7 +91,7 @@ void XMLLoader::write(const QString filename, const QString path)
     int frame = -1;
     while(mControl->getNextSetFrame(frame)){
         xmlWriter.writeStartElement("image");
-        xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
+        xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame+1, 6, 10, QChar('0'))+".jpg");
         for(int i = 0; i < mLoader->getObjectSize(); i++){
             ActivModel mod = mControl->getActivModel(frame,i);
 
@@ -222,17 +222,16 @@ void XMLLoader::processImage(int frame)
             int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land);
 
             if(O_id >= 0){
-                mControl->setObjectSize(O_id+1);
                 int FrameID = mControl->addEventInFrame(left,top,width,height,frame,E_id,O_id,manual);
 
                 if(isLand){
-                    mControl->setLandmarks(O_id, FrameID,land);
+                    mControl->setLandmarks(FrameID ,O_id, land);
                 }if(isOri){
-                    mControl->setOrientation(O_id, FrameID,orient);
+                    mControl->setOrientation(FrameID ,O_id, orient);
                 }if(isPos){
-                    mControl->setPosition(O_id, FrameID,pos);
+                    mControl->setPosition(FrameID ,O_id, pos);
                 }if(isPro){
-                    mControl->setProjection(O_id, FrameID,proj);
+                    mControl->setProjection(FrameID ,O_id, proj);
                 }
             }else{
                 std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
@@ -384,7 +383,7 @@ int XMLLoader::filnameToFrame(QString file)
 {
     QStringList myStringList = file.split('-').last().split('.');
     if(myStringList.size() >=2){
-        return myStringList[myStringList.size()-2].toInt();
+        return myStringList[myStringList.size()-2].toInt()-1;
     }
     return -1;
 }

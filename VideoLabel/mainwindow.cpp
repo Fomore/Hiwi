@@ -79,7 +79,6 @@ void MainWindow::on_actionOpen_triggered()
         clearAll();
 
         //mLoader.loadFromFile(mFileName,"./data/");
-        //mControler.loadFromFile(mFileName, "./data/");
         mXMLLoader->read(mFileName, "./data/");
 
         updateView();
@@ -231,7 +230,7 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 {
     displayObject(index.row());
     if(ui->checkBoxEvent->isChecked()){
-        mControler.changeObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
+        mControler.setObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
         ui->listWidget_1->item(lastObject)->setSelected(true);
     }else{
         lastObject = ui->listWidget_1->currentRow();
@@ -243,7 +242,7 @@ void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
 {
     displayEvent(index.row());
     if(ui->checkBoxEvent->isChecked()){
-        mControler.addEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
+        mControler.setEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
         ui->listWidget_2->clearFocus();
     }
     lastEvent = ui->listWidget_2->currentRow();
@@ -351,7 +350,6 @@ void MainWindow::updateView()
     for(int i = 0; i < ObjectList.size(); i++){
         ui->listWidget_1->addItem(ObjectList[i]);
     }
-    mControler.setObjectSize(ObjectList.size());
 }
 
 void MainWindow::contextEventMenuRequested(const QPoint &point)
@@ -386,7 +384,7 @@ void MainWindow::Eventdelete()
     int id = ui->listWidget_2->currentIndex().row();
     Event ev = mLoader.getEvent(id);
     bool dell = true;
-    if(mControler.getEventUsed(id)){
+    if(mControler.isEventUsed(id)){
         dell = QMessageBox::question(this, "Lösche Event", "Das Event \""+ev.getName()+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
     }
@@ -410,7 +408,7 @@ void MainWindow::Objectdelete()
     int id = ui->listWidget_1->currentIndex().row();
     QStringList all = mLoader.getObject(id);
     bool dell = true;
-    if(mControler.getEventUsed(id)){
+    if(mControler.isEventUsed(id)){
         dell = QMessageBox::question(this, "Lösche Qbjekt", "Das Object \""+all[0]+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
                 QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
     }
@@ -433,8 +431,8 @@ void MainWindow::on_actionStepForward_triggered()
 {
     mPlayer->forward();
     if(ui->checkBoxEvent->isChecked()){
-        mControler.addEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),lastEvent);
-        mControler.changeObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
+        mControler.setEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),lastEvent);
+        mControler.setObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
     }
 }
 

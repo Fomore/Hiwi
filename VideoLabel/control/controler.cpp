@@ -78,9 +78,8 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
         pos = 0;
     }else if(pos >= (int)mActivModel.size()){
         mActivModel.push_back(std::vector<ActivModel>());
-        mActivModel.back().clear();
-        mActivModel.back().push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
-        pos = mActivModel.size()-1;
+        mActivModel[pos].clear();
+        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
     }else if(mActivModel[pos][0].getFrame() == frame){
         int o_pos = getObjectPosInVector(pos,O_id);
         if(o_pos >= 0){
@@ -89,6 +88,7 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
             mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
         }
     }else{
+        pos++;
         mActivModel.insert(mActivModel.begin()+pos,std::vector<ActivModel>());
         mActivModel[pos].clear();
         mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
@@ -124,23 +124,23 @@ void Controler::setDisplaySize(int w, int h)
 
 int Controler::getFramePosInVector(int frame)
 {
-    if(frame < 0){
+    if(frame < 0 || mActivModel.size() == 0){
         return -1;
     }else if(frame >= mActivModel.size() || (mActivModel[frame].size() > 0
                                              && mActivModel[frame][0].getFrame() <= frame)){
         for(int i = std::min(frame,(int)mActivModel.size()-1); i >= 0; i--){
-            if(mActivModel[frame][i].getFrame() == frame){
+            if(mActivModel[i][0].getFrame() == frame){
                 return i;
-            }else if(mActivModel[frame][i].getFrame() > frame){
+            }else if(mActivModel[i][0].getFrame() < frame){
                 return i;
             }
         }
         return -1;
     }else{
         for(int i = 0; i < mActivModel.size(); i++){
-            if(mActivModel[frame][i].getFrame() == frame){
+            if(mActivModel[i][0].getFrame() == frame){
                 return i;
-            }else if(mActivModel[frame][i].getFrame() > frame){
+            }else if(mActivModel[i][0].getFrame() > frame){
                 return i-1;
             }
         }
@@ -149,10 +149,9 @@ int Controler::getFramePosInVector(int frame)
 }
 
 QRect Controler::getRect(int frame, int O_id, int &E_id){
-
     int frame_pos = getFramePosInVector(frame);
 
-    if(frame_pos < 0 || frame_pos >= mActivModel.size() || mActivModel[frame_pos][0].getFrame()==frame){
+    if(frame_pos < 0 || frame_pos >= mActivModel.size() || mActivModel[frame_pos][0].getFrame()!=frame){
         E_id = -1;
         return QRect(0,0,0,0);
     }else{
@@ -164,7 +163,6 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
             int h = mActivModel[frame_pos][o_pos].mH;
 
             E_id = mActivModel[frame_pos][o_pos].mEventID;
-
             return QRect(x,y,w,h);
         }
         E_id = -1;

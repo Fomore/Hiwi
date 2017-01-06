@@ -40,8 +40,6 @@ void XMLLoader::read(const QString filename)
 
 void XMLLoader::write(const QString filename, const QString path)
 {
-//    mControl->printAll();
-
     QXmlStreamWriter xmlWriter;
     QFile file(path+filename+"_Label.xml");
     file.open(QFile::WriteOnly);
@@ -223,7 +221,6 @@ void XMLLoader::processImage(int frame)
 
             if(O_id >= 0){
                 int FrameID = mControl->addEventInFrame(left,top,width,height,frame,E_id,O_id,manual);
-
                 if(isLand){
                     mControl->setLandmarks(FrameID ,O_id, land);
                 }if(isOri){

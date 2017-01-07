@@ -35,3 +35,18 @@ void ActionEventDialog::show(int O_id)
     }
     std::cout<<"Es werden "<<list.size()<<" Eingräge angezeigt"<<std::endl;
 }
+
+void ActionEventDialog::on_pushButton_Probl_clicked()
+{
+    for(int i = 0; i < ui->tableWidget->rowCount(); i++){
+        if(ui->tableWidget->item(i,1)->text() == "-1"
+                || ui->tableWidget->item(i,0)->text().toInt() < 0
+                || ui->tableWidget->item(i,2)->text().toInt() < 0
+                || ui->tableWidget->item(i,3)->text().toInt() < 0
+                || ui->tableWidget->item(i,4)->text().toInt() <= 0
+                || ui->tableWidget->item(i,5)->text().toInt() <= 0){
+            ui->tableWidget->selectRow(i);
+            break;
+        }
+    }
+}

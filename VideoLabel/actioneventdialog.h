@@ -20,6 +20,9 @@ public:
 public slots:
     void show(int O_id);
 
+private slots:
+    void on_pushButton_Probl_clicked();
+
 private:
     Ui::ActionEventDialog *ui;
     Loader *mLoader;

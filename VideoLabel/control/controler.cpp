@@ -193,6 +193,19 @@ int Controler::getLastLabel(int O_id)
     }
 }
 
+std::vector<ActivModel> Controler::getAllActivodel(int O_id)
+{
+    std::vector<ActivModel> list;
+    for(int i = 0; i < mActivModel.size(); i++){
+        for(int j = 0; j<mActivModel[i].size(); j++){
+            if(mActivModel[i][j].mObjectID == O_id){
+                list.push_back(mActivModel[i][j]);
+            }
+        }
+    }
+    return list;
+}
+
 void Controler::printAll()
 {
     for(int i = 0; i < mActivModel.size(); i++){

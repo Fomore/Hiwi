@@ -47,6 +47,8 @@ public:
     ActivModel getActivModel(int frame, int O_id);
     int getLastLabel(int O_id);
 
+    std::vector<ActivModel> getAllActivodel(int O_id);
+
     bool isEventUsed(int id);
     bool isObjectUsed(int id);
 
@@ -55,6 +57,8 @@ public:
     void deleteActionEvent(int O_id, int frame);
 
     void printAll();
+
+
 };
 
 #endif // CONTROLER_H

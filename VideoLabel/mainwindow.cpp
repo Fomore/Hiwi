@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mObjectDialog = new ObjectDialog(this, &mLoader);
     mEventDialog = new EventDialog(this, &mLoader);
+    mActionEventDialog = new ActionEventDialog(this, &mLoader, &mControler);
 
     connect(mObjectDialog,SIGNAL(accepted()),this,SLOT(updateView()));
     connect(mEventDialog,SIGNAL(accepted()),this,SLOT(updateView()));
@@ -51,10 +52,12 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(contextObjectMenuRequested(const QPoint)));
     mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo No Label"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("Detail"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(setNoLabelPosition()));
     connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(Objectchange()));
-    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(Objectdelete()));
+    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
+    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
 
@@ -464,7 +467,12 @@ void MainWindow::on_actionSkipBackward_triggered()
 void MainWindow::on_actionGoTo_No_Label_triggered()
 {
     int pos = mControler.getLastLabel(-1);
-    std::cout<<pos<<std::endl;
     ui->horizontalSlider->setValue(pos);
     mPlayer->setPosition(pos);
+}
+
+void MainWindow::show_Actionenevent()
+{
+    int id = ui->listWidget_1->currentIndex().row();
+    mActionEventDialog->show(id);
 }

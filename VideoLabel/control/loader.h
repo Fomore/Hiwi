@@ -39,9 +39,14 @@ public:
     int getEventSize();
     int getEventID(QString name);
     int getObjectID(QString name);
+    QString getObjectName(int O_id);
+    QString getEventName(int E_id);
 
     void deleteEvent(int id);
     void deleteObject(int id);
+
+    bool existObjectID(int id);
+    bool existEventID(int id);
 
     void clearAll();
 };

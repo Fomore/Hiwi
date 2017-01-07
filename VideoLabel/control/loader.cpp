@@ -144,6 +144,16 @@ int Loader::getObjectID(QString name)
     return -1;
 }
 
+QString Loader::getObjectName(int O_id)
+{
+    return mObjects[O_id].getName();
+}
+
+QString Loader::getEventName(int E_id)
+{
+    return mEvents[E_id].getName();
+}
+
 void Loader::deleteEvent(int id)
 {
     mEvents.erase(mEvents.begin() + id);
@@ -152,6 +162,16 @@ void Loader::deleteEvent(int id)
 void Loader::deleteObject(int id)
 {
     mObjects.erase(mObjects.begin() + id);
+}
+
+bool Loader::existObjectID(int id)
+{
+    return id >=0 && id < (int)mObjects.size();
+}
+
+bool Loader::existEventID(int id)
+{
+    return id >=0 && id < (int)mEvents.size();
 }
 
 void Loader::clearAll()

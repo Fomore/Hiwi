@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     control/myvideoplayer.cpp \
     mylabel.cpp \
     eventdialog.cpp \
-    objectdialog.cpp
+    objectdialog.cpp \
+    actioneventdialog.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -36,11 +37,13 @@ HEADERS  += mainwindow.h \
     control/myvideoplayer.h \
     mylabel.h \
     eventdialog.h \
-    objectdialog.h
+    objectdialog.h \
+    actioneventdialog.h
 
 FORMS    += mainwindow.ui \
     eventdialog.ui \
-    objectdialog.ui
+    objectdialog.ui \
+    actioneventdialog.ui
 
 RESOURCES += \
     Resources.qrc

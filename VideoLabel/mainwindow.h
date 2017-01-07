@@ -16,6 +16,7 @@
 
 #include "objectdialog.h"
 #include "eventdialog.h"
+#include "actioneventdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -88,6 +89,8 @@ private slots:
 
     void on_actionGoTo_No_Label_triggered();
 
+    void show_Actionenevent();
+
 private:
     Ui::MainWindow *ui;
 
@@ -108,6 +111,7 @@ private:
 
     ObjectDialog *mObjectDialog;
     EventDialog *mEventDialog;
+    ActionEventDialog *mActionEventDialog;
 
     void clearAll();
 

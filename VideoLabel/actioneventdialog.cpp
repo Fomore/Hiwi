@@ -1,6 +1,7 @@
 #include "actioneventdialog.h"
 #include "ui_actioneventdialog.h"
 
+#include <QMessageBox>
 #include <iostream>
 
 ActionEventDialog::ActionEventDialog(QWidget *parent, Loader *loader, Controler *control) :
@@ -18,7 +19,6 @@ ActionEventDialog::~ActionEventDialog()
 void ActionEventDialog::show(int O_id)
 {
     QDialog::show();
-    std::cout<<"Object: "<<O_id<<std::endl;
     std::vector<ActivModel> list = mControl->getAllActivodel(O_id);
     ui->tableWidget->setRowCount(list.size());
     for(int i = 0; i < list.size(); i++){
@@ -33,7 +33,6 @@ void ActionEventDialog::show(int O_id)
         ui->tableWidget->setItem(i,4,new QTableWidgetItem(QString::number(list[i].mW)));
         ui->tableWidget->setItem(i,5,new QTableWidgetItem(QString::number(list[i].mH)));
     }
-    std::cout<<"Es werden "<<list.size()<<" Eingräge angezeigt"<<std::endl;
 }
 
 void ActionEventDialog::on_pushButton_Probl_clicked()
@@ -48,5 +47,47 @@ void ActionEventDialog::on_pushButton_Probl_clicked()
             ui->tableWidget->selectRow(i);
             break;
         }
+    }
+}
+
+void ActionEventDialog::on_pushButton_Interpolate_clicked()
+{
+    QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
+    if(list.size() == 2 && (list[0]->row()+1 == list[1]->row() ||
+                            list[0]->row()-1 == list[1]->row())){
+        int a = std::min(list[1]->row(),list[0]->row());
+        int b = std::max(list[1]->row(),list[0]->row());
+
+        double s = ui->tableWidget->item(b,0)->text().toInt() - ui->tableWidget->item(a,0)->text().toInt();
+        if(s <= 0)
+            return;
+
+        QString label = ui->tableWidget->item(a,1)->text();
+
+        int x = ui->tableWidget->item(a,2)->text().toInt();
+        int y = ui->tableWidget->item(a,3)->text().toInt();
+        int w = ui->tableWidget->item(a,4)->text().toInt();
+        int h = ui->tableWidget->item(a,5)->text().toInt();
+
+        double sx = ui->tableWidget->item(b,2)->text().toInt() - ui->tableWidget->item(a,2)->text().toInt();
+        sx /= s;
+        double sy = ui->tableWidget->item(b,3)->text().toInt() - ui->tableWidget->item(a,3)->text().toInt();
+        sy /= s;
+        double sw = ui->tableWidget->item(b,4)->text().toInt() - ui->tableWidget->item(a,4)->text().toInt();
+        sw /= s;
+        double sh = ui->tableWidget->item(b,5)->text().toInt() - ui->tableWidget->item(a,5)->text().toInt();
+        sh /= s;
+        for(double i = 1; i < s; i++){
+            ui->tableWidget->insertRow(a+i);
+            ui->tableWidget->setItem(a+i,0,new QTableWidgetItem(QString::number(a+i)));
+            ui->tableWidget->setItem(a+i,1,new QTableWidgetItem(label));
+            ui->tableWidget->setItem(a+i,2,new QTableWidgetItem(QString::number((int)(x+sx*i+0.5))));
+            ui->tableWidget->setItem(a+i,3,new QTableWidgetItem(QString::number((int)(y+sy*i+0.5))));
+            ui->tableWidget->setItem(a+i,4,new QTableWidgetItem(QString::number((int)(w+sw*i+0.5))));
+            ui->tableWidget->setItem(a+i,5,new QTableWidgetItem(QString::number((int)(h+sh*i+0.5))));
+        }
+
+    }else{
+        QMessageBox::information(this, "Interpolation","Bei der Interpolation müssen zwei untereinander liegende Felder ausgewählt werden");
     }
 }

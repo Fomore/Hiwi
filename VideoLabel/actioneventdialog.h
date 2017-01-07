@@ -23,6 +23,8 @@ public slots:
 private slots:
     void on_pushButton_Probl_clicked();
 
+    void on_pushButton_Interpolate_clicked();
+
 private:
     Ui::ActionEventDialog *ui;
     Loader *mLoader;

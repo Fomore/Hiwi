@@ -25,10 +25,14 @@ private slots:
 
     void on_pushButton_Interpolate_clicked();
 
+    void on_buttonBox_accepted();
+
 private:
     Ui::ActionEventDialog *ui;
     Loader *mLoader;
     Controler *mControl;
+
+    int mObjectID;
 };
 
 #endif // ACTIONEVENTDIALOG_H

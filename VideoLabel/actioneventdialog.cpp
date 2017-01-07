@@ -19,6 +19,7 @@ ActionEventDialog::~ActionEventDialog()
 void ActionEventDialog::show(int O_id)
 {
     QDialog::show();
+    mObjectID = O_id;
     std::vector<ActivModel> list = mControl->getAllActivodel(O_id);
     ui->tableWidget->setRowCount(list.size());
     for(int i = 0; i < list.size(); i++){
@@ -89,5 +90,20 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
 
     }else{
         QMessageBox::information(this, "Interpolation","Bei der Interpolation müssen zwei untereinander liegende Felder ausgewählt werden");
+    }
+}
+
+void ActionEventDialog::on_buttonBox_accepted()
+{
+    for(int i = 0; i < ui->tableWidget->rowCount(); i++){
+        int E_id = mLoader->getEventID(ui->tableWidget->item(i,1)->text());
+        mControl->addEventInFrame(ui->tableWidget->item(i,2)->text().toInt(),
+                                  ui->tableWidget->item(i,3)->text().toInt(),
+                                  ui->tableWidget->item(i,4)->text().toInt(),
+                                  ui->tableWidget->item(i,5)->text().toInt(),
+                                  ui->tableWidget->item(i,0)->text().toInt(),
+                                  E_id,
+                                  mObjectID,
+                                  false);
     }
 }

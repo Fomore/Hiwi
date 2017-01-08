@@ -2,6 +2,8 @@
 #define ACTIONEVENTDIALOG_H
 
 #include <QDialog>
+#include <QMenu>
+
 #include "control/controler.h"
 #include "control/loader.h"
 
@@ -27,12 +29,20 @@ private slots:
 
     void on_buttonBox_accepted();
 
+    void deleteActionEvent();
+
+    void contextMenuRequested(const QPoint& point);
+
 private:
     Ui::ActionEventDialog *ui;
     Loader *mLoader;
     Controler *mControl;
 
+    std::vector<int> mDeleteList;
     int mObjectID;
+
+    QMenu* mMenu;
+    std::vector<QAction*> mMenueAction;
 };
 
 #endif // ACTIONEVENTDIALOG_H

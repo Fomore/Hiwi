@@ -9,6 +9,12 @@ ActionEventDialog::ActionEventDialog(QWidget *parent, Loader *loader, Controler 
     ui(new Ui::ActionEventDialog), mLoader(loader), mControl(control)
 {
     ui->setupUi(this);
+
+    mMenu = new QMenu(ui->tableWidget);
+    ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWidget, SIGNAL(customContextMenuRequested(const QPoint)),this, SLOT(contextMenuRequested(const QPoint)));
+    mMenueAction.push_back(mMenu->addAction("Zeile Löschen"));
+    connect(mMenueAction[0],SIGNAL(triggered()),this,SLOT(deleteActionEvent()));
 }
 
 ActionEventDialog::~ActionEventDialog()
@@ -18,6 +24,7 @@ ActionEventDialog::~ActionEventDialog()
 
 void ActionEventDialog::show(int O_id)
 {
+    mDeleteList.clear();
     QDialog::show();
     mObjectID = O_id;
     std::vector<ActivModel> list = mControl->getAllActivodel(O_id);
@@ -97,6 +104,9 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
 
 void ActionEventDialog::on_buttonBox_accepted()
 {
+    for(size_t i = 0; i < mDeleteList.size(); i++){
+        mControl->deleteActionEvent(mObjectID,mDeleteList[i]);
+    }
     for(int i = 0; i < ui->tableWidget->rowCount(); i++){
         int E_id = mLoader->getEventID(ui->tableWidget->item(i,1)->text());
         mControl->addEventInFrame(ui->tableWidget->item(i,2)->text().toInt(),
@@ -107,5 +117,24 @@ void ActionEventDialog::on_buttonBox_accepted()
                                   E_id,
                                   mObjectID,
                                   false);
+    }
+}
+
+void ActionEventDialog::deleteActionEvent()
+{
+    QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
+        int pos = list[0]->row();
+        int frame = ui->tableWidget->item(pos,0)->text().toInt();
+        mDeleteList.push_back(frame);
+        ui->tableWidget->removeRow(pos);
+}
+
+void ActionEventDialog::contextMenuRequested(const QPoint &point)
+{
+    QModelIndex t = ui->tableWidget->indexAt(point);
+    ui->tableWidget->clearSelection();
+    if(t.row() >= 0){
+        mMenu->popup(ui->tableWidget->mapToGlobal(point));
+        ui->tableWidget->selectRow(t.row());
     }
 }

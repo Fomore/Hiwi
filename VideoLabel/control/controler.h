@@ -44,8 +44,9 @@ public:
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
     QRect getRect(int frame, int O_id, int &E_id);
-    ActivModel getActivModel(int frame, int O_id);
+    ActivModel getActivModel(int frame_pos, int O_pos);
     int getLastLabel(int O_id);
+    int getObjectSizeInFramePos(int frame_pos);
 
     std::vector<ActivModel> getAllActivodel(int O_id);
 

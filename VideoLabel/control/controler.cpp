@@ -170,13 +170,11 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
     }
 }
 
-ActivModel Controler::getActivModel(int frame, int O_id)
+ActivModel Controler::getActivModel(int frame_pos, int O_pos)
 {
-    int pos = getFramePosInVector(frame);
-    if(pos >= 0 && mActivModel[O_id].size()){
-        int o_pos = getObjectPosInVector(pos,O_id);
-        if(o_pos >= 0)
-            return mActivModel[O_id][pos];
+    if(frame_pos >= 0 &&  frame_pos < mActivModel.size()
+            && O_pos >= 0 && O_pos < mActivModel[frame_pos].size()){
+            return mActivModel[frame_pos][O_pos];
     }
     return ActivModel();
 }
@@ -191,6 +189,11 @@ int Controler::getLastLabel(int O_id)
             }
         }
     }
+}
+
+int Controler::getObjectSizeInFramePos(int frame_pos)
+{
+    return mActivModel[frame_pos].size();
 }
 
 std::vector<ActivModel> Controler::getAllActivodel(int O_id)
@@ -293,12 +296,12 @@ void Controler::setProjection(int pos, int O_id, double pro[4])
 
 bool Controler::getNextSetFrame(int &frame)
 {
-    int lastFrame = frame;
-    int pos = getFramePosInVector(frame)+1;
-    if(pos < 0 || pos >= mActivModel.size())
-        return false;
-    frame = mActivModel[pos][0].getFrame();
-    return lastFrame < frame;
+    do {
+        frame++;
+    } while (frame >= 0
+             && frame < mActivModel.size()
+             && mActivModel[frame].size() == 0);
+    return frame >= 0 && frame < mActivModel.size();
 }
 
 

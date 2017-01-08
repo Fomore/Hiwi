@@ -148,25 +148,6 @@ int Controler::getFramePosInVector(int frame)
     }
 }
 
-QRect Controler::getRect(int frame, int O_id, int &E_id){
-    int frame_pos = getFramePosInVector(frame);
-
-    if(frame_pos < 0 || frame_pos >= mActivModel.size() || mActivModel[frame_pos][0].getFrame()!=frame){
-        E_id = -1;
-        return QRect(0,0,0,0);
-    }else{
-        int o_pos = getObjectPosInVector(frame_pos,O_id);
-        if(o_pos >= 0){
-            int x,y,w,h;
-            mActivModel[frame_pos][o_pos].getRect(x,y,w,h);
-            E_id = mActivModel[frame_pos][o_pos].getEventID();
-            return QRect(x,y,w,h);
-        }
-        E_id = -1;
-        return QRect(0,0,0,0);
-    }
-}
-
 ActivModel Controler::getActivModel(int frame_pos, int O_pos)
 {
     if(frame_pos >= 0 &&  frame_pos < mActivModel.size()

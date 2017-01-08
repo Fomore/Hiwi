@@ -286,21 +286,19 @@ void MainWindow::VideoLengthChange(int size)
 void MainWindow::newVideoFrame(QImage frame)
 {
     ui->labelVideo->clear();
-    int newPos = mPlayer->getPosition();
 
     QPixmap img = QPixmap::fromImage(frame);
 
     QPainter paint(&img);
 
-    for(int i = 0; i < ui->listWidget_1->count(); i++){
-        int evID = -1;
-        QRect rec = mControler.getRect(newPos,i, evID);
-        if(i == ui->listWidget_1->currentIndex().row()){
-            if(evID == ui->listWidget_2->currentIndex().row()){
+    int frame_pos = mControler.getFramePosInVector(mPlayer->getPosition());
+    int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
+    for(int i = 0 ; i < obj_size; i++){
+        int x,y,w,h;
+        mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
+        QRect rec(x,y,w,h);
+        if(mControler.getActivModel(frame_pos,i).getObjectID() == ui->listWidget_1->currentIndex().row()){
                 paint.setPen(QPen(QColor(Qt::blue), 3, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin));
-            }else{
-                paint.setPen(QColor(255,0,255,255));
-            }
         }else{
             paint.setPen(QColor(Qt::green));
         }

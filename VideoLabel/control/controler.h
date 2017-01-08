@@ -19,9 +19,6 @@ private:
 
     void calculateParameter();
 
-    int getObjectPosInVector(int frame, int O_id);
-    int getFramePosInVector(int frame);
-
 public:
     Controler();
     void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_id);
@@ -43,10 +40,11 @@ public:
 
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
-    QRect getRect(int frame, int O_id, int &E_id);
     ActivModel getActivModel(int frame_pos, int O_pos);
     int getLastLabel(int O_id);
     int getObjectSizeInFramePos(int frame_pos);
+    int getObjectPosInVector(int frame, int O_id);
+    int getFramePosInVector(int frame);
 
     std::vector<ActivModel> getAllActivodel(int O_id);
 
@@ -58,8 +56,6 @@ public:
     void deleteActionEvent(int O_id, int frame);
 
     void printAll();
-
-
 };
 
 #endif // CONTROLER_H

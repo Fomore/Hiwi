@@ -95,14 +95,16 @@ void XMLLoader::write(const QString filename, const QString path)
             ActivModel mod = mControl->getActivModel(frame_id,i);
 
             if(mod.getFrame() == frame){
+                int x,y,w,h;
+                mod.getRect(x,y,w,h);
                 xmlWriter.writeStartElement("box");
-                xmlWriter.writeAttribute("height",QString::number(mod.mH));
-                xmlWriter.writeAttribute("left",QString::number(mod.mX));
-                xmlWriter.writeAttribute("top",QString::number(mod.mY));
-                xmlWriter.writeAttribute("width",QString::number(mod.mW));
+                xmlWriter.writeAttribute("left",QString::number(x));
+                xmlWriter.writeAttribute("top",QString::number(y));
+                xmlWriter.writeAttribute("height",QString::number(h));
+                xmlWriter.writeAttribute("width",QString::number(w));
 
-                if(mod.mObjectID >= 0){
-                    QStringList obj = mLoader->getObject(mod.mObjectID);
+                if(mod.getObjectID() >= 0){
+                    QStringList obj = mLoader->getObject(mod.getObjectID());
                     xmlWriter.writeStartElement("label");
                     xmlWriter.writeCharacters (obj[0]);
                     xmlWriter.writeEndElement();
@@ -110,8 +112,8 @@ void XMLLoader::write(const QString filename, const QString path)
                     std::cout<<"Kein Object "<<i<<std::endl;
                 }
 
-                if(mod.mEventID >= 0){
-                    Event ev = mLoader->getEvent(mod.mEventID);
+                if(mod.getEventID() >= 0){
+                    Event ev = mLoader->getEvent(mod.getEventID());
                     xmlWriter.writeStartElement("event");
                     xmlWriter.writeAttribute("name",ev.getName());
                     xmlWriter.writeEndElement();

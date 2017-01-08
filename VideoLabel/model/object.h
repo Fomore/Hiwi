@@ -6,19 +6,14 @@
 class Object
 {
 private:
-    int mID;
     QString mName;
     QString mBeschreibung;
 
 public:
     Object();
-    Object(QString data);
-    Object(int id, QString name);
-    Object(int id, QString name, QString description);
+    Object(QString name, QString description);
     QString getName();
-    int getID();
     QString getDescription();
-    QString getDateAll();
 
     void change(QString name, QString description);
 };

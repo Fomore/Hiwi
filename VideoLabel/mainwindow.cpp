@@ -154,7 +154,7 @@ void MainWindow::myclick_on_Slider(int newPos){
 void MainWindow::displayEvent(int id){
     Event ev = mLoader.getEvent(id);
     QString text = "<table><tr><th align=left>Name:</th> <td>"+ev.getName()+"</td></tr>";
-    text += "<tr> <th align=left>ID:</th> <td>"+QString::number(ev.getID())+"</td></tr> </table>";
+    text += "<tr> <th align=left>ID:</th> <td>"+QString::number(id)+"</td></tr> </table>";
     if(ev.OnTask()){
         text += "<br><b>On-Task</b>";
     }else{
@@ -320,8 +320,6 @@ void MainWindow::newVideoFrame(QImage frame)
 void MainWindow::on_actionSave_triggered()
 {
     mXMLLoader->write(mFileName,"./data/");
-    mLoader.save(mFileName,"./data/");
-    mControler.save(mFileName,"./data/");
 }
 
 void MainWindow::on_actionAddEvent_triggered()

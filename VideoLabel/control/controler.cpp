@@ -26,7 +26,7 @@ void Controler::calculateParameter()
 int Controler::getObjectPosInVector(int frame, int O_id)
 {
     for(int i = 0; i < mActivModel[frame].size(); i++){
-        if(mActivModel[frame][i].mObjectID == O_id){
+        if(mActivModel[frame][i].getObjectID() == O_id){
             return i;
         }
     }
@@ -63,7 +63,7 @@ void Controler::setEvent(int frame, int O_id, int E_id)
     if(pos >= 0){
         int o_pos = getObjectPosInVector(pos,O_id);
         if(o_pos >= 0){
-            mActivModel[pos][o_pos].mEventID = E_id;
+            mActivModel[pos][o_pos].setEventID(E_id);
         }
     }
 }
@@ -74,24 +74,24 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
     if(pos < 0){
         mActivModel.insert(mActivModel.begin(),std::vector<ActivModel>());
         mActivModel[0].clear();
-        mActivModel[0].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
+        mActivModel[0].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
         pos = 0;
     }else if(pos >= (int)mActivModel.size()){
         mActivModel.push_back(std::vector<ActivModel>());
         mActivModel[pos].clear();
-        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
+        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
     }else if(mActivModel[pos][0].getFrame() == frame){
         int o_pos = getObjectPosInVector(pos,O_id);
         if(o_pos >= 0){
-            mActivModel[pos][o_pos].setAll(x,y,w,h,frame,E_id,O_id,pos, man);
+            mActivModel[pos][o_pos].setAll(x,y,w,h,frame,E_id,O_id,man);
         }else{
-            mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
+            mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
         }
     }else{
         pos++;
         mActivModel.insert(mActivModel.begin()+pos,std::vector<ActivModel>());
         mActivModel[pos].clear();
-        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,pos, man));
+        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
     }
     return pos;
 }
@@ -102,7 +102,7 @@ void Controler::setObject(int frame, int lastO_id, int newO_id)
     if(lastO_id != newO_id && pos >= 0){
         int o_pos = getObjectPosInVector(pos,lastO_id);
         if(o_pos >= 0){
-            mActivModel[pos][o_pos].mObjectID = newO_id;
+            mActivModel[pos][o_pos].setObjectID(newO_id);
         }
     }
 }
@@ -157,12 +157,9 @@ QRect Controler::getRect(int frame, int O_id, int &E_id){
     }else{
         int o_pos = getObjectPosInVector(frame_pos,O_id);
         if(o_pos >= 0){
-            int x = mActivModel[frame_pos][o_pos].mX;
-            int y = mActivModel[frame_pos][o_pos].mY;
-            int w = mActivModel[frame_pos][o_pos].mW;
-            int h = mActivModel[frame_pos][o_pos].mH;
-
-            E_id = mActivModel[frame_pos][o_pos].mEventID;
+            int x,y,w,h;
+            mActivModel[frame_pos][o_pos].getRect(x,y,w,h);
+            E_id = mActivModel[frame_pos][o_pos].getEventID();
             return QRect(x,y,w,h);
         }
         E_id = -1;
@@ -183,8 +180,8 @@ int Controler::getLastLabel(int O_id)
 {
     for(int i = 0; i < mActivModel.size(); i++){
         for(int j = 0; j<mActivModel[i].size(); j++){
-            if(mActivModel[i][j].mEventID == -1
-                    && (O_id == -1 || mActivModel[i][j].mObjectID == O_id) ){
+            if(mActivModel[i][j].getEventID() == -1
+                    && (O_id == -1 || mActivModel[i][j].getObjectID() == O_id) ){
                 return mActivModel[i][j].getFrame();
             }
         }
@@ -201,7 +198,7 @@ std::vector<ActivModel> Controler::getAllActivodel(int O_id)
     std::vector<ActivModel> list;
     for(int i = 0; i < mActivModel.size(); i++){
         for(int j = 0; j<mActivModel[i].size(); j++){
-            if(mActivModel[i][j].mObjectID == O_id){
+            if(mActivModel[i][j].getObjectID() == O_id){
                 list.push_back(mActivModel[i][j]);
             }
         }
@@ -225,25 +222,10 @@ int Controler::getEventToObject(int frame, int O_id)
     if(pos >= 0){
         int o_pos = getObjectPosInVector(pos,O_id);
         if(o_pos >= 0){
-            return mActivModel[pos][o_pos].mEventID;
+            return mActivModel[pos][o_pos].getEventID();
         }
     }
     return -1;
-}
-
-void Controler::save(QString name, QString path)
-{
-    QFile file_object(path+name+"_activevent.txt");
-    if(!file_object.open(QIODevice::WriteOnly)) {
-        std::cout<<"Datei "<<(path+name+"_activevent.txt").toStdString()<<" nicht gefunden"<<std::endl;
-    }else{
-        QTextStream out(&file_object);
-        for(int i = 0; i < mActivModel.size(); i++){
-            for(int j = 0; j < mActivModel[i].size(); j++)
-                out << mActivModel[i][j].getDateAll() << endl;
-        }
-    }
-    file_object.close();
 }
 
 void Controler::clearAll()
@@ -309,7 +291,7 @@ bool Controler::isEventUsed(int id)
 {
     for(int i = 0; i < mActivModel.size(); i++){
         for(int j = 0; j < mActivModel[i].size();j++){
-            if(mActivModel[i][j].mEventID == id)
+            if(mActivModel[i][j].getEventID() == id)
                 return true;
         }
     }
@@ -325,10 +307,10 @@ void Controler::deleteEvent(int id)
 {
     for(int i = 0; i < mActivModel.size(); i++){
         for(int j = 0; j < mActivModel[i].size();j++){
-            if(mActivModel[i][j].mEventID == id){
-                mActivModel[i][j].mEventID = -1;
-            }else if(mActivModel[i][j].mEventID > id){
-                mActivModel[i][j].mEventID--;
+            if(mActivModel[i][j].getEventID() == id){
+                mActivModel[i][j].setEventID(-1);
+            }else if(mActivModel[i][j].getEventID() > id){
+                mActivModel[i][j].setEventID(mActivModel[i][j].getEventID()-1);
             }
         }
     }
@@ -338,10 +320,10 @@ void Controler::deleteObject(int id)
 {
     for(int i = 0; i < mActivModel.size(); i++){
         for(int j = 0; j < mActivModel[i].size();j++){
-            if(mActivModel[i][j].mObjectID == id){
-                mActivModel[i][j].mObjectID = -1;
-            }else if(mActivModel[i][j].mObjectID > id){
-                mActivModel[i][j].mObjectID--;
+            if(mActivModel[i][j].getObjectID() == id){
+                mActivModel[i][j].setObjectID(-1);
+            }else if(mActivModel[i][j].getObjectID() > id){
+                mActivModel[i][j].setObjectID(mActivModel[i][j].getObjectID()-1);
             }
         }
     }

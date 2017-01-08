@@ -5,34 +5,13 @@
 
 ActivModel::ActivModel()
 {
-    mID = mObjectID = mEventID = mTimePos = mX = mY = mW = mH = -1;
+    mObjectID = mEventID = mTimePos = mX = mY = mW = mH = -1;
     mManuel = false;
     setZero();
 }
 
-ActivModel::ActivModel(QString data)
-{
-    QStringList data_list = data.split("&");
-    setZero();
-
-    if(data_list.size() >= 8){
-        mID = data_list[0].toInt();
-        mObjectID = data_list[1].toInt();
-        mEventID = data_list[2].toInt();
-        mTimePos = data_list[3].toInt();
-        mX = data_list[4].toInt();
-        mY = data_list[5].toInt();
-        mW = data_list[6].toInt();
-        mH = data_list[7].toInt();
-        mManuel = true;
-    }else{
-        std::cout<<"Fehler in Event-Datei: "<<data.toStdString()<<std::endl;
-    }
-}
-
 ActivModel::ActivModel(ActivModel *p)
 {
-    mID = p->mID;
     mObjectID = p->mObjectID;
     mEventID = p->mEventID;
     mTimePos = p->mTimePos;
@@ -49,6 +28,12 @@ ActivModel::ActivModel(ActivModel *p)
     mSetOrienation = p->mSetOrienation;
     mSetPosition = p->mSetPosition;
     mSetProjection = p->mSetProjection;
+}
+
+ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man)
+{
+    setZero();
+    setAll(x,y,w,h,frame,E_id,O_id, man);
 }
 
 QString ActivModel::toStr(int i)
@@ -69,12 +54,6 @@ void ActivModel::setZero()
     setPosition(zero3);
     setProjection(zero4);
     mSetLandmarks = mSetOrienation = mSetPosition = mSetProjection = false;
-}
-
-ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man)
-{
-    setZero();
-    setAll(x,y,w,h,frame,E_id,O_id,id, man);
 }
 
 void ActivModel::setLandmarks(double marks[5][2])
@@ -115,7 +94,25 @@ int ActivModel::getFrame(){
     return mTimePos;
 }
 
-void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, int id, bool man)
+int ActivModel::getEventID()
+{
+    return mEventID;
+}
+
+int ActivModel::getObjectID()
+{
+    return mObjectID;
+}
+
+void ActivModel::getRect(int &x, int &y, int &w, int &h)
+{
+    x = mX;
+    y = mY;
+    w = mW;
+    h = mH;
+}
+
+void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man)
 {
     mX = x;
     mY = y;
@@ -126,19 +123,18 @@ void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_i
 
     mEventID = E_id;
     mObjectID = O_id;
-    mID = id;
 
     mManuel = man;
 }
 
-QString ActivModel::getDateAll()
+void ActivModel::setEventID(int E_id)
 {
-    return toStr(mID)+"&"+toStr(mObjectID)+"&"+toStr(mEventID)+"&"+toStr(mTimePos)+"&"+toStr(mX)+"&"+toStr(mY)+"&"+toStr(mW)+"&"+toStr(mH)+"&"
-            +toStr(mLandmarks[0][0])+"&"+toStr(mLandmarks[0][1])+"&"+toStr(mLandmarks[1][0])+"&"+toStr(mLandmarks[1][1])+"&"
-            +toStr(mLandmarks[2][0])+"&"+toStr(mLandmarks[2][1])+"&"+toStr(mLandmarks[3][0])+"&"+toStr(mLandmarks[3][1])+"&"+toStr(mLandmarks[4][0])+"&"+toStr(mLandmarks[4][1])+"&"
-            +toStr(mOrienation[0])+"&"+toStr(mOrienation[1])+"&"+toStr(mOrienation[2])+"&"
-            +toStr(mPosition[0])+"&"+toStr(mPosition[1])+"&"+toStr(mPosition[2])+"&"
-            +toStr(mProjection[0])+"&"+toStr(mProjection[1])+"&"+toStr(mProjection[2])+"&"+toStr(mProjection[3]);
+    mEventID = E_id;
+}
+
+void ActivModel::setObjectID(int O_id)
+{
+    mObjectID = O_id;
 }
 
 QString ActivModel::printAll()

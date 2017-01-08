@@ -21,7 +21,7 @@ QStringList Loader::getObject(int id){
 
 QStringList Loader::getObjectAllName(){
     QStringList ret;
-    for(int i = 0; i < mObjects.size(); i++){
+    for(size_t i = 0; i < mObjects.size(); i++){
         ret.push_back(mObjects[i].getName());
     }
     return ret;
@@ -29,7 +29,7 @@ QStringList Loader::getObjectAllName(){
 
 QStringList Loader::getEventAllName(){
     QStringList ret;
-    for(int i = 0; i < mEvents.size(); i++){
+    for(size_t i = 0; i < mEvents.size(); i++){
         ret.push_back(mEvents[i].getName());
     }
     return ret;
@@ -44,7 +44,7 @@ int Loader::addObjectSave(QString name, QString description)
 {
     bool exist = false;
     int ret = -1;
-    for(int i = 0; i < mObjects.size(); i++){
+    for(size_t i = 0; i < mObjects.size(); i++){
         if(name == mObjects[i].getName()){
             exist = true;
             ret = i;
@@ -67,7 +67,7 @@ void Loader::addNewEvent(QString name, QString description, bool eye, bool activ
 void Loader::addEventSave(QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
     bool exist = false;
-    for(int i = 0; i < mEvents.size(); i++){
+    for(size_t i = 0; i < mEvents.size(); i++){
         if(name == mEvents[i].getName()){
             exist = true;
             break;
@@ -101,7 +101,7 @@ int Loader::getEventSize()
 
 int Loader::getEventID(QString name)
 {
-    for(int i = 0; i < mEvents.size(); i++){
+    for(size_t i = 0; i < mEvents.size(); i++){
         if(mEvents[i].getName() == name){
             return i;
         }
@@ -111,7 +111,7 @@ int Loader::getEventID(QString name)
 
 int Loader::getObjectID(QString name)
 {
-    for(int i = 0; i < mObjects.size(); i++){
+    for(size_t i = 0; i < mObjects.size(); i++){
         if(mObjects[i].getName() == name){
             return i;
         }

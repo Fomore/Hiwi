@@ -25,7 +25,7 @@ void Controler::calculateParameter()
 
 int Controler::getObjectPosInVector(int frame, int O_id)
 {
-    for(int i = 0; i < mActivModel[frame].size(); i++){
+    for(size_t i = 0; i < mActivModel[frame].size(); i++){
         if(mActivModel[frame][i].getObjectID() == O_id){
             return i;
         }
@@ -35,7 +35,7 @@ int Controler::getObjectPosInVector(int frame, int O_id)
 
 void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_id)
 {
-    if(O_id < 0 || O_id >= mActivModel.size()){
+    if(O_id < 0 || (size_t)O_id >= mActivModel.size()){
         std::cout<<"Fehler Objekt ID funktioniert nicht "<<O_id<<" - "<<mActivModel.size()<<std::endl;
         O_id=0;
     }
@@ -126,7 +126,7 @@ int Controler::getFramePosInVector(int frame)
 {
     if(frame < 0 || mActivModel.size() == 0){
         return -1;
-    }else if(frame >= mActivModel.size() || (mActivModel[frame].size() > 0
+    }else if((size_t)frame >= mActivModel.size() || (mActivModel[frame].size() > 0
                                              && mActivModel[frame][0].getFrame() <= frame)){
         for(int i = std::min(frame,(int)mActivModel.size()-1); i >= 0; i--){
             if(mActivModel[i][0].getFrame() == frame){
@@ -137,7 +137,7 @@ int Controler::getFramePosInVector(int frame)
         }
         return -1;
     }else{
-        for(int i = 0; i < mActivModel.size(); i++){
+        for(size_t i = 0; i < mActivModel.size(); i++){
             if(mActivModel[i][0].getFrame() == frame){
                 return i;
             }else if(mActivModel[i][0].getFrame() > frame){
@@ -150,8 +150,8 @@ int Controler::getFramePosInVector(int frame)
 
 ActivModel Controler::getActivModel(int frame_pos, int O_pos)
 {
-    if(frame_pos >= 0 &&  frame_pos < mActivModel.size()
-            && O_pos >= 0 && O_pos < mActivModel[frame_pos].size()){
+    if(frame_pos >= 0 && (size_t) frame_pos < mActivModel.size()
+            && O_pos >= 0 && (size_t) O_pos < mActivModel[frame_pos].size()){
             return mActivModel[frame_pos][O_pos];
     }
     return ActivModel();
@@ -159,14 +159,15 @@ ActivModel Controler::getActivModel(int frame_pos, int O_pos)
 
 int Controler::getLastLabel(int O_id)
 {
-    for(int i = 0; i < mActivModel.size(); i++){
-        for(int j = 0; j<mActivModel[i].size(); j++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j<mActivModel[i].size(); j++){
             if(mActivModel[i][j].getEventID() == -1
                     && (O_id == -1 || mActivModel[i][j].getObjectID() == O_id) ){
                 return mActivModel[i][j].getFrame();
             }
         }
     }
+    return -1;
 }
 
 int Controler::getObjectSizeInFramePos(int frame_pos)
@@ -177,8 +178,8 @@ int Controler::getObjectSizeInFramePos(int frame_pos)
 std::vector<ActivModel> Controler::getAllActivodel(int O_id)
 {
     std::vector<ActivModel> list;
-    for(int i = 0; i < mActivModel.size(); i++){
-        for(int j = 0; j<mActivModel[i].size(); j++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j<mActivModel[i].size(); j++){
             if(mActivModel[i][j].getObjectID() == O_id){
                 list.push_back(mActivModel[i][j]);
             }
@@ -189,8 +190,8 @@ std::vector<ActivModel> Controler::getAllActivodel(int O_id)
 
 void Controler::printAll()
 {
-    for(int i = 0; i < mActivModel.size(); i++){
-        for(int j = 0; j<mActivModel[i].size(); j++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j<mActivModel[i].size(); j++){
             std::cout<<"["<<i<<","<<j<<"] "<<mActivModel[i][j].printAll().toStdString()<<std::endl;
         }
         std::cout<<std::endl;
@@ -211,7 +212,7 @@ int Controler::getEventToObject(int frame, int O_id)
 
 void Controler::clearAll()
 {
-    for(int i = 0; i < mActivModel.size(); i++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
         mActivModel[i].clear();
     }
     mActivModel.clear();
@@ -262,16 +263,16 @@ bool Controler::getNextSetFrame(int &frame)
     do {
         frame++;
     } while (frame >= 0
-             && frame < mActivModel.size()
+             && (size_t) frame < mActivModel.size()
              && mActivModel[frame].size() == 0);
-    return frame >= 0 && frame < mActivModel.size();
+    return frame >= 0 && (size_t) frame < mActivModel.size();
 }
 
 
 bool Controler::isEventUsed(int id)
 {
-    for(int i = 0; i < mActivModel.size(); i++){
-        for(int j = 0; j < mActivModel[i].size();j++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j < mActivModel[i].size();j++){
             if(mActivModel[i][j].getEventID() == id)
                 return true;
         }
@@ -286,8 +287,8 @@ bool Controler::isObjectUsed(int id)
 
 void Controler::deleteEvent(int id)
 {
-    for(int i = 0; i < mActivModel.size(); i++){
-        for(int j = 0; j < mActivModel[i].size();j++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j < mActivModel[i].size();j++){
             if(mActivModel[i][j].getEventID() == id){
                 mActivModel[i][j].setEventID(-1);
             }else if(mActivModel[i][j].getEventID() > id){
@@ -299,8 +300,8 @@ void Controler::deleteEvent(int id)
 
 void Controler::deleteObject(int id)
 {
-    for(int i = 0; i < mActivModel.size(); i++){
-        for(int j = 0; j < mActivModel[i].size();j++){
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j < mActivModel[i].size();j++){
             if(mActivModel[i][j].getObjectID() == id){
                 mActivModel[i][j].setObjectID(-1);
             }else if(mActivModel[i][j].getObjectID() > id){

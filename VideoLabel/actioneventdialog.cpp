@@ -22,17 +22,19 @@ void ActionEventDialog::show(int O_id)
     mObjectID = O_id;
     std::vector<ActivModel> list = mControl->getAllActivodel(O_id);
     ui->tableWidget->setRowCount(list.size());
-    for(int i = 0; i < list.size(); i++){
+    for(size_t i = 0; i < list.size(); i++){
         ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(list[i].getFrame())));
-        if(mLoader->existEventID(list[i].mEventID)){
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(mLoader->getEventName(list[i].mEventID)));
+        if(mLoader->existEventID(list[i].getEventID())){
+            ui->tableWidget->setItem(i,1,new QTableWidgetItem(mLoader->getEventName(list[i].getEventID())));
         }else{
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(list[i].mEventID)));
+            ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(list[i].getEventID())));
         }
-        ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(list[i].mX)));
-        ui->tableWidget->setItem(i,3,new QTableWidgetItem(QString::number(list[i].mY)));
-        ui->tableWidget->setItem(i,4,new QTableWidgetItem(QString::number(list[i].mW)));
-        ui->tableWidget->setItem(i,5,new QTableWidgetItem(QString::number(list[i].mH)));
+        int x,y,w,h;
+        list[i].getRect(x,y,w,h);
+        ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(x)));
+        ui->tableWidget->setItem(i,3,new QTableWidgetItem(QString::number(y)));
+        ui->tableWidget->setItem(i,4,new QTableWidgetItem(QString::number(w)));
+        ui->tableWidget->setItem(i,5,new QTableWidgetItem(QString::number(h)));
     }
 }
 

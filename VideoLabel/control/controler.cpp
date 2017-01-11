@@ -172,7 +172,11 @@ int Controler::getLastLabel(int O_id)
 
 int Controler::getObjectSizeInFramePos(int frame_pos)
 {
-    return mActivModel[frame_pos].size();
+    if(frame_pos >= 0 && frame_pos < mActivModel.size()){
+        return mActivModel[frame_pos].size();
+    }else{
+        return -1;
+    }
 }
 
 std::vector<ActivModel> Controler::getAllActivodel(int O_id)

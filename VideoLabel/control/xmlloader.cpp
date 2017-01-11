@@ -34,7 +34,7 @@ void XMLLoader::read(const QString filename)
             qDebug() << errorString();
         }
     }else{
-        qDebug()<< "Fehler beim öffen: "<<filename;
+        qDebug()<< "Fehler in XML beim öffen von XML: "<<filename;
     }
 }
 

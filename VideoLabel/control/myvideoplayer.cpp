@@ -18,8 +18,11 @@ bool MyVideoPlayer::setPath(QString path)
         frameRate = video.get(CV_CAP_PROP_FPS);
         emit legthChanged((int)video.get(CV_CAP_PROP_FRAME_COUNT));
         mLastPos = 0;
+        return true;
+    }else{
+        qDebug()<< "Fehler in Video beim öffen von XML: "<<path;
+        return false;
     }
-    return video.isOpened();
 }
 
 void MyVideoPlayer::play()

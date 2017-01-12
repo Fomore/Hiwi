@@ -145,7 +145,7 @@ void XMLLoader::write(const QString filename, const QString path)
                     xmlWriter.writeStartElement("landmarks");
                     for(int j = 0; j < 5; j++){
                         xmlWriter.writeStartElement("point");
-                        xmlWriter.writeAttribute("idx",QString("%1").arg(j));
+                        xmlWriter.writeAttribute("idx",QString("%1").arg(j+1));
                         xmlWriter.writeAttribute("x",QString("%1").arg(mod.mLandmarks[j][0]));
                         xmlWriter.writeAttribute("y",QString("%1").arg(mod.mLandmarks[j][1]));
                         xmlWriter.writeEndElement();

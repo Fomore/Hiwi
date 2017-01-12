@@ -13,8 +13,10 @@ ActionEventDialog::ActionEventDialog(QWidget *parent, Loader *loader, Controler 
     mMenu = new QMenu(ui->tableWidget);
     ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidget, SIGNAL(customContextMenuRequested(const QPoint)),this, SLOT(contextMenuRequested(const QPoint)));
+    mMenueAction.push_back(mMenu->addAction("GoTo Frame"));
     mMenueAction.push_back(mMenu->addAction("Zeile Löschen"));
-    connect(mMenueAction[0],SIGNAL(triggered()),this,SLOT(deleteActionEvent()));
+    connect(mMenueAction[0],SIGNAL(triggered()),this,SLOT(gotoFrame()));
+    connect(mMenueAction[1],SIGNAL(triggered()),this,SLOT(deleteActionEvent()));
 }
 
 ActionEventDialog::~ActionEventDialog()
@@ -74,6 +76,8 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
 
         QString label = ui->tableWidget->item(a,1)->text();
 
+        int f = ui->tableWidget->item(a,0)->text().toInt();
+
         int x = ui->tableWidget->item(a,2)->text().toInt();
         int y = ui->tableWidget->item(a,3)->text().toInt();
         int w = ui->tableWidget->item(a,4)->text().toInt();
@@ -89,7 +93,7 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
         sh /= s;
         for(double i = 1; i < s; i++){
             ui->tableWidget->insertRow(a+i);
-            ui->tableWidget->setItem(a+i,0,new QTableWidgetItem(QString::number(a+i)));
+            ui->tableWidget->setItem(a+i,0,new QTableWidgetItem(QString::number(f+i)));
             ui->tableWidget->setItem(a+i,1,new QTableWidgetItem(label));
             ui->tableWidget->setItem(a+i,2,new QTableWidgetItem(QString::number((int)(x+sx*i+0.5))));
             ui->tableWidget->setItem(a+i,3,new QTableWidgetItem(QString::number((int)(y+sy*i+0.5))));
@@ -123,10 +127,18 @@ void ActionEventDialog::on_buttonBox_accepted()
 void ActionEventDialog::deleteActionEvent()
 {
     QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
-        int pos = list[0]->row();
-        int frame = ui->tableWidget->item(pos,0)->text().toInt();
-        mDeleteList.push_back(frame);
-        ui->tableWidget->removeRow(pos);
+    int pos = list[0]->row();
+    int frame = ui->tableWidget->item(pos,0)->text().toInt();
+    mDeleteList.push_back(frame);
+    ui->tableWidget->removeRow(pos);
+}
+
+void ActionEventDialog::gotoFrame()
+{
+    QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
+    int pos = list[0]->row();
+    int frame = ui->tableWidget->item(pos,0)->text().toInt();
+    emit gotoVideoFrame(frame);
 }
 
 void ActionEventDialog::contextMenuRequested(const QPoint &point)

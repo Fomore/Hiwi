@@ -30,6 +30,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void gotoVideoFrame(int frame);
+
 private slots:
     void on_actionOpen_triggered();
 

@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(mObjectDialog,SIGNAL(accepted()),this,SLOT(updateView()));
     connect(mEventDialog,SIGNAL(accepted()),this,SLOT(updateView()));
+    connect(mActionEventDialog,SIGNAL(gotoVideoFrame(int)),this,SLOT(gotoVideoFrame(int)));
 
     mEventMenu = new QMenu(ui->listWidget_2);
     ui->listWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -69,6 +70,15 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::gotoVideoFrame(int frame)
+{
+    if(ui->horizontalSlider->minimum() <= frame
+            && ui->horizontalSlider->maximum() >= frame){
+        ui->horizontalSlider->setValue(frame);
+        mPlayer->setPosition(frame);
+    }
 }
 
 

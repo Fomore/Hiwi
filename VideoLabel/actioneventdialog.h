@@ -19,6 +19,9 @@ public:
     explicit ActionEventDialog(QWidget *parent = 0, Loader *loader=0, Controler *control=0);
     ~ActionEventDialog();
 
+signals:
+    void gotoVideoFrame(const int frame);
+
 public slots:
     void show(int O_id);
 
@@ -30,6 +33,8 @@ private slots:
     void on_buttonBox_accepted();
 
     void deleteActionEvent();
+
+    void gotoFrame();
 
     void contextMenuRequested(const QPoint& point);
 

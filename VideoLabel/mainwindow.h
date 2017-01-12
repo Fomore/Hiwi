@@ -120,6 +120,8 @@ private:
 
     void updateSelection();
 
+    void changeData(int frame, int old_oID, int old_eID, int new_oID, int new_eID);
+
     void keyPressEvent(QKeyEvent *);
 
     MyVideoPlayer* mPlayer;

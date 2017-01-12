@@ -217,6 +217,18 @@ void MainWindow::updateSelection()
     }
 }
 
+void MainWindow::changeData(int frame, int old_oID, int old_eID, int new_oID, int new_eID)
+{
+    QString text = " <title>Änderung der Daten</title>";
+    text += "<p>Frame "+QString::number(frame)+"</p>";
+    text += "<p>Von "+ui->listWidget_1->item(old_oID)->text()+" - "+ui->listWidget_2->item(old_eID)->text()+"</p>";
+    text += "<p>Von "+ui->listWidget_1->item(new_oID)->text()+" - "+ui->listWidget_2->item(new_eID)->text()+"</p>";
+    ui->textBrowser->setHtml(text);
+
+    mControler.setEvent(frame,old_oID,new_eID);
+    mControler.setObject(frame,old_oID,new_oID);
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
 
@@ -265,7 +277,8 @@ void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
 {
     displayEvent(index.row());
     if(ui->checkBoxEvent->isChecked()){
-        mControler.setEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
+        changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
+
         ui->listWidget_2->clearFocus();
     }
     lastEvent = ui->listWidget_2->currentRow();
@@ -329,6 +342,10 @@ void MainWindow::newVideoFrame(QImage frame)
                               ui->labelVideo->size().height(),
                               Qt::KeepAspectRatio,Qt::SmoothTransformation);
     ui->labelVideo->setPixmap(img2);
+
+    if(ui->checkBoxEvent->isChecked() && ui->actionPause->isVisible()){
+        changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
+    }
 
     if(!ui->checkBoxEvent->isChecked()){
         updateSelection();
@@ -460,8 +477,7 @@ void MainWindow::on_actionStepForward_triggered()
 {
     mPlayer->forward();
     if(ui->checkBoxEvent->isChecked()){
-        mControler.setEvent(mPlayer->getPosition(),ui->listWidget_1->currentRow(),lastEvent);
-        mControler.setObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
+        changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
     }
 }
 

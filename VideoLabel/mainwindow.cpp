@@ -360,7 +360,7 @@ void MainWindow::newVideoFrame(QImage frame)
         updateSelection();
     }
 
-    if(!run){
+    if(!run && ui->listWidget_1->selectedItems().size() > 0){
         on_actionPause_triggered();
         ui->listWidget_1->clearSelection();
         ui->listWidget_1->clearFocus();

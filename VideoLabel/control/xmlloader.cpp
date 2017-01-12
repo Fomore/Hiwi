@@ -90,7 +90,7 @@ void XMLLoader::write(const QString filename, const QString path)
     while(mControl->getNextSetFrame(frame_id)){
         int frame = mControl->getActivModel(frame_id,0).getFrame();
         xmlWriter.writeStartElement("image");
-        xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame+1, 6, 10, QChar('0'))+".jpg");
+        xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
         for(int i = 0; i < mControl->getObjectSizeInFramePos(frame_id); i++){
             ActivModel mod = mControl->getActivModel(frame_id,i);
 

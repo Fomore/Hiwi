@@ -96,6 +96,17 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
     return pos;
 }
 
+void Controler::setAllObject(int lastO_id, int newO_id)
+{
+    for(size_t i = 0; i < mActivModel.size(); i++){
+        for(size_t j = 0; j < mActivModel[i].size(); j++){
+            if(mActivModel[i][j].getObjectID() == lastO_id){
+                mActivModel[i][j].setObjectID(newO_id);
+            }
+        }
+    }
+}
+
 void Controler::setObject(int frame, int lastO_id, int newO_id)
 {
     int pos = getFramePosInVector(frame);

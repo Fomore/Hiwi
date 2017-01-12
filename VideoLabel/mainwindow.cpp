@@ -243,11 +243,20 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 {
     displayObject(index.row());
+    int nID = ui->listWidget_1->currentRow();
     if(ui->checkBoxEvent->isChecked()){
-        mControler.setObject(mPlayer->getPosition(),lastObject,ui->listWidget_1->currentRow());
+        QString nObj = ui->listWidget_1->item(nID)->text();
+        QString oObj = ui->listWidget_1->item(lastObject)->text();
+        if(lastObject != nID &&
+                QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
+                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+            mControler.setAllObject(nID, lastObject);
+            mLoader.deleteObject(nID);
+            updateView();
+        }
         ui->listWidget_1->item(lastObject)->setSelected(true);
     }else{
-        lastObject = ui->listWidget_1->currentRow();
+        lastObject = nID;
     }
     updateSelection();
 }

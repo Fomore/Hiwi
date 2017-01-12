@@ -27,8 +27,8 @@ public:
     void save(QString name, QString path);
 
     void clearAll();
-
     void setObject(int frame, int lastO_id, int newO_id);
+    void setAllObject(int lastO_id, int newO_id);
     void setEvent(int frame, int O_id, int E_id);
     void setLandmarks(int pos, int O_id, double marks[5][2]);
     void setOrientation(int pos, int O_id, double ori[3]);

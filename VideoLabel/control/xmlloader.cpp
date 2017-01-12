@@ -385,7 +385,7 @@ int XMLLoader::filnameToFrame(QString file)
 {
     QStringList myStringList = file.split('-').last().split('.');
     if(myStringList.size() >=2){
-        return myStringList[myStringList.size()-2].toInt()-1;
+        return myStringList[myStringList.size()-2].toInt();
     }
     return -1;
 }

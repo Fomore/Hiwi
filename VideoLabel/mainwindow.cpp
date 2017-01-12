@@ -303,6 +303,7 @@ void MainWindow::newVideoFrame(QImage frame)
 
     int frame_pos = mControler.getFramePosInVector(mPlayer->getPosition());
     int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
+
     for(int i = 0 ; i < obj_size; i++){
         int x,y,w,h;
         mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);

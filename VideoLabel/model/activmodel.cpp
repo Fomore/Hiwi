@@ -62,7 +62,6 @@ void ActivModel::setLandmarks(double marks[5][2])
     for(int i = 0; i < 5; i++){
         mLandmarks[i][0] = marks[i][0];
         mLandmarks[i][1] = marks[i][1];
-        std::cout<<marks[i][0]<<"/"<<marks[i][1]<<" ";
     }
     std::cout<<std::endl;
 }

@@ -330,16 +330,21 @@ void MainWindow::newVideoFrame(QImage frame)
     int frame_pos = mControler.getFramePosInVector(mPlayer->getPosition());
     int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
 
-    for(int i = 0 ; i < obj_size; i++){
-        int x,y,w,h;
-        mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
-        QRect rec(x,y,w,h);
-        if(mControler.getActivModel(frame_pos,i).getObjectID() == ui->listWidget_1->currentIndex().row()){
+    bool run = false;
+    if(frame_pos >= 0 && obj_size >= 0 &&
+            mControler.getActivModel(frame_pos,0).getFrame() == (int)mPlayer->getPosition()){
+        for(int i = 0 ; i < obj_size; i++){
+            int x,y,w,h;
+            mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
+            QRect rec(x,y,w,h);
+            if(mControler.getActivModel(frame_pos,i).getObjectID() == ui->listWidget_1->currentIndex().row()){
                 paint.setPen(QPen(QColor(Qt::blue), 3, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin));
-        }else{
-            paint.setPen(QColor(Qt::green));
+                run = true;
+            }else{
+                paint.setPen(QColor(Qt::green));
+            }
+            paint.drawRect(rec);
         }
-        paint.drawRect(rec);
     }
     paint.end();
     QPixmap img2 = img.scaled(ui->labelVideo->size().width(),
@@ -353,6 +358,12 @@ void MainWindow::newVideoFrame(QImage frame)
 
     if(!ui->checkBoxEvent->isChecked()){
         updateSelection();
+    }
+
+    if(!run){
+        on_actionPause_triggered();
+        ui->listWidget_1->clearSelection();
+        ui->listWidget_1->clearFocus();
     }
 }
 

@@ -65,6 +65,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *strgS =new QAction("save",this);
     strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     connect(strgS, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(auto_Save()));
+    timer->start(300000);
 }
 
 MainWindow::~MainWindow()
@@ -507,4 +511,10 @@ void MainWindow::show_Actionenevent()
 {
     int id = ui->listWidget_1->currentIndex().row();
     mActionEventDialog->show(id);
+}
+
+void MainWindow::auto_Save()
+{
+    QDateTime t;
+    mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
 }

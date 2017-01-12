@@ -94,6 +94,8 @@ private slots:
 
     void show_Actionenevent();
 
+    void auto_Save();
+
 private:
     Ui::MainWindow *ui;
 

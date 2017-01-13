@@ -5,7 +5,7 @@
 
 class Event
 {
-private:
+protected:
     QString mName;
     QString mBeschreibung;
 
@@ -23,7 +23,7 @@ public:
     bool getRestlessness();
     bool getCommunication();
 
-    void change(QString name, QString description,
+    virtual void change(QString name, QString description,
                 bool eye, bool activ, bool other, bool less, bool comm);
     bool OnTask();
 };

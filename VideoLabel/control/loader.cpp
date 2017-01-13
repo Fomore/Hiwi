@@ -79,6 +79,11 @@ void Loader::addEventSave(QString name, QString description, bool eye, bool acti
     }
 }
 
+void Loader::addNewVerhalten(int o_ID, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm, int frame_S, int frame_E)
+{
+    mBehaviors.push_back(VerhaltenTime(o_ID,name, description, eye, activ, other, less, comm, frame_S, frame_E));
+}
+
 void Loader::ChangeObject(int id, QString name, QString description)
 {
     mObjects[id].change(name,description);
@@ -87,6 +92,11 @@ void Loader::ChangeObject(int id, QString name, QString description)
 void Loader::ChamgeEvent(int id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
     mEvents[id].change(name,description, eye, activ, other, less, comm);
+}
+
+void Loader::ChamgeVerhalten(int id, int o_ID, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm, int frame_S, int frame_E)
+{
+    mBehaviors[id].change(o_ID,name, description, eye, activ, other, less, comm, frame_S, frame_E);
 }
 
 int Loader::getObjectSize()

@@ -29,8 +29,11 @@ private:
     Ui::EventDialog *ui;
 
     int mID;
+    bool mVerhalten;
 
     Loader *mLoader;
+
+    void getAttribute(bool &eye, bool &activ, bool &other, bool &less, bool &comm);
 };
 
 #endif // EVENTDIALOG_H

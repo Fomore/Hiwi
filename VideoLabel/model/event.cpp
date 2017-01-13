@@ -13,13 +13,7 @@ Event::Event()
 
 Event::Event(QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
-    mName = name;
-    mBeschreibung = description;
-    mEyeVontact = eye;
-    mActiveParticipation = activ;
-    mOtherActivities = other;
-    mRestlessness = less;
-    mCommunication = comm;
+    change(name,description,eye,activ,other,less,comm);
 }
 
 QString Event::getName(){

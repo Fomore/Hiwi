@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     mylabel.cpp \
     eventdialog.cpp \
     objectdialog.cpp \
-    actioneventdialog.cpp
+    actioneventdialog.cpp \
+    model/verhaltentime.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     mylabel.h \
     eventdialog.h \
     objectdialog.h \
-    actioneventdialog.h
+    actioneventdialog.h \
+    model/verhaltentime.h
 
 FORMS    += mainwindow.ui \
     eventdialog.ui \

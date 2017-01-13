@@ -7,12 +7,14 @@
 
 #include "model/event.h"
 #include "model/object.h"
+#include "model/verhaltentime.h"
 
 class Loader
 {
 private:
     std::vector<Event> mEvents;
     std::vector<Object> mObjects;
+    std::vector<VerhaltenTime> mBehaviors;
 public:
     Loader();
 
@@ -32,8 +34,15 @@ public:
     void addEventSave(QString name, QString description,
                       bool eye, bool activ, bool other, bool less, bool comm);
 
+    void addNewVerhalten(int o_ID, QString name, QString description,
+                         bool eye, bool activ, bool other, bool less, bool comm,
+                         int frame_S, int frame_E);
+
     void ChangeObject(int id, QString name, QString description);
     void ChamgeEvent(int id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm);
+    void ChamgeVerhalten(int id, int o_ID, QString name, QString description,
+                         bool eye, bool activ, bool other, bool less, bool comm,
+                         int frame_S, int frame_E);
 
     int getObjectSize();
     int getEventSize();

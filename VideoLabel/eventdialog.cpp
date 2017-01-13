@@ -9,6 +9,7 @@ EventDialog::EventDialog(QWidget *parent, Loader *load) :
     mLoader(load)
 {
     ui->setupUi(this);
+    mVerhalten = false;
 }
 
 EventDialog::~EventDialog()
@@ -26,24 +27,29 @@ void EventDialog::on_buttonBox_accepted()
 {
     QString name = ui->lineEditName->text().simplified();
     QString desc = ui->textEdit->toPlainText().simplified();
+    bool eye, activ, other, less, comm;
+    getAttribute(eye, activ, other, less, comm);
+    if(!mVerhalten){
     if(name.size() > 0){//Event wird angelegt
         if(mID < mLoader->getEventSize()){
-            mLoader->ChamgeEvent(mID, name, desc,
-                                 ui->checkBoxEye->isChecked(),
-                                 ui->checkBoxActiv->isChecked(),
-                                 ui->checkBoxOther->isChecked(),
-                                 ui->checkBoxRestless->isChecked(),
-                                 ui->checkBoxComm->isChecked());
+            mLoader->ChamgeEvent(mID, name, desc, eye, activ, other, less, comm);
         }else{
-            mLoader->addNewEvent(name,desc,
-                                 ui->checkBoxEye->isChecked(),
-                                 ui->checkBoxActiv->isChecked(),
-                                 ui->checkBoxOther->isChecked(),
-                                 ui->checkBoxRestless->isChecked(),
-                                 ui->checkBoxComm->isChecked());
+            mLoader->addNewEvent(name,desc, eye, activ, other, less, comm);
         }
         emit accept();
     }
+    }else{
+        mLoader->addNewVerhalten(mID,name,desc, eye, activ, other, less, comm, -1,-1);
+    }
+}
+
+void EventDialog::getAttribute(bool &eye, bool &activ, bool &other, bool &less, bool &comm)
+{
+    eye = ui->checkBoxEye->isChecked();
+    activ = ui->checkBoxActiv->isChecked();
+    other = ui->checkBoxOther->isChecked();
+    less = ui->checkBoxRestless->isChecked();
+    comm = ui->checkBoxComm->isChecked();
 }
 
 void EventDialog::setAttribute(int id, QString name, QString desc)

@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mObjectDialog = new ObjectDialog(this, &mLoader);
     mEventDialog = new EventDialog(this, &mLoader);
     mActionEventDialog = new ActionEventDialog(this, &mLoader, &mControler);
+    mBehaviorDialog = new BehaviorDialog(this, &mLoader);
 
     connect(mObjectDialog,SIGNAL(accepted()),this,SLOT(updateView()));
     connect(mEventDialog,SIGNAL(accepted()),this,SLOT(updateView()));
@@ -52,13 +53,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->listWidget_1, SIGNAL(customContextMenuRequested(const QPoint)),this,
             SLOT(contextObjectMenuRequested(const QPoint)));
     mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo No Label"));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("Start Behavior"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Detail"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(setNoLabelPosition()));
-    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(Objectchange()));
-    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
-    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(Objectdelete()));
+    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(start_behavior()));
+    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(Objectchange()));
+    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
+    connect(mObjectMenueAction[4],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
 
@@ -356,6 +359,15 @@ void MainWindow::newVideoFrame(QImage frame)
         changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
     }
 
+    if(behaviorRun && mPlayer->getPosition() >= behaviorFrame_Last + mPlayer->SecToFrame(60)){
+        int oID = ui->listWidget_1->currentRow();
+        mBehaviorDialog->clear();
+        mBehaviorDialog->setAttribute(oID,"","",behaviorFrame_Last,mPlayer->getPosition());
+        behaviorRun = false;
+        on_actionPause_triggered();
+        mBehaviorDialog->show();
+    }
+
     if(!ui->checkBoxEvent->isChecked()){
         updateSelection();
     }
@@ -479,6 +491,12 @@ void MainWindow::Objectdelete()
         mLoader.deleteObject(id);
         updateView();
     }
+}
+
+void MainWindow::start_behavior()
+{
+    behaviorFrame_Last = mPlayer->getPosition();
+    behaviorRun = true;
 }
 
 void MainWindow::on_actionImport_XML_triggered()

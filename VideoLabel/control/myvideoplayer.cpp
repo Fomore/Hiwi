@@ -104,6 +104,11 @@ double MyVideoPlayer::getVideoHeight()
     return video.get(CV_CAP_PROP_FRAME_HEIGHT);
 }
 
+double MyVideoPlayer::SecToFrame(int sec)
+{
+    return frameRate*sec;
+}
+
 void MyVideoPlayer::getFrame()
 {
     cv::Mat frame;

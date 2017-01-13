@@ -20,11 +20,6 @@ void EventDialog::clear()
 {
     ui->lineEditName->clear();
     ui->textEdit->clear();
-    ui->checkBoxActiv->setChecked(false);
-    ui->checkBoxComm->setChecked(false);
-    ui->checkBoxEye->setChecked(false);
-    ui->checkBoxOther->setChecked(false);
-    ui->checkBoxRestless->setChecked(false);
 }
 
 void EventDialog::on_buttonBox_accepted()

@@ -183,7 +183,7 @@ int Controler::getLastLabel(int O_id)
 
 int Controler::getObjectSizeInFramePos(int frame_pos)
 {
-    if(frame_pos >= 0 && frame_pos < mActivModel.size()){
+    if(frame_pos >= 0 && frame_pos < (int) mActivModel.size()){
         return mActivModel[frame_pos].size();
     }else{
         return -1;

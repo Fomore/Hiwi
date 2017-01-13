@@ -15,18 +15,19 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    control/loader.cpp \
     model/event.cpp \
     model/object.cpp \
     model/activmodel.cpp \
+    model/verhaltentime.cpp \
     control/controler.cpp \
     control/xmlloader.cpp \
     control/myvideoplayer.cpp \
+    control/loader.cpp \
     mylabel.cpp \
     eventdialog.cpp \
     objectdialog.cpp \
     actioneventdialog.cpp \
-    model/verhaltentime.cpp
+    behaviordialog.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -40,12 +41,14 @@ HEADERS  += mainwindow.h \
     eventdialog.h \
     objectdialog.h \
     actioneventdialog.h \
+    behaviordialog.h \
     model/verhaltentime.h
 
 FORMS    += mainwindow.ui \
     eventdialog.ui \
     objectdialog.ui \
-    actioneventdialog.ui
+    actioneventdialog.ui \
+    behaviordialog.ui
 
 RESOURCES += \
     Resources.qrc

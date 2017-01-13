@@ -31,6 +31,8 @@ public:
     double getVideoWidth();
     double getVideoHeight();
 
+    double SecToFrame(int sec);
+
     void getFrame();
 
 public slots:

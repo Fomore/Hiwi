@@ -17,6 +17,7 @@
 #include "objectdialog.h"
 #include "eventdialog.h"
 #include "actioneventdialog.h"
+#include "behaviordialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -79,6 +80,8 @@ private slots:
     void Objectchange();
 
     void Objectdelete();
+    
+    void start_behavior();
 
     void on_actionImport_XML_triggered();
 
@@ -95,7 +98,7 @@ private slots:
     void show_Actionenevent();
 
     void auto_Save();
-
+    
 private:
     Ui::MainWindow *ui;
 
@@ -117,6 +120,7 @@ private:
     ObjectDialog *mObjectDialog;
     EventDialog *mEventDialog;
     ActionEventDialog *mActionEventDialog;
+    BehaviorDialog *mBehaviorDialog;
 
     void clearAll();
 
@@ -129,6 +133,9 @@ private:
     MyVideoPlayer* mPlayer;
 
     int lastObject,lastEvent;
+
+    int behaviorFrame_Last;
+    bool behaviorRun;
 };
 
 #endif // MAINWINDOW_H

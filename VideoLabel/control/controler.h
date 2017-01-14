@@ -56,6 +56,8 @@ public:
     void deleteActionEvent(int O_id, int frame);
 
     void printAll();
+
+    void WindoRectToVideoRect(int &x, int &y, int &w, int &h);
 };
 
 #endif // CONTROLER_H

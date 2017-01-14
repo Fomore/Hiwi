@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo No Label"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Start Behavior"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
-    mObjectMenueAction.push_back(mObjectMenu->addAction("Detail"));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("Show Events"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(setNoLabelPosition()));
     connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(start_behavior()));
@@ -226,10 +226,13 @@ void MainWindow::updateSelection()
 
 void MainWindow::changeData(int frame, int old_oID, int old_eID, int new_oID, int new_eID)
 {
+    std::cout<<"Change: "<<old_oID<<" "<<old_eID<<" "<<new_oID<<" "<<new_eID<<std::endl;
     QString text = " <title>Änderung der Daten</title>";
     text += "<p>Frame "+QString::number(frame)+"</p>";
-    text += "<p>Von "+ui->listWidget_1->item(old_oID)->text()+" - "+ui->listWidget_2->item(old_eID)->text()+"</p>";
-    text += "<p>Von "+ui->listWidget_1->item(new_oID)->text()+" - "+ui->listWidget_2->item(new_eID)->text()+"</p>";
+    if(old_eID >= 0 && old_oID >= 0)
+        text += "<p>Von "+ui->listWidget_1->item(old_oID)->text()+" - "+ui->listWidget_2->item(old_eID)->text()+"</p>";
+    if(new_eID >= 0 && new_oID >= 0)
+        text += "<p>Von "+ui->listWidget_1->item(new_oID)->text()+" - "+ui->listWidget_2->item(new_eID)->text()+"</p>";
     ui->textBrowser->setHtml(text);
 
     mControler.setEvent(frame,old_oID,new_eID);
@@ -301,15 +304,48 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
 void MainWindow::Mouse_Released()
 {
-    ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(ui->labelVideo->x).arg(ui->labelVideo->y).arg(ui->labelVideo->lastX).arg(ui->labelVideo->lastY));
+    //    ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(ui->labelVideo->x).arg(ui->labelVideo->y).arg(ui->labelVideo->lastX).arg(ui->labelVideo->lastY));
+    if(ui->labelVideo->isRecActiv()){
+        mControler.addEvent(ui->labelVideo->lastX,
+                            ui->labelVideo->lastY,
+                            ui->labelVideo->x,
+                            ui->labelVideo->y,
+                            mPlayer->getPosition(),
+                            ui->listWidget_2->currentIndex().row(),
+                            ui->listWidget_1->currentIndex().row());
+    }else{
+        int frame_pos = mControler.getFramePosInVector(mPlayer->getPosition());
+        int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
 
-    mControler.addEvent(ui->labelVideo->lastX,
-                        ui->labelVideo->lastY,
-                        ui->labelVideo->x,
-                        ui->labelVideo->y,
-                        mPlayer->getPosition(),
-                        ui->listWidget_2->currentIndex().row(),
-                        ui->listWidget_1->currentIndex().row());
+        if(frame_pos >= 0 && obj_size >= 0 &&
+                mControler.getActivModel(frame_pos,0).getFrame() == (int)mPlayer->getPosition()){
+            int x = ui->labelVideo->x;
+            int y = ui->labelVideo->y;
+            int w = 0;
+            int h = 0;
+            mControler.WindoRectToVideoRect(x,y,w,h);
+            for(int i = 0 ; i < obj_size; i++){
+                int Ox,Oy,Ow,Oh;
+                int Oid = mControler.getActivModel(frame_pos,i).getObjectID();
+                mControler.getActivModel(frame_pos,i).getRect(Ox,Oy,Ow,Oh);
+                if(Ox <= x && Ox+Ow >= x && Oy <= y && Oy+Oh >= y){
+                    QString nObj = ui->listWidget_1->item(Oid)->text();
+                    QString oObj = ui->listWidget_1->item(lastObject)->text();
+                    if(ui->checkBoxEvent->isChecked() && lastObject != Oid &&
+                            QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
+                                                  QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                        mControler.setAllObject(Oid, lastObject);
+                        mLoader.deleteObject(Oid);
+                        updateView();
+                        ui->checkBoxEvent->setChecked(false);
+                    }else{
+                        ui->listWidget_1->item(Oid)->setSelected(true);
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::VideoPositionChange(int pos)

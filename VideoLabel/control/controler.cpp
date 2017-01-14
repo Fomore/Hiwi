@@ -45,16 +45,9 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, in
     int y = std::min(y1,y2);
     int h = std::max(y1,y2)-y;
 
-    x -= ShiftX;
-    y -= ShiftY;
+    WindoRectToVideoRect(x,y,w,h);
 
-    double scall = mScall;
-    double nx = x/scall+0.5;
-    double ny = y/scall+0.5;
-    double nw = w/scall+0.5;
-    double nh = h/scall+0.5;
-
-    addEventInFrame(nx,ny,nw,nh,frame,E_id,O_id,true);
+    addEventInFrame(x,y,w,h,frame,E_id,O_id,true);
 }
 
 void Controler::setEvent(int frame, int O_id, int E_id)
@@ -211,6 +204,14 @@ void Controler::printAll()
         }
         std::cout<<std::endl;
     }
+}
+
+void Controler::WindoRectToVideoRect(int &x, int &y, int &w, int &h)
+{
+    x = (x-ShiftX)/mScall+0.5;
+    y = (y-ShiftY)/mScall+0.5;
+    w = w/mScall+0.5;
+    h = h/mScall+0.5;
 }
 
 int Controler::getEventToObject(int frame, int O_id)

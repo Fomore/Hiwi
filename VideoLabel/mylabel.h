@@ -23,10 +23,12 @@ public:
     int lastX, lastY;
 
     void setRect(const QRect rec);
+    bool isRecActiv();
 protected:
     void paintEvent(QPaintEvent *);
 
     QRect mRectActiv;
+    bool mAddRect;
 
 signals:
     void Mouse_Pressed();

@@ -3,6 +3,7 @@
 MyLabel::MyLabel(QWidget *parent) :
     QLabel(parent)
 {
+    mAddRect = false;
 }
 
 void MyLabel::mousePressEvent(QMouseEvent *ev)
@@ -17,9 +18,10 @@ void MyLabel::mouseMoveEvent(QMouseEvent *ev)
     x = ev->x();
     y = ev->y();
     emit Mouse_Move();
-
-    mRectActiv.setRect(x,y,lastX-x,lastY-y);
-    this->repaint();
+    if(mAddRect){
+        mRectActiv.setRect(x,y,lastX-x,lastY-y);
+        this->repaint();
+    }
 }
 
 void MyLabel::mouseReleaseEvent(QMouseEvent *ev)
@@ -27,10 +29,11 @@ void MyLabel::mouseReleaseEvent(QMouseEvent *ev)
     x = ev->x();
     y = ev->y();
     emit Mouse_Released();
-
+    if(mAddRect){
     mRectActiv.setRect(x,y,lastX-x,lastY-y);
     this->repaint();
     mRectActiv.setRect(0,0,0,0);
+    }
 }
 
 void MyLabel::paintEvent(QPaintEvent *ev){
@@ -46,4 +49,9 @@ void MyLabel::setRect(const QRect rec)
 {
     mRectActiv.setRect(rec.x(),rec.y(),rec.width(),rec.height());
     this->repaint();
+}
+
+bool MyLabel::isRecActiv()
+{
+    return mAddRect;
 }

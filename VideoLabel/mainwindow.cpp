@@ -359,7 +359,7 @@ void MainWindow::newVideoFrame(QImage frame)
         changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
     }
 
-    if(behaviorRun && mPlayer->getPosition() >= behaviorFrame_Last + mPlayer->SecToFrame(6)){
+    if(behaviorRun && mPlayer->getPosition() >= behaviorFrame_Last + mPlayer->SecToFrame(60)){
         int oID = ui->listWidget_1->currentRow();
         mBehaviorDialog->clear();
         mBehaviorDialog->setAttribute(oID,"","",behaviorFrame_Last,mPlayer->getPosition());

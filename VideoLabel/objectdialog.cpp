@@ -49,6 +49,20 @@ void ObjectDialog::setAttribute(int id, QString name, QString desc)
     setID(id);
     ui->lineEditName->setText(name);
     ui->textEdit->setText(desc);
+
+    std::vector<VerhaltenTime> ver = mLoader->getBehaviors(id);
+    ui->tableWidget->setRowCount(ver.size());
+    for(size_t i = 0; i < ver.size(); i++){
+        int s,e;
+        ver[i].getFrame(s,e);
+        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(s)));
+        ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(e)));
+        if(ver[i].OnTask()){
+            ui->tableWidget->setItem(i,2,new QTableWidgetItem("Yes"));
+        }else{
+            ui->tableWidget->setItem(i,2,new QTableWidgetItem("No"));
+        }
+    }
 }
 
 void ObjectDialog::setID(int id)

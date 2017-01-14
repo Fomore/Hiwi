@@ -40,7 +40,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0">
      <item>
       <widget class="QLabel" name="label_Beschreibung">
        <property name="text">
@@ -50,6 +50,25 @@
      </item>
      <item>
       <widget class="QTextEdit" name="textEdit"/>
+     </item>
+     <item>
+      <widget class="QTableWidget" name="tableWidget">
+       <column>
+        <property name="text">
+         <string>From</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>To</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>OnTask</string>
+        </property>
+       </column>
+      </widget>
      </item>
     </layout>
    </item>

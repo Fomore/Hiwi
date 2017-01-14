@@ -63,9 +63,12 @@ void XMLLoader::write(const QString filename, const QString path)
         QStringList obj = mLoader->getObject(i);
         xmlWriter.writeStartElement("person");
         xmlWriter.writeCharacters (obj[0]);
+
+        if(obj[2] != ""){
         xmlWriter.writeStartElement("description");
         xmlWriter.writeCharacters (obj[2]);
         xmlWriter.writeEndElement();
+        }
 
         std::vector<VerhaltenTime> beh = mLoader->getBehaviors(i);
         for(size_t j = 0; j < beh.size(); j++){
@@ -189,6 +192,32 @@ void XMLLoader::write(const QString filename, const QString path)
     xmlWriter.writeEndDocument();
 
     std::cout<<"Write "<<filename.toStdString()<<" Ende"<<std::endl;
+}
+
+void XMLLoader::processBehavior(int oID)
+{
+    if (!xml.isStartElement() || xml.name() != "behavior")
+        return;
+    QXmlStreamAttributes att = xml.attributes();
+    bool EyeContact=att.value("EyeContact").toInt()==1;
+    bool ActiveParticipation=att.value("ActiveParticipation").toInt()==1;
+    bool OtherActivities=att.value("OtherActivities").toInt()==1;
+    bool Restlessness=att.value("Restlessness").toInt()==1;
+    bool Communication=att.value("Communication").toInt()==1;
+    QString name = att.value("Name").toString();
+    int start = att.value("Start").toInt();
+    int end = att.value("End").toInt();
+
+    QString desc = "";
+    while(xml.readNextStartElement()){
+        if(xml.name() == "description"){
+            desc = readNextText();
+        }else{
+            xml.skipCurrentElement();
+        }
+    }
+    mLoader->addNewVerhalten(oID,name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication,start,end);
+    std::cout<<"Verhalten: "<<oID<<" "<<name.toStdString()<<std::endl;
 }
 
 void XMLLoader::processDataset()
@@ -366,27 +395,35 @@ int XMLLoader::processEvent()
     }
 }
 
+
 int XMLLoader::processPerson()
 {
     QString label = readNextText();
     if (label.isNull()){
         std::cout<<"Label ist Null"<<std::endl;
         return -1;
-    }else if(mLoader->getObjectID(label) == -1){
-        QString desc;
-        while(xml.readNextStartElement()){
-            if(xml.name() == "description"){
-                desc = readNextText();
-            }else{
-                xml.skipCurrentElement();
-            }
-        }
-        if(!desc.isEmpty())
+    }
+    int oID = mLoader->getObjectID(label);
+
+    QString desc;
+    while(xml.readNextStartElement()){
+        if(xml.name() == "description"){
+            desc = readNextText();
             xml.skipCurrentElement();
+        }else if(xml.name() == "behavior"){
+            if(oID == -1){
+                processBehavior(mLoader->getObjectSize());
+            }else{
+                processBehavior(oID);
+            }
+            xml.skipCurrentElement();
+        }
+    }
+
+    if(oID == -1){
         return mLoader->addObjectSave(label,desc);
     }else{
-        xml.skipCurrentElement();
-        return mLoader->getObjectID(label);
+        return oID;
     }
 }
 

@@ -63,7 +63,6 @@ void ActivModel::setLandmarks(double marks[5][2])
         mLandmarks[i][0] = marks[i][0];
         mLandmarks[i][1] = marks[i][1];
     }
-    std::cout<<std::endl;
 }
 
 void ActivModel::setOrientation(double orien[3])

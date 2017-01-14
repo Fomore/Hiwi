@@ -19,6 +19,7 @@ public:
 
 private:
     void processName();
+    void processBehavior(int oID);
     void processDataset();
     void processImages();
     void processImage(int frame);

@@ -66,6 +66,11 @@ void XMLLoader::write(const QString filename, const QString path)
         xmlWriter.writeStartElement("description");
         xmlWriter.writeCharacters (obj[2]);
         xmlWriter.writeEndElement();
+
+        xmlWriter.writeStartElement("behavior");
+        xmlWriter.writeCharacters ("ToDo: Das hat er alles gemacht");
+        xmlWriter.writeEndElement();
+
         xmlWriter.writeEndElement();
     }
     for(int i = 0; i < mLoader->getEventSize(); i++){

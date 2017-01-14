@@ -55,3 +55,8 @@ bool MyLabel::isRecActiv()
 {
     return mAddRect;
 }
+
+void MyLabel::setAddRect(bool rec)
+{
+    mAddRect = rec;
+}

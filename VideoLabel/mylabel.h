@@ -24,6 +24,7 @@ public:
 
     void setRect(const QRect rec);
     bool isRecActiv();
+    void setAddRect(bool rec);
 protected:
     void paintEvent(QPaintEvent *);
 

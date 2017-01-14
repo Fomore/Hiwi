@@ -583,3 +583,8 @@ void MainWindow::auto_Save()
     QDateTime t;
     mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
 }
+
+void MainWindow::on_actionDrawBox_triggered(bool checked)
+{
+    ui->labelVideo->setAddRect(checked);
+}

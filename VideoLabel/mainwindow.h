@@ -99,6 +99,8 @@ private slots:
 
     void auto_Save();
     
+    void on_actionDrawBox_triggered(bool checked);
+
 private:
     Ui::MainWindow *ui;
 

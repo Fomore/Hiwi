@@ -99,6 +99,7 @@
     </property>
     <addaction name="actionAddEvent"/>
     <addaction name="actionAdd_Object"/>
+    <addaction name="actionDrawBox"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVideo"/>
@@ -224,6 +225,14 @@
   <action name="actionGoTo_No_Label">
    <property name="text">
     <string>GoTo No Label</string>
+   </property>
+  </action>
+  <action name="actionDrawBox">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>drawBox</string>
    </property>
   </action>
  </widget>

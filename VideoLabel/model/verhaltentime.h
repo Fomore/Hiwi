@@ -19,6 +19,8 @@ public:
                         int start, int end);
 
     void setStartEnd(int start, int end);
+    void getFrame(int &start, int &end);
+    int getObjectID();
 };
 
 #endif // VERHALTENTIME_H

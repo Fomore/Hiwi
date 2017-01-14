@@ -67,9 +67,29 @@ void XMLLoader::write(const QString filename, const QString path)
         xmlWriter.writeCharacters (obj[2]);
         xmlWriter.writeEndElement();
 
-        xmlWriter.writeStartElement("behavior");
-        xmlWriter.writeCharacters ("ToDo: Das hat er alles gemacht");
-        xmlWriter.writeEndElement();
+        std::vector<VerhaltenTime> beh = mLoader->getBehaviors(i);
+        for(size_t j = 0; j < beh.size(); j++){
+            VerhaltenTime t = beh[j];
+            xmlWriter.writeStartElement("behavior");
+            xmlWriter.writeAttribute("Name",t.getName());
+            xmlWriter.writeAttribute("EyeContact",QString::number(t.getEyeVontact()));
+            xmlWriter.writeAttribute("ActiveParticipation",QString::number(t.getActiveParticipation()));
+            xmlWriter.writeAttribute("OtherActivities",QString::number(t.getOtherActivities()));
+            xmlWriter.writeAttribute("Restlessness",QString::number(t.getRestlessness()));
+            xmlWriter.writeAttribute("Communication",QString::number(t.getCommunication()));
+
+            int s,e;
+            t.getFrame(s,e);
+            xmlWriter.writeAttribute("Start",QString::number(s));
+            xmlWriter.writeAttribute("End",QString::number(e));
+
+            if(t.getDescription() != ""){
+                xmlWriter.writeStartElement("description");
+                xmlWriter.writeCharacters (t.getDescription());
+                xmlWriter.writeEndElement();
+            }
+            xmlWriter.writeEndElement();
+        }
 
         xmlWriter.writeEndElement();
     }

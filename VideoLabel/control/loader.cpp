@@ -35,6 +35,17 @@ QStringList Loader::getEventAllName(){
     return ret;
 }
 
+std::vector<VerhaltenTime> Loader::getBehaviors(int oID)
+{
+    std::vector<VerhaltenTime> ret;
+    for(size_t i = 0; i < mBehaviors.size(); i++){
+        if(mBehaviors[i].getObjectID() == oID){
+            ret.push_back(mBehaviors[i]);
+        }
+    }
+    return ret;
+}
+
 void Loader::addNewObject(QString name, QString description)
 {
     mObjects.push_back(Object(name, description));

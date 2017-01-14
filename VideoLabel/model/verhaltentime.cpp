@@ -27,3 +27,14 @@ void VerhaltenTime::setStartEnd(int start, int end)
     mFrameStart = start;
     mFrameEnd = end;
 }
+
+void VerhaltenTime::getFrame(int &start, int &end)
+{
+    start = mFrameStart;
+    end = mFrameEnd;
+}
+
+int VerhaltenTime::getObjectID()
+{
+    return mObjectID;
+}

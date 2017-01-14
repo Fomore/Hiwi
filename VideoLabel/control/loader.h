@@ -23,6 +23,7 @@ public:
 
     QStringList getObjectAllName();
     QStringList getEventAllName();
+    std::vector<VerhaltenTime> getBehaviors(int oID);
 
     void save(QString name, QString path);
 

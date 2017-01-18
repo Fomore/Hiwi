@@ -44,9 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->listWidget_2, SIGNAL(customContextMenuRequested(const QPoint)),this,
             SLOT(contextEventMenuRequested(const QPoint)));
     mEventMenueAction.push_back(mEventMenu->addAction("Ändern"));
+    mEventMenueAction.push_back(mEventMenu->addAction("Clear Focus"));
     mEventMenueAction.push_back(mEventMenu->addAction("Löschen"));
     connect(mEventMenueAction[0],SIGNAL(triggered()),this,SLOT(Eventchange()));
-    connect(mEventMenueAction[1],SIGNAL(triggered()),this,SLOT(Eventdelete()));
+    connect(mEventMenueAction[1],SIGNAL(triggered()),this,SLOT(EventClearFocus()));
+    connect(mEventMenueAction[2],SIGNAL(triggered()),this,SLOT(Eventdelete()));
 
     mObjectMenu = new QMenu(ui->listWidget_1);
     ui->listWidget_1->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -54,14 +56,16 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(contextObjectMenuRequested(const QPoint)));
     mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo No Label"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Start Behavior"));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("Clear Focus"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Show Events"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(setNoLabelPosition()));
     connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(start_behavior()));
-    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(Objectchange()));
-    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
-    connect(mObjectMenueAction[4],SIGNAL(triggered()),this,SLOT(Objectdelete()));
+    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(ObjectClearFocus()));
+    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(Objectchange()));
+    connect(mObjectMenueAction[4],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
+    connect(mObjectMenueAction[5],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
 
@@ -69,9 +73,11 @@ MainWindow::MainWindow(QWidget *parent) :
     strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     connect(strgS, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
 
+    /*
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(auto_Save()));
     timer->start(300000);
+    */
 }
 
 MainWindow::~MainWindow()
@@ -410,8 +416,6 @@ void MainWindow::newVideoFrame(QImage frame)
 
     if(!run && ui->listWidget_1->selectedItems().size() > 0){
         on_actionPause_triggered();
-        ui->listWidget_1->clearSelection();
-        ui->listWidget_1->clearFocus();
     }
 }
 
@@ -504,6 +508,12 @@ void MainWindow::Eventdelete()
     }
 }
 
+void MainWindow::EventClearFocus()
+{
+    ui->listWidget_2->clearFocus();
+    ui->listWidget_2->clearSelection();
+}
+
 void MainWindow::Objectchange(){
     int id = ui->listWidget_1->currentIndex().row();
     QStringList all = mLoader.getObject(id);
@@ -527,6 +537,12 @@ void MainWindow::Objectdelete()
         mLoader.deleteObject(id);
         updateView();
     }
+}
+
+void MainWindow::ObjectClearFocus()
+{
+    ui->listWidget_1->clearFocus();
+    ui->listWidget_1->clearSelection();
 }
 
 void MainWindow::start_behavior()

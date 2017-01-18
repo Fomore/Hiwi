@@ -77,9 +77,13 @@ private slots:
 
     void Eventdelete();
 
+    void EventClearFocus();
+
     void Objectchange();
 
     void Objectdelete();
+
+    void ObjectClearFocus();
     
     void start_behavior();
 

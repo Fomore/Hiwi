@@ -477,7 +477,6 @@ void MainWindow::setNoLabelPosition()
 {
     int id = ui->listWidget_1->currentIndex().row();
     int pos = mControler.getLastLabel(id);
-    std::cout<<pos<<std::endl;
     ui->horizontalSlider->setValue(pos);
     mPlayer->setPosition(pos);
 }

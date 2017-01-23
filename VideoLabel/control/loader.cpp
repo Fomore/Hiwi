@@ -48,7 +48,7 @@ std::vector<VerhaltenTime> Loader::getBehaviors(int oID)
 
 void Loader::addNewObject(QString name, QString description)
 {
-    mObjects.push_back(Object(name, description));
+    mObjects.push_back(*(new Object(name, description)));
 }
 
 int Loader::addObjectSave(QString name, QString description)
@@ -72,7 +72,7 @@ int Loader::addObjectSave(QString name, QString description)
 
 void Loader::addNewEvent(QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
-    mEvents.push_back(Event(name, description, eye, activ, other, less, comm));
+    mEvents.push_back(*(new Event(name, description, eye, activ, other, less, comm)));
 }
 
 void Loader::addEventSave(QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)

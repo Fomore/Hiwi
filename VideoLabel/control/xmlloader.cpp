@@ -8,6 +8,7 @@ XMLLoader::XMLLoader(Loader *loader, Controler *control)
 {
     mLoader = loader;
     mControl = control;
+    isWriting = false;
 }
 
 void XMLLoader::read(const QString filename, QString path){
@@ -40,6 +41,8 @@ void XMLLoader::read(const QString filename)
 
 void XMLLoader::write(const QString filename, const QString path)
 {
+    if(!isWriting){
+        isWriting = true;
     QXmlStreamWriter xmlWriter;
     QFile file(path+filename+"_Label.xml");
     file.open(QFile::WriteOnly);
@@ -58,6 +61,8 @@ void XMLLoader::write(const QString filename, const QString path)
     xmlWriter.writeStartElement("comment");
     xmlWriter.writeCharacters ("Created by VideoLabel");
     xmlWriter.writeEndElement();
+
+    std::cout<<"Schreibe Personen"<<std::endl;
 
     for(int i = 0; i < mLoader->getObjectSize(); i++){
         QStringList obj = mLoader->getObject(i);
@@ -96,6 +101,9 @@ void XMLLoader::write(const QString filename, const QString path)
 
         xmlWriter.writeEndElement();
     }
+
+    std::cout<<"Schreibe Events"<<std::endl;
+
     for(int i = 0; i < mLoader->getEventSize(); i++){
         Event ev = mLoader->getEvent(i);
         xmlWriter.writeStartElement("event");
@@ -111,6 +119,8 @@ void XMLLoader::write(const QString filename, const QString path)
         xmlWriter.writeEndElement();
         xmlWriter.writeEndElement();
     }
+
+    std::cout<<"Schreibe Bilder"<<std::endl;
 
     xmlWriter.writeStartElement("images");
 
@@ -192,6 +202,8 @@ void XMLLoader::write(const QString filename, const QString path)
     xmlWriter.writeEndDocument();
 
     std::cout<<"Write "<<filename.toStdString()<<" Ende"<<std::endl;
+    isWriting = false;
+    }
 }
 
 void XMLLoader::processBehavior(int oID)

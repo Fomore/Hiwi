@@ -37,6 +37,8 @@ private:
     QXmlStreamReader xml;
     Loader *mLoader;
     Controler *mControl;
+
+    bool isWriting;
 };
 
 #endif // XMLLOADER_H

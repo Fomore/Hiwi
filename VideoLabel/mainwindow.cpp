@@ -73,11 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
     strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     connect(strgS, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
 
-    /*
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(auto_Save()));
     timer->start(300000);
-    */
 }
 
 MainWindow::~MainWindow()
@@ -232,13 +230,27 @@ void MainWindow::updateSelection()
 
 void MainWindow::changeData(int frame, int old_oID, int old_eID, int new_oID, int new_eID)
 {
-    std::cout<<"Change: "<<old_oID<<" "<<old_eID<<" "<<new_oID<<" "<<new_eID<<std::endl;
+    std::cout<<"Change: "<<old_oID<<" "<<old_eID<<" "<<new_oID<<" "<<new_eID<<": "<<frame<<std::endl;
     QString text = " <title>Änderung der Daten</title>";
-    text += "<p>Frame "+QString::number(frame)+"</p>";
-    if(old_eID >= 0 && old_oID >= 0)
+
+    bool ex_Old = false;
+    bool ex_New = false;
+
+        text += "<p>Frame "+QString::number(frame)+"</p>";
+    if(old_eID >= 0 && ui->listWidget_2->count() > old_eID
+            && old_oID >= 0 && ui->listWidget_1->count() > old_oID){
         text += "<p>Von "+ui->listWidget_1->item(old_oID)->text()+" - "+ui->listWidget_2->item(old_eID)->text()+"</p>";
-    if(new_eID >= 0 && new_oID >= 0)
+        ex_Old = true;
+    }
+    if(new_eID >= 0 && ui->listWidget_2->count() > old_eID
+            && new_oID >= 0  && ui->listWidget_1->count() > old_oID){
         text += "<p>Von "+ui->listWidget_1->item(new_oID)->text()+" - "+ui->listWidget_2->item(new_eID)->text()+"</p>";
+        ex_New = true;
+    }
+
+    if(!(ex_New && ex_Old))
+        text += "<p>Attribut-Fehler</p>";
+
     ui->textBrowser->setHtml(text);
 
     mControler.setEvent(frame,old_oID,new_eID);
@@ -344,6 +356,7 @@ void MainWindow::Mouse_Released()
                         mLoader.deleteObject(Oid);
                         updateView();
                         ui->checkBoxEvent->setChecked(false);
+                        ui->listWidget_1->setCurrentRow(lastObject);
                     }else{
                         ui->listWidget_1->item(Oid)->setSelected(true);
                     }
@@ -596,6 +609,7 @@ void MainWindow::show_Actionenevent()
 
 void MainWindow::auto_Save()
 {
+//    on_actionPause_triggered();
     QDateTime t;
     mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
 }

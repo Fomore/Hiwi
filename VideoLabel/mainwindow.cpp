@@ -347,16 +347,20 @@ void MainWindow::Mouse_Released()
                 int Oid = mControler.getActivModel(frame_pos,i).getObjectID();
                 mControler.getActivModel(frame_pos,i).getRect(Ox,Oy,Ow,Oh);
                 if(Ox <= x && Ox+Ow >= x && Oy <= y && Oy+Oh >= y){
-                    QString nObj = ui->listWidget_1->item(Oid)->text();
-                    QString oObj = ui->listWidget_1->item(lastObject)->text();
-                    if(ui->checkBoxEvent->isChecked() && lastObject != Oid &&
-                            QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
-                                                  QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
-                        mControler.setAllObject(Oid, lastObject);
-                        mLoader.deleteObject(Oid);
-                        updateView();
-                        ui->checkBoxEvent->setChecked(false);
-                        ui->listWidget_1->setCurrentRow(lastObject);
+                    if(lastObject >= 0 && lastObject < ui->listWidget_1->count()){
+                        QString nObj = ui->listWidget_1->item(Oid)->text();
+                        QString oObj = ui->listWidget_1->item(lastObject)->text();
+                        if(ui->checkBoxEvent->isChecked() && lastObject != Oid &&
+                                QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
+                                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                            mControler.setAllObject(Oid, lastObject);
+                            mLoader.deleteObject(Oid);
+                            updateView();
+                            ui->checkBoxEvent->setChecked(false);
+                            ui->listWidget_1->setCurrentRow(lastObject);
+                        }else{
+                            ui->listWidget_1->item(Oid)->setSelected(true);
+                        }
                     }else{
                         ui->listWidget_1->item(Oid)->setSelected(true);
                     }

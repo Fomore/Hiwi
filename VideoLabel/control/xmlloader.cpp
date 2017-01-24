@@ -147,7 +147,7 @@ void XMLLoader::write(const QString filename, const QString path)
                     xmlWriter.writeCharacters (obj[0]);
                     xmlWriter.writeEndElement();
                 }else{
-                    std::cout<<"Kein Object "<<i<<std::endl;
+                    std::cout<<"Kein Object "<<i<<"["<<frame<<"]"<<std::endl;
                 }
 
                 if(mod.getEventID() >= 0){
@@ -290,19 +290,19 @@ void XMLLoader::processImage(int frame)
             int E_id = -1;
             int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land);
 
-            if(O_id >= 0){
-                int FrameID = mControl->addEventInFrame(left,top,width,height,frame,E_id,O_id,manual);
-                if(isLand){
-                    mControl->setLandmarks(FrameID ,O_id, land);
-                }if(isOri){
-                    mControl->setOrientation(FrameID ,O_id, orient);
-                }if(isPos){
-                    mControl->setPosition(FrameID ,O_id, pos);
-                }if(isPro){
-                    mControl->setProjection(FrameID ,O_id, proj);
-                }
-            }else{
+            if(O_id < 0){
+                O_id = mLoader->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
                 std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
+            }
+            int FrameID = mControl->addEventInFrame(left,top,width,height,frame,E_id,O_id,manual);
+            if(isLand){
+                mControl->setLandmarks(FrameID ,O_id, land);
+            }if(isOri){
+                mControl->setOrientation(FrameID ,O_id, orient);
+            }if(isPos){
+                mControl->setPosition(FrameID ,O_id, pos);
+            }if(isPro){
+                mControl->setProjection(FrameID ,O_id, proj);
             }
         }
         else{

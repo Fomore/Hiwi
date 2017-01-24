@@ -353,8 +353,12 @@ void MainWindow::Mouse_Released()
                         QString oObj = ui->listWidget_1->item(lastObject)->text();
                         if(QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
                                                       QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
-                            mControler.setAllObject(Oid, lastObject);
-                            mLoader.deleteObject(Oid);
+                            if(nObj == "No Label"){
+                                mControler.setObject(mPlayer->getPosition(), Oid, lastObject);
+                            }else{
+                                mControler.setAllObject(Oid, lastObject);
+                                mLoader.deleteObject(Oid);
+                            }
                             updateView();
                             ui->checkBoxEvent->setChecked(false);
                             ui->listWidget_1->setCurrentRow(lastObject);
@@ -431,7 +435,7 @@ void MainWindow::newVideoFrame(QImage frame)
         updateSelection();
     }
 
-    if(!run && ui->listWidget_1->selectedItems().size() > 0){
+    if(!behaviorRun && (!run && ui->listWidget_1->selectedItems().size() > 0)){
         on_actionPause_triggered();
     }
 }

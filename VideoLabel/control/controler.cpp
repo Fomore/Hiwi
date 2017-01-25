@@ -76,10 +76,9 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
     }else if(mActivModel[pos][0].getFrame() == frame){
         int o_pos = getObjectPosInVector(pos,O_id);
         if(o_pos >= 0){
-            mActivModel[pos][o_pos].setAll(x,y,w,h,frame,E_id,O_id,man);
-        }else{
-            mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
+            std::cout<<"Object "<<O_id<<" in Frame "<<frame<<" schon vorhenden."<<std::endl;
         }
+        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
     }else{
         pos++;
         mActivModel.insert(mActivModel.begin()+pos,std::vector<ActivModel>());

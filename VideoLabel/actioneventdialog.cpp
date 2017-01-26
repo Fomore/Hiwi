@@ -70,11 +70,11 @@ void ActionEventDialog::on_pushButton_Probl_clicked()
 
 void ActionEventDialog::on_pushButton_Interpolate_clicked()
 {
-    QModelIndexList list = ui->tableWidget->selectionModel()->selectedRows();
-    if(list.size() == 2 && (list[0].row()+1 == list[1].row() ||
-                            list[0].row()-1 == list[1].row())){
-        int a = std::min(list[1].row(),list[0].row());
-        int b = std::max(list[1].row(),list[0].row());
+    QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
+    if(list.size() == 2 && (list[0]->row()+1 == list[1]->row() ||
+                            list[0]->row()-1 == list[1]->row())){
+        int a = std::min(list[1]->row(),list[0]->row());
+        int b = std::max(list[1]->row(),list[0]->row());
 
         double s = ui->tableWidget->item(b,0)->text().toInt() - ui->tableWidget->item(a,0)->text().toInt();
         if(s <= 0)

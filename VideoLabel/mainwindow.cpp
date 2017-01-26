@@ -277,6 +277,26 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         on_actionSkipBackward_triggered();
     }else if(event->key() == Qt::Key_N){
         on_actionAdd_Object_triggered();
+    }else if(event->key() == Qt::Key_1){
+        selectEvent(0);
+    }else if(event->key() == Qt::Key_2){
+        selectEvent(1);
+    }else if(event->key() == Qt::Key_3){
+        selectEvent(2);
+    }else if(event->key() == Qt::Key_4){
+        selectEvent(3);
+    }else if(event->key() == Qt::Key_5){
+        selectEvent(4);
+    }else if(event->key() == Qt::Key_6){
+        selectEvent(5);
+    }else if(event->key() == Qt::Key_7){
+        selectEvent(6);
+    }else if(event->key() == Qt::Key_8){
+        selectEvent(7);
+    }else if(event->key() == Qt::Key_9){
+        selectEvent(8);
+    }else if(event->key() == Qt::Key_0){
+        selectEvent(9);
     }
 }
 
@@ -628,4 +648,16 @@ void MainWindow::auto_Save()
 void MainWindow::on_actionDrawBox_triggered(bool checked)
 {
     ui->labelVideo->setAddRect(checked);
+}
+
+void MainWindow::selectEvent(int i)
+{
+    if(i >= 0 && i < ui->listWidget_2->count()){
+        ui->listWidget_2->setCurrentRow(i);
+        displayEvent(i);
+        if(ui->checkBoxEvent->isChecked()){
+            changeData(mPlayer->getPosition(),lastObject,lastEvent,i,ui->listWidget_2->currentRow());
+        }
+        lastEvent = i;
+    }
 }

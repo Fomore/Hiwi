@@ -106,6 +106,9 @@ private slots:
     void on_actionDrawBox_triggered(bool checked);
 
 private:
+
+    void selectEvent(int i);
+
     Ui::MainWindow *ui;
 
     Loader mLoader;

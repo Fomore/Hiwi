@@ -44,6 +44,9 @@ void XMLLoader::write(const QString filename, const QString path)
     if(!isWriting){
         isWriting = true;
     QXmlStreamWriter xmlWriter;
+    if(!QDir(path).exists()){
+        QDir().mkdir(path);
+    }
     QFile file(path+filename+"_Label.xml");
     file.open(QFile::WriteOnly);
 

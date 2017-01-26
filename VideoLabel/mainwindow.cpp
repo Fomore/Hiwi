@@ -323,6 +323,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
 void MainWindow::Mouse_Released()
 {
+    this->setFocus();
     //    ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(ui->labelVideo->x).arg(ui->labelVideo->y).arg(ui->labelVideo->lastX).arg(ui->labelVideo->lastY));
     if(ui->labelVideo->isRecActiv()){
         mControler.addEvent(ui->labelVideo->lastX,

@@ -38,13 +38,20 @@ private slots:
 
     void contextMenuRequested(const QPoint& point);
 
+    void setObject();
+
 private:
+    void addDeleteList(int frame, int oldOpos, int newOpos);
+
+    void changeObject(const QString name);
+
     Ui::ActionEventDialog *ui;
     Loader *mLoader;
     Controler *mControl;
 
-    std::vector<int> mDeleteList;
     int mObjectID;
+    std::vector<cv::Point3i> mDeleteList;
+    std::vector<cv::Point3i> mActivModelList;
 
     QMenu* mMenu;
     std::vector<QAction*> mMenueAction;

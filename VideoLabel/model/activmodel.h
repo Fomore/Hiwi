@@ -32,6 +32,7 @@ public:
     virtual void setOrientation(double orien[3]);
     virtual void setPosition(double pos[3]);
     virtual void setProjection(double proj[4]);
+    virtual void setRect(int x, int y, int w, int h);
 
     int getFrame();
     int getEventID();

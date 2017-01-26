@@ -5,6 +5,7 @@
 #include <vector>
 #include "model/activmodel.h"
 #include <QRect>
+#include <opencv2/opencv.hpp>
 
 class Controler
 {
@@ -46,14 +47,18 @@ public:
     int getObjectPosInVector(int frame, int O_id);
     int getFramePosInVector(int frame);
 
-    std::vector<ActivModel> getAllActivodel(int O_id);
+    std::vector<cv::Point3i> getAllActivModel(int O_id);
 
     bool isEventUsed(int id);
     bool isObjectUsed(int id);
 
     void deleteEvent(int id);
     void deleteObject(int id);
-    void deleteActionEvent(int O_id, int frame);
+    void deleteActionEvent(int obj_pos, int frm_pos);
+
+    void changeActionEventValue(int frmPos, int objPos, int eveID, int x, int y, int w, int h);
+    int copyActionEvent(int frmPos, int objPos, int frame);
+
 
     void printAll();
 

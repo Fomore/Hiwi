@@ -67,23 +67,23 @@ int Controler::addEventInFrame(int x, int y, int w, int h, int frame, int E_id, 
     if(pos < 0){
         mActivModel.insert(mActivModel.begin(),std::vector<ActivModel>());
         mActivModel[0].clear();
-        mActivModel[0].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
+        mActivModel[0].push_back(*(new ActivModel(x,y,w,h,frame,E_id,O_id,man)));
         pos = 0;
     }else if(pos >= (int)mActivModel.size()){
         mActivModel.push_back(std::vector<ActivModel>());
         mActivModel[pos].clear();
-        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
+        mActivModel[pos].push_back(*(new ActivModel(x,y,w,h,frame,E_id,O_id,man)));
     }else if(mActivModel[pos][0].getFrame() == frame){
         int o_pos = getObjectPosInVector(pos,O_id);
         if(o_pos >= 0){
             std::cout<<"Object "<<O_id<<" in Frame "<<frame<<" schon vorhenden."<<std::endl;
         }
-        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
+        mActivModel[pos].push_back(*(new ActivModel(x,y,w,h,frame,E_id,O_id,man)));
     }else{
         pos++;
         mActivModel.insert(mActivModel.begin()+pos,std::vector<ActivModel>());
         mActivModel[pos].clear();
-        mActivModel[pos].push_back(ActivModel(x,y,w,h,frame,E_id,O_id,man));
+        mActivModel[pos].push_back(*(new ActivModel(x,y,w,h,frame,E_id,O_id,man)));
     }
     return pos;
 }
@@ -182,13 +182,13 @@ int Controler::getObjectSizeInFramePos(int frame_pos)
     }
 }
 
-std::vector<ActivModel> Controler::getAllActivodel(int O_id)
+std::vector<cv::Point3i> Controler::getAllActivModel(int O_id)
 {
-    std::vector<ActivModel> list;
+    std::vector<cv::Point3i> list;
     for(size_t i = 0; i < mActivModel.size(); i++){
         for(size_t j = 0; j<mActivModel[i].size(); j++){
             if(mActivModel[i][j].getObjectID() == O_id){
-                list.push_back(mActivModel[i][j]);
+                list.push_back(cv::Point3i(i,j,mActivModel[i][j].getFrame()));
             }
         }
     }
@@ -326,14 +326,40 @@ void Controler::deleteObject(int id)
     }
 }
 
-void Controler::deleteActionEvent(int O_id, int frame)
+void Controler::deleteActionEvent(int obj_pos, int frm_pos)
 {
-    int pos = getFramePosInVector(frame);
-    if(pos >= 0){
-        int o_pos = getObjectPosInVector(pos, O_id);
-        mActivModel[pos].erase(mActivModel[pos].begin() + o_pos);
-        if(mActivModel[pos].size() == 0){
-            mActivModel.erase(mActivModel.begin() + pos);
+    std::cout<<"Lösche: "<<frm_pos<<" - "<<obj_pos<<std::endl;
+    if(obj_pos >= 0 && frm_pos >= 0){
+        mActivModel[frm_pos].erase(mActivModel[frm_pos].begin() + obj_pos);
+        if(mActivModel[frm_pos].size() == 0){
+            mActivModel.erase(mActivModel.begin() + frm_pos);
         }
     }
+}
+
+void Controler::changeActionEventValue(int frmPos, int objPos, int eveID, int x, int y, int w, int h)
+{
+    mActivModel[frmPos][objPos].setEventID(eveID);
+    mActivModel[frmPos][objPos].setRect(x,y,w,h);
+}
+
+int Controler::copyActionEvent(int frmPos, int objPos, int frame)
+{
+    int pos = getFramePosInVector(frame);
+    if(pos < 0){
+        mActivModel.insert(mActivModel.begin(),std::vector<ActivModel>());
+        mActivModel[0].clear();
+        mActivModel[0].push_back(*(new ActivModel(mActivModel[frmPos][objPos])));
+        pos = 0;
+    }else if(pos >= (int)mActivModel.size()){
+        mActivModel.push_back(std::vector<ActivModel>());
+        mActivModel[pos].clear();
+        mActivModel[pos].push_back(*(new ActivModel(mActivModel[frmPos][objPos])));
+    }else{
+        pos++;
+        mActivModel.insert(mActivModel.begin()+pos,std::vector<ActivModel>());
+        mActivModel[pos].clear();
+        mActivModel[pos].push_back(*(new ActivModel(mActivModel[frmPos][objPos])));
+    }
+    return pos;
 }

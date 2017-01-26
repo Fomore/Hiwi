@@ -90,6 +90,14 @@ void ActivModel::setProjection(double proj[4])
     mProjection[3]=proj[3];
 }
 
+void ActivModel::setRect(int x, int y, int w, int h)
+{
+    mX = x;
+    mY = y;
+    mW = w;
+    mH = h;
+}
+
 int ActivModel::getFrame(){
     return mTimePos;
 }

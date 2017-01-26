@@ -2,6 +2,7 @@
 #include "ui_actioneventdialog.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 #include <iostream>
 
 ActionEventDialog::ActionEventDialog(QWidget *parent, Loader *loader, Controler *control) :
@@ -13,10 +14,12 @@ ActionEventDialog::ActionEventDialog(QWidget *parent, Loader *loader, Controler 
     mMenu = new QMenu(ui->tableWidget);
     ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidget, SIGNAL(customContextMenuRequested(const QPoint)),this, SLOT(contextMenuRequested(const QPoint)));
+    mMenueAction.push_back(mMenu->addAction("Set Object"));
     mMenueAction.push_back(mMenu->addAction("GoTo Frame"));
     mMenueAction.push_back(mMenu->addAction("Zeile Löschen"));
-    connect(mMenueAction[0],SIGNAL(triggered()),this,SLOT(gotoFrame()));
-    connect(mMenueAction[1],SIGNAL(triggered()),this,SLOT(deleteActionEvent()));
+    connect(mMenueAction[0],SIGNAL(triggered()),this,SLOT(setObject()));
+    connect(mMenueAction[1],SIGNAL(triggered()),this,SLOT(gotoFrame()));
+    connect(mMenueAction[2],SIGNAL(triggered()),this,SLOT(deleteActionEvent()));
 }
 
 ActionEventDialog::~ActionEventDialog()
@@ -27,19 +30,22 @@ ActionEventDialog::~ActionEventDialog()
 void ActionEventDialog::show(int O_id)
 {
     mDeleteList.clear();
+    mActivModelList.clear();
+
     QDialog::show();
     mObjectID = O_id;
-    std::vector<ActivModel> list = mControl->getAllActivodel(O_id);
-    ui->tableWidget->setRowCount(list.size());
-    for(size_t i = 0; i < list.size(); i++){
-        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(list[i].getFrame())));
-        if(mLoader->existEventID(list[i].getEventID())){
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(mLoader->getEventName(list[i].getEventID())));
+    mActivModelList = mControl->getAllActivModel(O_id);
+    ui->tableWidget->setRowCount(mActivModelList.size());
+    for(size_t i = 0; i < mActivModelList.size(); i++){
+        ActivModel mod = mControl->getActivModel(mActivModelList[i].x,mActivModelList[i].y);
+        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(mod.getFrame())));
+        if(mLoader->existEventID(mod.getEventID())){
+            ui->tableWidget->setItem(i,1,new QTableWidgetItem(mLoader->getEventName(mod.getEventID())));
         }else{
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(list[i].getEventID())));
+            ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(mod.getEventID())));
         }
         int x,y,w,h;
-        list[i].getRect(x,y,w,h);
+        mod.getRect(x,y,w,h);
         ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(x)));
         ui->tableWidget->setItem(i,3,new QTableWidgetItem(QString::number(y)));
         ui->tableWidget->setItem(i,4,new QTableWidgetItem(QString::number(w)));
@@ -64,11 +70,11 @@ void ActionEventDialog::on_pushButton_Probl_clicked()
 
 void ActionEventDialog::on_pushButton_Interpolate_clicked()
 {
-    QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
-    if(list.size() == 2 && (list[0]->row()+1 == list[1]->row() ||
-                            list[0]->row()-1 == list[1]->row())){
-        int a = std::min(list[1]->row(),list[0]->row());
-        int b = std::max(list[1]->row(),list[0]->row());
+    QModelIndexList list = ui->tableWidget->selectionModel()->selectedRows();
+    if(list.size() == 2 && (list[0].row()+1 == list[1].row() ||
+                            list[0].row()-1 == list[1].row())){
+        int a = std::min(list[1].row(),list[0].row());
+        int b = std::max(list[1].row(),list[0].row());
 
         double s = ui->tableWidget->item(b,0)->text().toInt() - ui->tableWidget->item(a,0)->text().toInt();
         if(s <= 0)
@@ -92,6 +98,7 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
         double sh = ui->tableWidget->item(b,5)->text().toInt() - ui->tableWidget->item(a,5)->text().toInt();
         sh /= s;
         for(double i = 1; i < s; i++){
+            mActivModelList.insert(mActivModelList.begin()+a+i,cv::Point3i(-1,-1,-1));
             ui->tableWidget->insertRow(a+i);
             ui->tableWidget->setItem(a+i,0,new QTableWidgetItem(QString::number(f+i)));
             ui->tableWidget->setItem(a+i,1,new QTableWidgetItem(label));
@@ -100,7 +107,6 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
             ui->tableWidget->setItem(a+i,4,new QTableWidgetItem(QString::number((int)(w+sw*i+0.5))));
             ui->tableWidget->setItem(a+i,5,new QTableWidgetItem(QString::number((int)(h+sh*i+0.5))));
         }
-
     }else{
         QMessageBox::information(this, "Interpolation","Bei der Interpolation müssen zwei untereinander liegende Felder ausgewählt werden");
     }
@@ -108,29 +114,58 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
 
 void ActionEventDialog::on_buttonBox_accepted()
 {
-    for(size_t i = 0; i < mDeleteList.size(); i++){
-        mControl->deleteActionEvent(mObjectID,mDeleteList[i]);
-    }
     for(int i = 0; i < ui->tableWidget->rowCount(); i++){
+        int frame = ui->tableWidget->item(i,0)->text().toInt();
         int E_id = mLoader->getEventID(ui->tableWidget->item(i,1)->text());
-        mControl->addEventInFrame(ui->tableWidget->item(i,2)->text().toInt(),
-                                  ui->tableWidget->item(i,3)->text().toInt(),
-                                  ui->tableWidget->item(i,4)->text().toInt(),
-                                  ui->tableWidget->item(i,5)->text().toInt(),
-                                  ui->tableWidget->item(i,0)->text().toInt(),
-                                  E_id,
-                                  mObjectID,
-                                  false);
+        int x = ui->tableWidget->item(i,2)->text().toInt();
+        int y = ui->tableWidget->item(i,3)->text().toInt();
+        int w = ui->tableWidget->item(i,4)->text().toInt();
+        int h = ui->tableWidget->item(i,5)->text().toInt();
+
+        if(mActivModelList[i].x >=0 && mActivModelList[i].y >= 0 && mActivModelList[i].z >= 0){//Object exisiteirt bereits
+            int framePos = mControl->getFramePosInVector(mActivModelList[i].z);
+            int Fp = mActivModelList[i].x;
+            int Op = mActivModelList[i].y;
+            mControl->changeActionEventValue(framePos,Op,E_id,x,y,w,h);
+            if(mActivModelList[i].z != frame){
+                mControl->copyActionEvent(framePos,Op,frame);
+                mDeleteList.push_back(cv::Point3i(mActivModelList[i].z,Op,-1));
+            }
+        }else{
+            mControl->addEventInFrame(x,y,w,h,frame,E_id,mObjectID,false);
+        }
+    }
+    for(size_t i = 0; i < mDeleteList.size(); i++){
+        if(mDeleteList[i].z >= 0){
+            mControl->setObject(mDeleteList[i].x,mDeleteList[i].y,mDeleteList[i].z);
+        }else{
+            int f_pos = mControl->getFramePosInVector(mDeleteList[i].x);
+            mControl->deleteActionEvent(mDeleteList[i].y,f_pos);
+        }
     }
 }
 
 void ActionEventDialog::deleteActionEvent()
 {
-    QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
-    int pos = list[0]->row();
-    int frame = ui->tableWidget->item(pos,0)->text().toInt();
-    mDeleteList.push_back(frame);
-    ui->tableWidget->removeRow(pos);
+    QModelIndexList list = ui->tableWidget->selectionModel()->selectedRows();
+    std::vector<int> pos;
+    pos.push_back(list[0].row());
+    for(int i = 1; i < list.size(); i++){
+        int p = 0;
+        while (p < (int)pos.size() && pos[p] > list[i].row()) {
+            p++;
+        }
+        pos.insert(pos.begin()+p,list[i].row());
+    }
+    for(size_t i =0 ; i < pos.size(); i++){
+        if(mActivModelList[pos[i]].x >= 0 && mActivModelList[pos[i]].y >= 0){
+            addDeleteList(mActivModelList[pos[i]].z,mActivModelList[pos[i]].y,-1);
+            mActivModelList.erase(mActivModelList.begin() + pos[i]);
+        }else{
+            mActivModelList.erase(mActivModelList.begin() + pos[i]);
+        }
+        ui->tableWidget->removeRow(pos[i]);
+    }
 }
 
 void ActionEventDialog::gotoFrame()
@@ -144,9 +179,57 @@ void ActionEventDialog::gotoFrame()
 void ActionEventDialog::contextMenuRequested(const QPoint &point)
 {
     QModelIndex t = ui->tableWidget->indexAt(point);
-    ui->tableWidget->clearSelection();
     if(t.row() >= 0){
+        QList<QTableWidgetItem *> list = ui->tableWidget->selectedItems();
+
+        QItemSelectionModel *selectionModel = ui->tableWidget->selectionModel();
+        QItemSelection itemSelection;
+        for(int i = 0; i < list.size(); i++){
+            ui->tableWidget->selectRow(list[i]->row());
+            itemSelection.merge(selectionModel->selection(), QItemSelectionModel::Select);
+        }
+        selectionModel->clearSelection();
+        selectionModel->select(itemSelection,QItemSelectionModel::Select);
         mMenu->popup(ui->tableWidget->mapToGlobal(point));
-        ui->tableWidget->selectRow(t.row());
     }
+}
+
+void ActionEventDialog::setObject()
+{
+    QStringList items = mLoader->getObjectAllName();
+
+        bool ok;
+        QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                             tr("Season:"), items, 0, false, &ok);
+        if (ok && !item.isEmpty())
+            changeObject(item);
+}
+
+void ActionEventDialog::changeObject(const QString name)
+{
+    int id = mLoader->getObjectID(name);
+    QModelIndexList list = ui->tableWidget->selectionModel()->selectedRows();
+    for(int i = 0; i < list.size(); i++){
+        int pos = list[i].row();
+        if(mActivModelList[pos].x >= 0 && mActivModelList[pos].y >= 0 && mActivModelList[pos].z >= 0){
+            addDeleteList(mActivModelList[pos].z,mActivModelList[pos].y,id);
+            mActivModelList.erase(mActivModelList.begin() + pos);
+        }else{
+            mActivModelList.erase(mActivModelList.begin() + pos);
+            std::cout<<"Change-Fehler"<<std::endl;
+        }
+        ui->tableWidget->removeRow(pos);
+    }
+}
+
+void ActionEventDialog::addDeleteList(int frame, int oldOpos, int newOpos)
+{
+    int p = 0;
+    while (p < (int)mDeleteList.size() && mDeleteList[p].x > frame) {
+        p++;
+    }
+    while(p < (int)mDeleteList.size() && mDeleteList[p].x == frame && mDeleteList[p].y > oldOpos){
+        p++;
+    }
+    mDeleteList.insert(mDeleteList.begin()+p,cv::Point3i(frame, oldOpos, newOpos));
 }

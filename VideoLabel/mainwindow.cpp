@@ -299,6 +299,7 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
         lastObject = nID;
     }
     updateSelection();
+    mPlayer->getFrame();
 }
 
 void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
@@ -362,11 +363,13 @@ void MainWindow::Mouse_Released()
                             updateView();
                             ui->checkBoxEvent->setChecked(false);
                             ui->listWidget_1->setCurrentRow(lastObject);
+                            mPlayer->getFrame();
                         }
                     }else{
                         lastObject = Oid;
                         ui->listWidget_1->item(Oid)->setSelected(true);
                         ui->listWidget_1->setCurrentRow(Oid);
+                        mPlayer->getFrame();
                     }
                     break;
                 }

@@ -43,6 +43,7 @@ public:
     int getEventToObject(int frame, int O_id);
     ActivModel getActivModel(int frame_pos, int O_pos);
     int getLastLabel(int O_id);
+    int getLastFrame(int O_id);
     int getObjectSizeInFramePos(int frame_pos);
     int getObjectPosInVector(int frame, int O_id);
     int getFramePosInVector(int frame);

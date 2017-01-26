@@ -55,17 +55,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->listWidget_1, SIGNAL(customContextMenuRequested(const QPoint)),this,
             SLOT(contextObjectMenuRequested(const QPoint)));
     mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo No Label"));
+    mObjectMenueAction.push_back(mObjectMenu->addAction("GoTo last Frame"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Start Behavior"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Clear Focus"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Ändern"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Show Events"));
     mObjectMenueAction.push_back(mObjectMenu->addAction("Löschen"));
     connect(mObjectMenueAction[0],SIGNAL(triggered()),this,SLOT(setNoLabelPosition()));
-    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(start_behavior()));
-    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(ObjectClearFocus()));
-    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(Objectchange()));
-    connect(mObjectMenueAction[4],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
-    connect(mObjectMenueAction[5],SIGNAL(triggered()),this,SLOT(Objectdelete()));
+    connect(mObjectMenueAction[1],SIGNAL(triggered()),this,SLOT(gotoLastFrame()));
+    connect(mObjectMenueAction[2],SIGNAL(triggered()),this,SLOT(start_behavior()));
+    connect(mObjectMenueAction[3],SIGNAL(triggered()),this,SLOT(ObjectClearFocus()));
+    connect(mObjectMenueAction[4],SIGNAL(triggered()),this,SLOT(Objectchange()));
+    connect(mObjectMenueAction[5],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
+    connect(mObjectMenueAction[6],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
     mXMLLoader = new XMLLoader(&mLoader,&mControler);
 
@@ -507,6 +509,16 @@ void MainWindow::setNoLabelPosition()
     int pos = mControler.getLastLabel(id);
     ui->horizontalSlider->setValue(pos);
     mPlayer->setPosition(pos);
+    mPlayer->getFrame();
+}
+
+void MainWindow::gotoLastFrame()
+{
+    int id = ui->listWidget_1->currentIndex().row();
+    int pos = mControler.getLastFrame(id);
+    ui->horizontalSlider->setValue(pos);
+    mPlayer->setPosition(pos);
+    mPlayer->getFrame();
 }
 
 void MainWindow::contextEventMenuRequested(const QPoint &point)

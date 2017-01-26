@@ -69,6 +69,8 @@ private slots:
 
     void setNoLabelPosition();
 
+    void gotoLastFrame();
+
     void contextEventMenuRequested(const QPoint& point);
 
     void contextObjectMenuRequested(const QPoint& point);

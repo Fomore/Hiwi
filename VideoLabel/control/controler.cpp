@@ -173,6 +173,18 @@ int Controler::getLastLabel(int O_id)
     return -1;
 }
 
+int Controler::getLastFrame(int O_id)
+{
+    for(size_t i = mActivModel.size()-1; i >= 0; i--){
+        for(size_t j = 0; j < mActivModel[i].size(); j++){
+            if(mActivModel[i][j].getObjectID() == O_id){
+                return mActivModel[i][j].getFrame();
+            }
+        }
+    }
+    return -1;
+}
+
 int Controler::getObjectSizeInFramePos(int frame_pos)
 {
     if(frame_pos >= 0 && frame_pos < (int) mActivModel.size()){

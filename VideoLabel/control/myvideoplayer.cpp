@@ -86,7 +86,7 @@ void MyVideoPlayer::setPosition(double pos, bool show)
 
 void MyVideoPlayer::setPosition(int pos)
 {
-    setPosition((double)pos, false);
+    setPosition((double)pos-1, false);
 }
 
 double MyVideoPlayer::getPosition()
@@ -115,8 +115,8 @@ void MyVideoPlayer::getFrame()
     if(mStop){
         video.read(frame);
         if(!frame.empty()){
-            showImage(frame, false);
             video.set(CV_CAP_PROP_POS_FRAMES,std::max(1.0,video.get(CV_CAP_PROP_POS_FRAMES)-1.0));
+            showImage(frame, false);
         }
     }
 }

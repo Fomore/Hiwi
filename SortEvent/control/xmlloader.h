@@ -12,18 +12,17 @@ public:
     XMLLoader();
 
     void read(const QString filename);
-    void read(const QString filename, const QString path);
     void write(const QString filename, const QString path);
 
     void sort();
-
+    std::vector<size_t> mPos;
+    std::vector<Event> mEvents;
     bool grather(size_t a, size_t b);
 
 private:
     void TitelToValue(QString titel, QString &Side, int &PointNumber, int &Col, int &Row);
 
-    std::vector<Event> mEvents;
-    std::vector<size_t> mPos;
+    void sort(int left, int right);
 
     void processName();
     void processDataset();

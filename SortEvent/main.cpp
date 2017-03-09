@@ -7,10 +7,11 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     XMLLoader mLoader;
-    QString ret;
-    int a,b,c;
-    mLoader.TitelToValue("Img_R1 2 - 4",ret,a,b,c);
-    std::cout<<ret.toStdString()<<" "<<a<<" "<<b<<" "<<c<<std::endl;
+    mLoader.read("/home/falko/Uni/Hiwi/TestHead.xml");
+
+    mLoader.sort();
+
+    mLoader.write("Test","/home/falko/Uni/Hiwi/");
 
     return app.exec();
 }

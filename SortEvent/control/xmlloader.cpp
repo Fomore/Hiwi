@@ -10,10 +10,6 @@ XMLLoader::XMLLoader()
     mEvents.clear();
 }
 
-void XMLLoader::read(const QString filename, QString path){
-    read(path+filename+"_Label.xml");
-}
-
 void XMLLoader::read(const QString filename)
 {
     QFile xmlFile(filename);
@@ -49,20 +45,12 @@ void XMLLoader::write(const QString filename, const QString path)
 
     xmlWriter.setDevice(&file);
     xmlWriter.setAutoFormatting(true);
-    std::cout<<"Write "<<filename.toStdString()<<std::endl;
+    std::cout<<"Write "<<(path+filename+"Short.xml").toStdString()<<std::endl;
 
     xmlWriter.writeStartDocument();
     xmlWriter.writeStartElement("dataset");
 
-    xmlWriter.writeStartElement("name");
-    xmlWriter.writeCharacters ("imglab dataset");
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeStartElement("comment");
-    xmlWriter.writeCharacters ("Created by VideoLabel");
-    xmlWriter.writeEndElement();
-
-    std::cout<<"Schreibe Events"<<std::endl;
+    std::cout<<"Schreibe Events: "<<mEvents.size()<<" | "<<mPos.size()<<std::endl;
 
     for(size_t i = 0; i < mPos.size(); i++){
         if(mPos[i] < mEvents.size()){
@@ -90,6 +78,40 @@ void XMLLoader::write(const QString filename, const QString path)
 
 }
 
+void XMLLoader::sort()
+{
+    sort(0,mPos.size()-1);
+    std::cout<<"Ende Sort"<<std::endl;
+}
+
+void XMLLoader::sort(int left, int right)
+{
+    int i = left, j = right;
+    size_t tmp;
+    size_t pivot = mPos[(left + right) / 2];
+
+    while (i <= j){
+        while (grather(pivot, mPos[i]))
+            i++;
+
+        while (grather(mPos[j], pivot))
+            j--;
+
+        if (i <= j) {
+            tmp = mPos[i];
+            mPos[i] = mPos[j];
+            mPos[j] = tmp;
+            i++;
+            j--;
+        }
+    };
+
+    if (left < j)
+        sort(left, j);
+    if (i < right)
+        sort(i, right);
+}
+
 void XMLLoader::TitelToValue(QString titel, QString &Side, int &PointNumber, int &Col, int &Row)
 {
     QStringList part1 =  titel.split(" ");
@@ -103,7 +125,7 @@ void XMLLoader::TitelToValue(QString titel, QString &Side, int &PointNumber, int
 
     QStringList part2 =  part1[0].split("_");
     if(part2.size() == 2){
-        if(part2[1][0] == '0'){
+        if(part2[1].size() == 0){
             Side = "0";
             PointNumber = 0;
         }else if(part2[1][0] == 'R'){
@@ -128,21 +150,27 @@ bool XMLLoader::grather(size_t a, size_t b)
     int point[2];
     int col[2];
     int row[2];
+
+    if(a > mEvents.size())
+        return false;
+    if(b > mEvents.size())
+        return true;
+
     TitelToValue(mEvents[a].getName(),side[0],point[0],col[0],row[0]);
     TitelToValue(mEvents[b].getName(),side[1],point[1],col[1],row[1]);
 
-    if(col[0] == col[1]){
-        if(row[0] == col[1]){
+    if(row[0] == row[1]){
+        if(col[0] == col[1]){
             if(side[0] == side[1]){
                 return point[0] > point[1];
             }else{
                 return (side[0] == "0" || (side[0] == "R" && side[1] == "L"));
             }
         }else{
-            return row[0] > col[1];
+            return col[0] > col[1];
         }
     }else{
-        return col[0] > col[1];
+        return row[0] > row[1];
     }
 }
 

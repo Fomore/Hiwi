@@ -7,11 +7,11 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     XMLLoader mLoader;
-    mLoader.read("/home/falko/Uni/Hiwi/TestHead.xml");
+    mLoader.read("/home/falko/Uni/Hiwi/headpose_Lable_erstellen.xml");
 
     mLoader.sort();
 
-    mLoader.write("Test","/home/falko/Uni/Hiwi/");
+    mLoader.write("Position_","/home/falko/Uni/Hiwi/");
 
     return app.exec();
 }

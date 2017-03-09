@@ -125,22 +125,19 @@ void XMLLoader::TitelToValue(QString titel, QString &Side, int &PointNumber, int
 
     QStringList part2 =  part1[0].split("_");
     if(part2.size() == 2){
-        if(part2[1].size() == 0){
-            Side = "0";
-            PointNumber = 0;
-        }else if(part2[1][0] == 'R'){
+        if(part2[1][0] == 'R'){
             Side = "R";
-            PointNumber = part2[1].data()[1].digitValue();
+            PointNumber = part2[1][1].digitValue();
         }else if(part2[1][0] == 'L'){
             Side = "L";
-            PointNumber = part2[1].data()[1].digitValue();
+            PointNumber = part2[1][1].digitValue();
         }else{
             Side = "-";
             PointNumber = -1;
         }
     }else{
-        Side = "-";
-        PointNumber = -1;
+        Side = "0";
+        PointNumber = 0;
     }
 }
 
@@ -164,7 +161,7 @@ bool XMLLoader::grather(size_t a, size_t b)
             if(side[0] == side[1]){
                 return point[0] > point[1];
             }else{
-                return (side[0] == "0" || (side[0] == "R" && side[1] == "L"));
+                return (side[0] == "R" || (side[0] == "L" && side[1] == "0"));
             }
         }else{
             return col[0] > col[1];

@@ -175,7 +175,7 @@ int Controler::getLastLabel(int O_id)
 
 int Controler::getLastFrame(int O_id)
 {
-    for(size_t i = mActivModel.size()-1; i >= 0; i--){
+    for(int i = (int)mActivModel.size()-1; i >= 0; i--){
         for(size_t j = 0; j < mActivModel[i].size(); j++){
             if(mActivModel[i][j].getObjectID() == O_id){
                 return mActivModel[i][j].getFrame();

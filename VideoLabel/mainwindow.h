@@ -2,8 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QMediaPlayer>
-#include <QVideoWidget>
 #include <QFileDialog>
 #include <QProgressBar>
 #include <QSlider>
@@ -110,6 +108,7 @@ private slots:
 private:
 
     void selectEvent(int i);
+    void setFrameOutput(size_t frame);
 
     Ui::MainWindow *ui;
 

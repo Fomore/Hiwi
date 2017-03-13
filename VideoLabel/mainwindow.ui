@@ -20,7 +20,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,3">
+   <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="5,1">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
       <property name="sizeConstraint">
@@ -43,7 +43,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,2,0,2">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,2,0,0">
       <item>
        <widget class="QListWidget" name="listWidget_1"/>
       </item>
@@ -51,14 +51,25 @@
        <widget class="QListWidget" name="listWidget_2"/>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBoxEvent">
-        <property name="text">
-         <string>Change Event</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QCheckBox" name="checkBoxEvent">
+          <property name="text">
+           <string>Change Event</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_FrameNR">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QTextBrowser" name="textBrowser"/>

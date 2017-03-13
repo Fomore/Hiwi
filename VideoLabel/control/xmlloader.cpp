@@ -263,6 +263,9 @@ void XMLLoader::processImages() {
             int frame = -1;
             if(!file.isNull())
                 frame = filnameToFrame(file);
+            if(frame%1000==0) {
+                std::cout<<"Frame :"<<QString::number(frame).toStdString()<<std::endl;
+            }
             processImage(frame);
         }else{
             std::cout<<"Überspringe in Images mit "<<xml.name().toString().toStdString()<<std::endl;

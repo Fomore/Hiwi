@@ -16,6 +16,9 @@ private:
     bool mIsNewPosition;
     double mNewPosition;
 
+//    std::vector<cv::String> mImagePaths;
+//    int mImagePos;
+
     double mLastPos;
     double frameRate;
     std::string path;

@@ -107,6 +107,7 @@ void MainWindow::on_actionOpen_triggered()
         clearAll();
 
         mXMLLoader->read(mFileName, "./data/");
+        //mXMLLoader->read(mFileName, "/media/Volume/annotation/");
 
         updateView();
 
@@ -228,6 +229,7 @@ void MainWindow::updateSelection()
         ui->listWidget_2->clearFocus();
         ui->listWidget_2->clearSelection();
     }
+    std::cout << "Selection:" << O_id << " frame " << frame << std::endl;
 }
 
 void MainWindow::changeData(int frame, int old_oID, int old_eID, int new_oID, int new_eID)
@@ -318,6 +320,7 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
         }
         ui->listWidget_1->item(lastObject)->setSelected(true);
     }else{
+        qDebug() << "here";
         lastObject = nID;
     }
     updateSelection();
@@ -346,7 +349,14 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 void MainWindow::Mouse_Released()
 {
     this->setFocus();
-    //    ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(ui->labelVideo->x).arg(ui->labelVideo->y).arg(ui->labelVideo->lastX).arg(ui->labelVideo->lastY));
+
+    int x = ui->labelVideo->lastX;
+    int y = ui->labelVideo->lastY;
+    int w = ui->labelVideo->x;
+    int h = ui->labelVideo->y;
+    mControler.WindoRectToVideoRect(x,y,w,h);
+    ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(x).arg(y).arg(w).arg(h));
+
     if(ui->labelVideo->isRecActiv()){
         mControler.addEvent(ui->labelVideo->lastX,
                             ui->labelVideo->lastY,
@@ -372,11 +382,13 @@ void MainWindow::Mouse_Released()
                 mControler.getActivModel(frame_pos,i).getRect(Ox,Oy,Ow,Oh);
                 if(Ox <= x && Ox+Ow >= x && Oy <= y && Oy+Oh >= y){
                     if(lastObject >= 0 && lastObject < ui->listWidget_1->count()
-                            && ui->checkBoxEvent->isChecked() && lastObject != Oid){
+                            //&& ui->checkBoxEvent->isChecked()
+                            && lastObject != Oid){
                         QString nObj = ui->listWidget_1->item(Oid)->text();
                         QString oObj = ui->listWidget_1->item(lastObject)->text();
-                        if(QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
-                                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                    //    if(QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
+                    //                                  QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                        qDebug() << "Aendere:" << nObj << " in " << oObj;
                             if(nObj == "No Label"){
                                 mControler.setObject(mPlayer->getPosition(), Oid, lastObject);
                             }else{
@@ -388,12 +400,12 @@ void MainWindow::Mouse_Released()
                             ui->listWidget_1->setCurrentRow(lastObject);
                             mPlayer->getFrame();
                         }
-                    }else{
-                        lastObject = Oid;
-                        ui->listWidget_1->item(Oid)->setSelected(true);
-                        ui->listWidget_1->setCurrentRow(Oid);
-                        mPlayer->getFrame();
-                    }
+                    //}else{
+                    //    lastObject = Oid;
+                    //    ui->listWidget_1->item(Oid)->setSelected(true);
+                    //    ui->listWidget_1->setCurrentRow(Oid);
+                    //    mPlayer->getFrame();
+                    //}
                     break;
                 }
             }
@@ -419,15 +431,24 @@ void MainWindow::newVideoFrame(QImage frame)
 
     QPainter paint(&img);
 
+    setFrameOutput((size_t)mPlayer->getPosition());
+
     int frame_pos = mControler.getFramePosInVector(mPlayer->getPosition());
     int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
 
     bool run = false;
+    QFont font = paint.font();
+    font.setPointSize(std::min(mPlayer->getVideoWidth()/91, mPlayer->getVideoHeight()/69));
+    paint.setFont(font);
+    paint.setRenderHints(QPainter::Antialiasing);
     if(frame_pos >= 0 && obj_size >= 0 &&
             mControler.getActivModel(frame_pos,0).getFrame() == (int)mPlayer->getPosition()){
         for(int i = 0 ; i < obj_size; i++){
             int x,y,w,h;
             mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
+
+            QString label = mLoader.getObject(mControler.getActivModel(frame_pos,i).getObjectID())[0];
+
             QRect rec(x,y,w,h);
             if(mControler.getActivModel(frame_pos,i).getObjectID() == ui->listWidget_1->currentIndex().row()){
                 paint.setPen(QPen(QColor(Qt::blue), 3, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin));
@@ -436,6 +457,11 @@ void MainWindow::newVideoFrame(QImage frame)
                 paint.setPen(QColor(Qt::green));
             }
             paint.drawRect(rec);
+
+            paint.drawText(x,std::max(0,y-9), label);
+            paint.setPen(QColor(Qt::white));
+            paint.drawText(x,std::max(1,y-8), label);
+
         }
     }
     paint.end();
@@ -469,6 +495,8 @@ void MainWindow::newVideoFrame(QImage frame)
 void MainWindow::on_actionSave_triggered()
 {
     mXMLLoader->write(mFileName,"./data/");
+    //mXMLLoader->write(mFileName,"/media/Volume/annotation/");
+
 }
 
 void MainWindow::on_actionAddEvent_triggered()
@@ -654,7 +682,9 @@ void MainWindow::auto_Save()
 {
 //    on_actionPause_triggered();
     QDateTime t;
+
     mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
+    //mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"/media/Volume/annotation/");
 }
 
 void MainWindow::on_actionDrawBox_triggered(bool checked)
@@ -672,4 +702,9 @@ void MainWindow::selectEvent(int i)
         }
         lastEvent = i;
     }
+}
+
+void MainWindow::setFrameOutput(size_t frame)
+{
+    ui->label_FrameNR->setText(QString::number(frame));
 }

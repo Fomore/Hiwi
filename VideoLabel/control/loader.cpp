@@ -65,7 +65,7 @@ int Loader::addObjectSave(QString name, QString description)
     if(!exist){
         ret = mObjects.size();
         addNewObject(name, description);
-        std::cout<<"Object: "<<name.toStdString()<<std::endl;
+//        std::cout<<"Object: "<<name.toStdString()<<std::endl;
     }
     return ret;
 }

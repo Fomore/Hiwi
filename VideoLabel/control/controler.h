@@ -44,11 +44,12 @@ public:
 
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
-    ActivModel getActivModel(size_t frame_pos, int O_pos);
+    ActivModel getActivModel(size_t frame_pos, size_t O_pos);
     int getLastLabel(int O_id);
     int getLastFrame(int O_id);
     int getObjectSizeInFramePos(int frame_pos);
     int getFramePosInVector(int frameNr);
+    size_t getFrameNr(size_t frame_pos);
 
     std::vector<cv::Point3i> getAllActivModel(int O_id);
 

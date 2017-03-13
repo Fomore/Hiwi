@@ -320,7 +320,6 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
         }
         ui->listWidget_1->item(lastObject)->setSelected(true);
     }else{
-        qDebug() << "here";
         lastObject = nID;
     }
     updateSelection();
@@ -382,12 +381,12 @@ void MainWindow::Mouse_Released()
                 mControler.getActivModel(frame_pos,i).getRect(Ox,Oy,Ow,Oh);
                 if(Ox <= x && Ox+Ow >= x && Oy <= y && Oy+Oh >= y){
                     if(lastObject >= 0 && lastObject < ui->listWidget_1->count()
-                            //&& ui->checkBoxEvent->isChecked()
+                            && ui->checkBoxEvent->isChecked()
                             && lastObject != Oid){
                         QString nObj = ui->listWidget_1->item(Oid)->text();
                         QString oObj = ui->listWidget_1->item(lastObject)->text();
-                    //    if(QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
-                    //                                  QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                        if(QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
+                                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
                         qDebug() << "Aendere:" << nObj << " in " << oObj;
                             if(nObj == "No Label"){
                                 mControler.setObject(mPlayer->getPosition(), Oid, lastObject);
@@ -400,12 +399,12 @@ void MainWindow::Mouse_Released()
                             ui->listWidget_1->setCurrentRow(lastObject);
                             mPlayer->getFrame();
                         }
-                    //}else{
-                    //    lastObject = Oid;
-                    //    ui->listWidget_1->item(Oid)->setSelected(true);
-                    //    ui->listWidget_1->setCurrentRow(Oid);
-                    //    mPlayer->getFrame();
-                    //}
+                    }else{
+                        lastObject = Oid;
+                        ui->listWidget_1->item(Oid)->setSelected(true);
+                        ui->listWidget_1->setCurrentRow(Oid);
+                        mPlayer->getFrame();
+                    }
                     break;
                 }
             }
@@ -431,9 +430,10 @@ void MainWindow::newVideoFrame(QImage frame)
 
     QPainter paint(&img);
 
-    setFrameOutput((size_t)mPlayer->getPosition());
+    const size_t frameNr = (size_t)mPlayer->getPosition();
+    setFrameOutput(frameNr);
 
-    int frame_pos = mControler.getFramePosInVector(mPlayer->getPosition());
+    int frame_pos = mControler.getFramePosInVector(frameNr);
     int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
 
     bool run = false;
@@ -441,11 +441,12 @@ void MainWindow::newVideoFrame(QImage frame)
     font.setPointSize(std::min(mPlayer->getVideoWidth()/91, mPlayer->getVideoHeight()/69));
     paint.setFont(font);
     paint.setRenderHints(QPainter::Antialiasing);
+
     if(frame_pos >= 0 && obj_size >= 0 &&
-            mControler.getActivModel(frame_pos,0).getFrame() == (int)mPlayer->getPosition()){
+            mControler.getFrameNr(frame_pos) == frameNr){
         for(int i = 0 ; i < obj_size; i++){
             int x,y,w,h;
-            mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
+            mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);            
 
             QString label = mLoader.getObject(mControler.getActivModel(frame_pos,i).getObjectID())[0];
 
@@ -458,9 +459,9 @@ void MainWindow::newVideoFrame(QImage frame)
             }
             paint.drawRect(rec);
 
-            paint.drawText(x,std::max(0,y-9), label);
+            paint.drawText(x,std::max(1,y-9), label);
             paint.setPen(QColor(Qt::white));
-            paint.drawText(x,std::max(1,y-8), label);
+            paint.drawText(x,std::max(0,y-8), label);
 
         }
     }
@@ -471,13 +472,13 @@ void MainWindow::newVideoFrame(QImage frame)
     ui->labelVideo->setPixmap(img2);
 
     if(ui->checkBoxEvent->isChecked() && ui->actionPause->isVisible()){
-        changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
+        changeData(frameNr,lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
     }
 
-    if(behaviorRun && mPlayer->getPosition() >= behaviorFrame_Last + mPlayer->SecToFrame(60)){
+    if(behaviorRun && frameNr >= behaviorFrame_Last + mPlayer->SecToFrame(60)){
         int oID = ui->listWidget_1->currentRow();
         mBehaviorDialog->clear();
-        mBehaviorDialog->setAttribute(oID,"","",behaviorFrame_Last,mPlayer->getPosition());
+        mBehaviorDialog->setAttribute(oID,"","",behaviorFrame_Last,frameNr);
         behaviorRun = false;
         on_actionPause_triggered();
         mBehaviorDialog->show();
@@ -645,9 +646,6 @@ void MainWindow::on_actionImport_XML_triggered()
 void MainWindow::on_actionStepForward_triggered()
 {
     mPlayer->forward();
-    if(ui->checkBoxEvent->isChecked()){
-        changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
-    }
 }
 
 void MainWindow::on_actionStepBackward_triggered()

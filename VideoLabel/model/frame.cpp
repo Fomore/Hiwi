@@ -32,7 +32,7 @@ ActivModel Frame::getObject(size_t ob_pos)
     if(ob_pos < mObjects.size()){
         return mObjects[ob_pos];
     }else{
-        return NULL;
+        return ActivModel();
     }
 }
 

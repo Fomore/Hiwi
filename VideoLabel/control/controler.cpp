@@ -99,17 +99,19 @@ int Controler::getFramePosInVector(int frameNr)
 {
     if(frameNr < 0 || mFrames.size() == 0){
         return -1;
-    }else if((size_t)frameNr >= mFrames.size() || (mFrames[frameNr].getObjectSize() > 0
-                                             && mFrames[frameNr].getFrameNr() <= frameNr)){
+    }else if((size_t)frameNr >= mFrames.size()
+             || mFrames[frameNr].getFrameNr() <= frameNr){
         for(size_t i = std::min((size_t)frameNr,mFrames.size()-1); i >= 0; i--){
-            if(mFrames[i].getFrameNr() == frameNr || mFrames[i].getFrameNr() < frameNr){
+            if(mFrames[i].getFrameNr() <= frameNr){
                 return i;
             }
         }
         return -1;
     }else{
         for(size_t i = 0; i < mFrames.size(); i++){
-            if(mFrames[i].getFrameNr() == frameNr || mFrames[i].getFrameNr() > frameNr){
+            if(mFrames[i].getFrameNr() == frameNr){
+                return i;
+            }else if(mFrames[i].getFrameNr() > frameNr){
                 return i-1;
             }
         }
@@ -117,13 +119,18 @@ int Controler::getFramePosInVector(int frameNr)
     }
 }
 
-ActivModel Controler::getActivModel(size_t frame_pos, int O_pos)
+size_t Controler::getFrameNr(size_t frame_pos)
 {
-    if(frame_pos < mFrames.size()
-            && O_pos >= 0 && (size_t) O_pos < mFrames[frame_pos].getObjectSize()){
+    return mFrames[frame_pos].getFrameNr();
+}
+
+ActivModel Controler::getActivModel(size_t frame_pos, size_t O_pos)
+{
+    if(frame_pos < mFrames.size()){
             return mFrames[frame_pos].getObject(O_pos);
-    }
+    }else{
     return ActivModel();
+    }
 }
 
 int Controler::getLastLabel(int O_id)

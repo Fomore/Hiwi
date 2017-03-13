@@ -300,7 +300,7 @@ void XMLLoader::processImage(int frame)
                 O_id = mLoader->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
                 std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
             }
-            int FrameID = mControl->addEventInFrame(left,top,width,height,frame,E_id,O_id,manual);
+            int FrameID = mControl->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual);
             if(isLand){
                 mControl->setLandmarks(FrameID ,O_id, land);
             }if(isOri){

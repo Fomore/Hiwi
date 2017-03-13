@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     eventdialog.cpp \
     objectdialog.cpp \
     actioneventdialog.cpp \
-    behaviordialog.cpp
+    behaviordialog.cpp \
+    model/frame.cpp
 
 HEADERS  += mainwindow.h \
     control/loader.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     objectdialog.h \
     actioneventdialog.h \
     behaviordialog.h \
-    model/verhaltentime.h
+    model/verhaltentime.h \
+    model/frame.h
 
 FORMS    += mainwindow.ui \
     eventdialog.ui \

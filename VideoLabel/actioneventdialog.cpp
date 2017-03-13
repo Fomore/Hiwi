@@ -132,7 +132,7 @@ void ActionEventDialog::on_buttonBox_accepted()
                 mDeleteList.push_back(cv::Point3i(mActivModelList[i].z,Op,-1));
             }
         }else{
-            mControl->addEventInFrame(x,y,w,h,frame,E_id,mObjectID,false);
+            mControl->addObjectInFrame(x,y,w,h,frame,E_id,mObjectID,false);
         }
     }
     for(size_t i = 0; i < mDeleteList.size(); i++){

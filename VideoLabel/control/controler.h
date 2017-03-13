@@ -3,14 +3,17 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include "model/activmodel.h"
+#include "model/frame.h"
 #include <QRect>
 #include <opencv2/opencv.hpp>
 
 class Controler
 {
 private:
-    std::vector<std::vector<ActivModel>> mActivModel;
+//    std::vector<std::vector<ActivModel>> mActivModel;
+    std::vector<Frame> mFrames;
 
     int VideoWidth, VideoHeight;
     int DisplayWidth, DisplayHeight;
@@ -22,13 +25,13 @@ private:
 
 public:
     Controler();
-    void addEvent(int x1, int y1, int x2, int y2, int frame, int E_id, int O_id);
-    int addEventInFrame(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
+    void addEvent(int x1, int y1, int x2, int y2, int frameNr, int E_id, int O_id);
+    int addObjectInFrame(int x, int y, int w, int h, int frameNr, int E_id, int O_id, bool man);
 
     void save(QString name, QString path);
 
     void clearAll();
-    void setObject(int frame, int lastO_id, int newO_id);
+    void setObject(int frameNr, int lastO_id, int newO_id);
     void setAllObject(int lastO_id, int newO_id);
     void setEvent(int frame, int O_id, int E_id);
     void setLandmarks(int pos, int O_id, double marks[5][2]);
@@ -41,12 +44,11 @@ public:
 
     bool getNextSetFrame(int &frame);
     int getEventToObject(int frame, int O_id);
-    ActivModel getActivModel(int frame_pos, int O_pos);
+    ActivModel getActivModel(size_t frame_pos, int O_pos);
     int getLastLabel(int O_id);
     int getLastFrame(int O_id);
     int getObjectSizeInFramePos(int frame_pos);
-    int getObjectPosInVector(int frame, int O_id);
-    int getFramePosInVector(int frame);
+    int getFramePosInVector(int frameNr);
 
     std::vector<cv::Point3i> getAllActivModel(int O_id);
 
@@ -55,7 +57,7 @@ public:
 
     void deleteEvent(int id);
     void deleteObject(int id);
-    void deleteActionEvent(int obj_pos, int frm_pos);
+    void deleteActionEvent(size_t obj_pos, size_t frm_pos);
 
     void changeActionEventValue(int frmPos, int objPos, int eveID, int x, int y, int w, int h);
     int copyActionEvent(int frmPos, int objPos, int frame);

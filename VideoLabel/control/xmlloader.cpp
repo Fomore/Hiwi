@@ -472,6 +472,13 @@ int XMLLoader::filnameToFrame(QString file)
 
 void XMLLoader::boxAttributToValue(QXmlStreamAttributes att, int &height, int &left, int &top, int &width, bool &manual, bool &ignore)
 {
+    /*
+    //Fehler in dem Datensatz
+    height = att.value("height").toInt();
+    left = att.value("top").toInt();
+    top = att.value("left").toInt();
+    width = att.value("width").toInt();
+*/
     height = att.value("height").toInt();
     left = att.value("left").toInt();
     top = att.value("top").toInt();

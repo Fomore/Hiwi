@@ -129,9 +129,9 @@ size_t Controler::getFrameNr(size_t frame_pos)
 ActivModel Controler::getActivModel(size_t frame_pos, size_t O_pos)
 {
     if(frame_pos < mFrames.size()){
-            return mFrames[frame_pos].getObject(O_pos);
+        return mFrames[frame_pos].getObject(O_pos);
     }else{
-    return ActivModel();
+        return ActivModel();
     }
 }
 
@@ -195,18 +195,54 @@ void Controler::WindoRectToVideoRect(int &x, int &y, int &w, int &h)
     h = h/mScall+0.5;
 }
 
-void Controler::detectDataError(QWidget *parent, MyVideoPlayer *player)
+void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *player)
 {
-
+    /*
     size_t frame = 3253;
     cv::Rect rec_l(170, 533, 47, 64);
     cv::Rect rec_r(1190, 454, 58, 78);
+    */
 
-    for(size_t i = 0; i < mFrames.size(); i++){
-
+    size_t i = 0;
+    //Überspringe bis erstes mal gefunden
+    std::cout<<"Suche erstes Element"<<std::endl;
+    while (i < mFrames.size() && !mFrames[i].existObject(obj_ID)) {
+        i++;
+    }
+    std::cout<<"Suche letztes Element ab "<<i<<std::endl;
+    //Durchlaufe alle aufeinanderfolgenden vorhandenen
+    while (i < mFrames.size() && mFrames[i].existObject(obj_ID)) {
+        i++;
     }
 
-    samePerson(frame,rec_l,frame,rec_r, parent,player);
+    std::cout<<"Suche verknüpfung "<<i<<std::endl;
+    if(i < mFrames.size()){
+        size_t frame_l = mFrames[i-1].getFrameNr();
+        cv::Rect rec_l;
+        mFrames[i-1].getRect(obj_ID,rec_l.x,rec_l.y, rec_l.width, rec_l.height);
+        std::vector<int> list;
+
+        do {
+            list.clear();
+            list = mFrames[i].getObjectOnPosition(rec_l.x,rec_l.y, rec_l.width, rec_l.height, 30);
+            i++;
+        } while (i < mFrames.size() && list.size() > 0);
+        std::cout<<"Neues Element: "<<i<<std::endl;
+        for(size_t j = 0; j < list.size(); j++){
+            size_t frame_n = mFrames[i-1].getFrameNr();
+            cv::Rect rec_n;
+            mFrames[i-1].getRect(list[j],rec_n.x,rec_n.y, rec_n.width, rec_n.height);
+            int work = samePerson(frame_l,rec_l,frame_n,rec_n, parent,player);
+            if(work == 1){
+                std::cout<<"Verknüpfen"<<std::endl;
+            }else if(work == 0){
+                           std::cout<<"Tennen"<<std::endl;
+            }else{
+                std::cout<<"Nichts"<<std::endl;
+            }
+        }
+    }
+    std::cout<<"Fertig"<<std::endl;
 }
 
 int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player)
@@ -224,7 +260,7 @@ int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Re
                                std::min(box_r.width*1.5, img_r.size().width()-(box_r.x+box_r.width*1.5)),
                                std::min(box_r.height*1.5, img_r.size().height()-(box_r.y+box_r.height*1.5))).scaled(300,400,Qt::KeepAspectRatio);
 
-            QPixmap result(600,400);
+    QPixmap result(600,400);
     result.fill(Qt::transparent);
     QPainter painter(&result);
     painter.drawPixmap(0, 0, QPixmap::fromImage(copy_l));
@@ -252,7 +288,7 @@ int Controler::getEventToObject(int frame, int O_id)
 {
     int pos = getFramePosInVector(frame);
     if(pos >= 0){
-            return mFrames[pos].getEventID(O_id);
+        return mFrames[pos].getEventID(O_id);
     }
     return -1;
 }
@@ -268,29 +304,29 @@ void Controler::clearAll()
 void Controler::setLandmarks(int pos, int O_id, double marks[5][2])
 {
     if(pos >= 0){
-            mFrames[pos].setLandmarks(O_id,marks);
+        mFrames[pos].setLandmarks(O_id,marks);
     }
 }
 
 void Controler::setOrientation(int pos, int O_id, double ori[3])
 {
     if(pos >= 0){
-            mFrames[pos].setOrientation(O_id,ori);
+        mFrames[pos].setOrientation(O_id,ori);
     }
 }
 
 void Controler::setPosition(int frame_pos, int O_id, double pos[3])
 {
     if(frame_pos >= 0){
-            mFrames[frame_pos].setPosition(O_id,pos);
-        }
+        mFrames[frame_pos].setPosition(O_id,pos);
+    }
 }
 
 void Controler::setProjection(int pos, int O_id, double pro[4])
 {
     if(pos >= 0){
-            mFrames[pos].setProjection(O_id,pro);
-        }
+        mFrames[pos].setProjection(O_id,pro);
+    }
 }
 
 bool Controler::getNextSetFrame(int &frame)
@@ -308,7 +344,7 @@ bool Controler::isEventUsed(int id)
 {
     for(size_t i = 0; i < mFrames.size(); i++){
         if(mFrames[i].existEvent(id)){
-                return true;
+            return true;
         }
     }
     return false;
@@ -318,7 +354,7 @@ bool Controler::isObjectUsed(int id)
 {
     for(size_t i = 0; i < mFrames.size(); i++){
         if(mFrames[i].existObject(id)){
-                return true;
+            return true;
         }
     }
     return false;

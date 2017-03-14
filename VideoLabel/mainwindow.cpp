@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "model/event.h"
 
@@ -709,5 +710,13 @@ void MainWindow::setFrameOutput(size_t frame)
 
 void MainWindow::on_actionSuche_Fehler_triggered()
 {
-        mControler.detectDataError(this,mPlayer);
+
+    QStringList items = mLoader.getObjectAllName();
+
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                         tr("Season:"), items, 0, false, &ok);
+    if (ok && !item.isEmpty()){
+        mControler.detectDataError(mLoader.getObjectID(item),this,mPlayer);
+    }
 }

@@ -68,7 +68,7 @@ public:
 
     void WindoRectToVideoRect(int &x, int &y, int &w, int &h);
 
-    void detectDataError(QWidget *parent, MyVideoPlayer *player);
+    void detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *player);
     int samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player);
 };
 

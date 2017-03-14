@@ -198,11 +198,11 @@ void ActionEventDialog::setObject()
 {
     QStringList items = mLoader->getObjectAllName();
 
-        bool ok;
-        QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
-                                             tr("Season:"), items, 0, false, &ok);
-        if (ok && !item.isEmpty())
-            changeObject(item);
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                         tr("Season:"), items, 0, false, &ok);
+    if (ok && !item.isEmpty())
+        changeObject(item);
 }
 
 void ActionEventDialog::changeObject(const QString name)

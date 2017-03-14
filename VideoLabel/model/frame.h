@@ -23,7 +23,7 @@ public:
     // gibt die Vectorposition von zwei Objekten zurück die die selbe ObjectID haben (zweimal selbes Objekt in Frame)
     std::vector<size_t> SeveralTimesObjects();
     // git die Vectorposition von Objekten zurück, die in etwa die selbe Position wie gegeben haben
-    std::vector<size_t> getObjectOnPosition(int x, int y, int w, int h, int acc);
+    std::vector<int> getObjectOnPosition(int x, int y, int w, int h, int acc);
 
     void addObject(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
     void addObject(ActivModel model);
@@ -44,7 +44,9 @@ public:
     void setOrientation(int O_id, double orien[3]);
     void setPosition(int O_id, double pos[3]);
     void setProjection(int O_id, double proj[4]);
+
     void setRect(int O_id, int x, int y, int w, int h);
+    void getRect(int O_id, int &x, int &y, int &w, int &h);
 
     QString printAll(size_t pos);
 };

@@ -195,7 +195,47 @@ void Controler::WindoRectToVideoRect(int &x, int &y, int &w, int &h)
     h = h/mScall+0.5;
 }
 
-void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *player)
+
+void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *player){
+    std::cout<<"Suche nach Sprüngen im Tracking"<<std::endl;
+
+    size_t i = 0;
+    //Überspringe bis erstes mal gefunden
+    std::cout<<"Suche erstes Element"<<std::endl;
+    while (i < mFrames.size() && !mFrames[i].existObject(obj_ID)) {
+        i++;
+    }
+    size_t frame_l = mFrames[i].getFrameNr();
+    int x,y,w,h;
+    mFrames[i].getRect(obj_ID,x,y,w,h);
+    i++;
+
+    while (i < mFrames.size()) {
+        size_t objNr;
+        if(mFrames[i].existObject(obj_ID,objNr)){
+            if(mFrames[i].samePosition(objNr,x,y,w,h,30)){
+                mFrames[i].getRect(obj_ID,x,y,w,h);
+                frame_l = mFrames[i].getFrameNr();
+            }else{
+                int xn,yn,wn,hn;
+                mFrames[i].getRect(obj_ID,xn,yn,wn,hn);
+                size_t frame_n = mFrames[i].getFrameNr();
+                int work = samePerson(frame_l,cv::Rect(x,y,w,h),frame_n,cv::Rect(xn,yn,wn,hn), parent,player);
+                if(work == 1){
+                    x = xn; y = yn; w = wn; h = hn;
+                    frame_l = frame_n;
+                }else if(work == 0){
+                    std::cout<<"Ändere OBjekt-Name "<<frame_n<<std::endl;
+                }else{
+                    return;
+                }
+            }
+        }
+        i++;
+    }
+}
+
+void Controler::detectDataError2(int obj_ID, QWidget *parent, MyVideoPlayer *player)
 {
     /*
     size_t frame = 3253;
@@ -250,15 +290,8 @@ int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Re
     QImage img_l = player->getFrame(frame_l);
     QImage img_r = player->getFrame(frame_r);
 
-    QImage copy_l = img_l.copy(std::max(0,box_l.x-box_l.width/4),
-                               std::max(0,box_l.y-box_l.width/4),
-                               std::min(box_l.width*1.5, img_l.size().width()-(box_l.x+box_l.width*1.5)),
-                               std::min(box_l.height*1.5, img_l.size().height()-(box_l.y+box_l.height*1.5))).scaled(300,400,Qt::KeepAspectRatio);
-
-    QImage copy_r = img_r.copy(std::max(0,box_r.x-box_r.width/4),
-                               std::max(0,box_r.y-box_r.width/4),
-                               std::min(box_r.width*1.5, img_r.size().width()-(box_r.x+box_r.width*1.5)),
-                               std::min(box_r.height*1.5, img_r.size().height()-(box_r.y+box_r.height*1.5))).scaled(300,400,Qt::KeepAspectRatio);
+    QImage copy_l = img_l.copy(getPrintBox(img_l.width(), img_l.height(), box_l.x, box_l.y, box_l.height, box_l.width)).scaled(300,400,Qt::KeepAspectRatio);
+    QImage copy_r = img_r.copy(getPrintBox(img_r.width(), img_r.height(), box_r.x, box_r.y, box_r.height, box_r.width)).scaled(300,400,Qt::KeepAspectRatio);
 
     QPixmap result(600,400);
     result.fill(Qt::transparent);
@@ -282,6 +315,22 @@ int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Re
     }else{
         return -1;
     }
+}
+
+QRect Controler::getPrintBox(int Img_width, int Img_height, int X, int Y, int H, int W)
+{
+    QRect ret;
+    ret.setX(std::max(0,X-W/4));
+    ret.setY(std::max(0,Y-H/4));
+    ret.setWidth(W*1.5);
+    ret.setHeight(H*1.5);
+    if(Img_width < ret.x()+ret.width()){
+        ret.setWidth(Img_width-ret.x());
+    }
+    if(Img_height < ret.y()+ret.height()){
+        ret.setHeight(Img_height-ret.y());
+    }
+    return ret;
 }
 
 int Controler::getEventToObject(int frame, int O_id)

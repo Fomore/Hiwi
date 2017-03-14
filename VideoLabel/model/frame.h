@@ -25,11 +25,14 @@ public:
     // git die Vectorposition von Objekten zurück, die in etwa die selbe Position wie gegeben haben
     std::vector<int> getObjectOnPosition(int x, int y, int w, int h, int acc);
 
+    bool samePosition(size_t pos, int x, int y, int w, int h, int acc);
+
     void addObject(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
     void addObject(ActivModel model);
     int getObjectID(size_t pos);
     void setObjectID(int lastO_id, int newO_id);
     bool existObject(int O_id);
+    bool existObject(int O_id, size_t &pos);
     void deleteObject(int id);
 
     void deleteActionEvent(size_t pos);

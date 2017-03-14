@@ -1,5 +1,7 @@
 #include "frame.h"
 
+#include <iostream>
+
 Frame::Frame()
 {
     mFrameNr = 0;
@@ -57,25 +59,34 @@ std::vector<int> Frame::getObjectOnPosition(int x, int y, int w, int h, int acc)
     std::vector<int> ret;
     ret.clear();
     for(size_t i = 0; i < mObjects.size(); i++){
-        int mx, my, mw, mh;
-        mObjects[i].getRect(mx, my, mw, mh);
-        int x1 = std::max(x,mx);
-        int y1 = std::max(y,my);
-        int x2 = std::min(x+w,mx+mw);
-        int y2 = std::min(y+h,my+mh);
-        if(x1 > x2 && y1 > y2
-                && std::min(mw, w)*acc/100 > x2-x1
-                && std::min(mh, h)*acc/100 > y2-y1){
+        if(samePosition(i,x,y,w,h,acc)){
             ret.push_back(mObjects[i].getObjectID());
         }
     }
     return ret;
 }
 
+bool Frame::samePosition(size_t pos, int x, int y, int w, int h, int acc)
+{
+    if(pos < mObjects.size()){
+        int mx, my, mw, mh;
+        mObjects[pos].getRect(mx, my, mw, mh);
+        int x1 = std::max(x,mx);
+        int y1 = std::max(y,my);
+        int x2 = std::min(x+w,mx+mw);
+        int y2 = std::min(y+h,my+mh);
+        return(x1 < x2 && y1 < y2
+               && std::min(mw, w)*acc/100 < x2-x1
+               && std::min(mh, h)*acc/100 < y2-y1);
+    }else{
+        return false;
+    }
+}
+
 int Frame::getObjectID(size_t pos)
 {
     if(pos < mObjects.size()){
-    return mObjects[pos].getObjectID();
+        return mObjects[pos].getObjectID();
     }else{
         return -2;
     }
@@ -187,8 +198,15 @@ void Frame::setObjectID(int lastO_id, int newO_id)
 
 bool Frame::existObject(int O_id)
 {
+    size_t pos;
+    return existObject(O_id,pos);
+}
+
+bool Frame::existObject(int O_id, size_t &pos)
+{
     for(size_t i = 0; i < mObjects.size(); i++){
         if(mObjects[i].getObjectID() == O_id){
+            pos = i;
             return true;
         }
     }

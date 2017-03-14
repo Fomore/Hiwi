@@ -240,7 +240,7 @@ void MainWindow::changeData(int frame, int old_oID, int old_eID, int new_oID, in
     bool ex_Old = false;
     bool ex_New = false;
 
-        text += "<p>Frame "+QString::number(frame)+"</p>";
+    text += "<p>Frame "+QString::number(frame)+"</p>";
     if(old_eID >= 0 && ui->listWidget_2->count() > old_eID
             && old_oID >= 0 && ui->listWidget_1->count() > old_oID){
         text += "<p>Von "+ui->listWidget_1->item(old_oID)->text()+" - "+ui->listWidget_2->item(old_eID)->text()+"</p>";
@@ -386,8 +386,8 @@ void MainWindow::Mouse_Released()
                         QString nObj = ui->listWidget_1->item(Oid)->text();
                         QString oObj = ui->listWidget_1->item(lastObject)->text();
                         if(QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
-                                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
-                        qDebug() << "Aendere:" << nObj << " in " << oObj;
+                                                 QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                            qDebug() << "Aendere:" << nObj << " in " << oObj;
                             if(nObj == "No Label"){
                                 mControler.setObject(mPlayer->getPosition(), Oid, lastObject);
                             }else{
@@ -446,7 +446,7 @@ void MainWindow::newVideoFrame(QImage frame)
             mControler.getFrameNr(frame_pos) == frameNr){
         for(int i = 0 ; i < obj_size; i++){
             int x,y,w,h;
-            mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);            
+            mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
 
             QString label = mLoader.getObject(mControler.getActivModel(frame_pos,i).getObjectID())[0];
 
@@ -678,7 +678,7 @@ void MainWindow::show_Actionenevent()
 
 void MainWindow::auto_Save()
 {
-//    on_actionPause_triggered();
+    //    on_actionPause_triggered();
     QDateTime t;
 
     mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
@@ -705,4 +705,9 @@ void MainWindow::selectEvent(int i)
 void MainWindow::setFrameOutput(size_t frame)
 {
     ui->label_FrameNR->setText(QString::number(frame));
+}
+
+void MainWindow::on_actionSuche_Fehler_triggered()
+{
+        mControler.detectDataError(this,mPlayer);
 }

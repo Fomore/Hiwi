@@ -111,6 +111,7 @@
     <addaction name="actionAddEvent"/>
     <addaction name="actionAdd_Object"/>
     <addaction name="actionDrawBox"/>
+    <addaction name="actionSuche_Fehler"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVideo"/>
@@ -244,6 +245,11 @@
    </property>
    <property name="text">
     <string>drawBox</string>
+   </property>
+  </action>
+  <action name="actionSuche_Fehler">
+   <property name="text">
+    <string>Suche Fehler</string>
    </property>
   </action>
  </widget>

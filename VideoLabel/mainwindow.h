@@ -105,6 +105,8 @@ private slots:
     
     void on_actionDrawBox_triggered(bool checked);
 
+    void on_actionSuche_Fehler_triggered();
+
 private:
 
     void selectEvent(int i);

@@ -6,6 +6,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <algorithm>
+#include <QMessageBox>
+#include <QPainter>
 
 Controler::Controler()
 {
@@ -191,6 +193,59 @@ void Controler::WindoRectToVideoRect(int &x, int &y, int &w, int &h)
     y = (y-ShiftY)/mScall+0.5;
     w = w/mScall+0.5;
     h = h/mScall+0.5;
+}
+
+void Controler::detectDataError(QWidget *parent, MyVideoPlayer *player)
+{
+
+    size_t frame = 3253;
+    cv::Rect rec_l(170, 533, 47, 64);
+    cv::Rect rec_r(1190, 454, 58, 78);
+
+    for(size_t i = 0; i < mFrames.size(); i++){
+
+    }
+
+    samePerson(frame,rec_l,frame,rec_r, parent,player);
+}
+
+int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player)
+{
+    QImage img_l = player->getFrame(frame_l);
+    QImage img_r = player->getFrame(frame_r);
+
+    QImage copy_l = img_l.copy(std::max(0,box_l.x-box_l.width/4),
+                               std::max(0,box_l.y-box_l.width/4),
+                               std::min(box_l.width*1.5, img_l.size().width()-(box_l.x+box_l.width*1.5)),
+                               std::min(box_l.height*1.5, img_l.size().height()-(box_l.y+box_l.height*1.5))).scaled(300,400,Qt::KeepAspectRatio);
+
+    QImage copy_r = img_r.copy(std::max(0,box_r.x-box_r.width/4),
+                               std::max(0,box_r.y-box_r.width/4),
+                               std::min(box_r.width*1.5, img_r.size().width()-(box_r.x+box_r.width*1.5)),
+                               std::min(box_r.height*1.5, img_r.size().height()-(box_r.y+box_r.height*1.5))).scaled(300,400,Qt::KeepAspectRatio);
+
+            QPixmap result(600,400);
+    result.fill(Qt::transparent);
+    QPainter painter(&result);
+    painter.drawPixmap(0, 0, QPixmap::fromImage(copy_l));
+    painter.drawPixmap(300,0, QPixmap::fromImage(copy_r));
+    painter.end();
+
+    QMessageBox about_box(parent);
+    about_box.setWindowTitle("Handelt es sich um die selbe Person?");
+    about_box.setIconPixmap(result);
+    about_box.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+    about_box.clearFocus();
+
+    int ret = about_box.exec();
+
+    if(ret == QMessageBox::Yes){
+        return 1;
+    }else if(ret == QMessageBox::No){
+        return 0;
+    }else{
+        return -1;
+    }
 }
 
 int Controler::getEventToObject(int frame, int O_id)

@@ -10,8 +10,8 @@ MyVideoPlayer::MyVideoPlayer() :
     mStop = true;
     mIsNewPosition = false;
 
-//    cv::glob("/home/falko/Uni/Master/Bilder/Aufnahme2/*G", mImagePaths, true);
-//    mImagePos = 1;
+    //    cv::glob("/home/falko/Uni/Master/Bilder/Aufnahme2/*G", mImagePaths, true);
+    //    mImagePos = 1;
 
 }
 
@@ -52,12 +52,12 @@ void MyVideoPlayer::stop()
 void MyVideoPlayer::forward()
 {
     setPosition(video.get(CV_CAP_PROP_POS_FRAMES),true);
-//        setPosition(mImagePos,true);
+    //        setPosition(mImagePos,true);
 }
 
 void MyVideoPlayer::backward()
 {
-//    double pos = mImagePos;
+    //    double pos = mImagePos;
     double pos = video.get(CV_CAP_PROP_POS_FRAMES);
     setPosition(std::max(0.0, pos-2),true);
 }
@@ -78,13 +78,13 @@ void MyVideoPlayer::skipBackward()
 void MyVideoPlayer::setPosition(double pos, bool show)
 {
     pos = std::max(0.0, std::min(pos,video.get(CV_CAP_PROP_FRAME_COUNT)));
-//    int p = mImagePaths.size();
-//    mImagePos = std::max(1, std::min((int)pos,p));
+    //    int p = mImagePaths.size();
+    //    mImagePos = std::max(1, std::min((int)pos,p));
     if(mStop){
         video.set(CV_CAP_PROP_POS_FRAMES,pos);
-//        cv::Mat frame = cv::imread(mImagePaths.at(mImagePos-1), -1);
-            cv::Mat frame;
-//        mImagePos++;
+        //        cv::Mat frame = cv::imread(mImagePaths.at(mImagePos-1), -1);
+        cv::Mat frame;
+        //        mImagePos++;
         if(video.read(frame)){
             showImage(frame, show);
         }
@@ -101,19 +101,19 @@ void MyVideoPlayer::setPosition(int pos)
 
 double MyVideoPlayer::getPosition()
 {
-  //  return mImagePos-1;
+    //  return mImagePos-1;
     return video.get(CV_CAP_PROP_POS_FRAMES);
 }
 
 double MyVideoPlayer::getVideoWidth()
 {
-//    return cv::imread(mImagePaths.at(mImagePos-1), -1).cols;
+    //    return cv::imread(mImagePaths.at(mImagePos-1), -1).cols;
     return video.get(CV_CAP_PROP_FRAME_WIDTH);
 }
 
 double MyVideoPlayer::getVideoHeight()
 {
-//    return cv::imread(mImagePaths.at(mImagePos-1), -1).rows;
+    //    return cv::imread(mImagePaths.at(mImagePos-1), -1).rows;
     return video.get(CV_CAP_PROP_FRAME_HEIGHT);
 }
 
@@ -126,23 +126,36 @@ void MyVideoPlayer::getFrame()
 {
     cv::Mat frame;
     if(mStop){
-//        frame = cv::imread(mImagePaths.at(mImagePos-1), -1);
-//        mImagePos++;
-video.read(frame);
+        //        frame = cv::imread(mImagePaths.at(mImagePos-1), -1);
+        //        mImagePos++;
+        video.read(frame);
         if(!frame.empty()){
-            video.set(CV_CAP_PROP_POS_FRAMES,std::max(1.0,video.get(CV_CAP_PROP_POS_FRAMES)-1.0));
+            video.set(CV_CAP_PROP_POS_FRAMES,std::max(0.0,video.get(CV_CAP_PROP_POS_FRAMES)-1.0));
             showImage(frame, false);
         }
     }
+}
+
+QImage MyVideoPlayer::getFrame(size_t frameNr)
+{
+    double pos = video.get(CV_CAP_PROP_POS_FRAMES);
+
+    cv::Mat frame;
+    video.set(CV_CAP_PROP_POS_FRAMES,frameNr-1);
+    video.read(frame);
+
+    video.set(CV_CAP_PROP_POS_FRAMES,pos);
+
+    return MatToQImage(frame);
 }
 
 void MyVideoPlayer::run()
 {
     clock_t last = clock();
 
-//    cv::Mat frame = cv::imread(mImagePaths.at(mImagePos), -1);
+    //    cv::Mat frame = cv::imread(mImagePaths.at(mImagePos), -1);
     cv::Mat frame;
-//    mImagePos++;
+    //    mImagePos++;
     while (!mStop && video.read(frame)) {//mImagePos<mImagePaths.size()){
         showImage(frame, true);
         usleep(std::max(0,(int)(CLOCKS_PER_SEC/frameRate - (clock()-last))));

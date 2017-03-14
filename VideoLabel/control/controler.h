@@ -8,6 +8,7 @@
 #include "model/frame.h"
 #include <QRect>
 #include <opencv2/opencv.hpp>
+#include "control/myvideoplayer.h"
 
 class Controler
 {
@@ -63,10 +64,12 @@ public:
     void changeActionEventValue(int frmPos, int objPos, int eveID, int x, int y, int w, int h);
     int copyActionEvent(int frmPos, int objPos, int frame);
 
-
     void printAll();
 
     void WindoRectToVideoRect(int &x, int &y, int &w, int &h);
+
+    void detectDataError(QWidget *parent, MyVideoPlayer *player);
+    int samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player);
 };
 
 #endif // CONTROLER_H

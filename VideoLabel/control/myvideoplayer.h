@@ -37,6 +37,7 @@ public:
     double SecToFrame(int sec);
 
     void getFrame();
+    QImage getFrame(size_t frameNr);
 
 public slots:
     void play();

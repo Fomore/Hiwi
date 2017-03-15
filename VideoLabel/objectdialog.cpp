@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-ObjectDialog::ObjectDialog(QWidget *parent, Loader *load) :
+ObjectDialog::ObjectDialog(QWidget *parent, Controler *load) :
     QDialog(parent),
     ui(new Ui::ObjectDialog),
-    mLoader(load)
+    mControler(load)
 {
     ui->setupUi(this);
 }
@@ -35,10 +35,10 @@ void ObjectDialog::on_buttonBox_accepted()
     QString name = ui->lineEditName->text().simplified();
     QString desc = ui->textEdit->toPlainText().simplified();
     if(name.size() > 0){//Objekt wird angelegt
-        if(mID < mLoader->getObjectSize()){
-            mLoader->ChangeObject(mID, name, desc);
+        if(mID < mControler->getObjectSize()){
+            mControler->ChangeObject(mID, name, desc);
         }else{
-            mLoader->addNewObject(name,desc);
+            mControler->addNewObject(name,desc);
         }
         emit accept();
     }
@@ -50,7 +50,7 @@ void ObjectDialog::setAttribute(int id, QString name, QString desc)
     ui->lineEditName->setText(name);
     ui->textEdit->setText(desc);
 
-    std::vector<VerhaltenTime> ver = mLoader->getBehaviors(id);
+    std::vector<VerhaltenTime> ver = mControler->getBehaviors(id);
     ui->tableWidget->setRowCount(ver.size());
     for(size_t i = 0; i < ver.size(); i++){
         int s,e;

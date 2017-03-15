@@ -22,16 +22,18 @@ SOURCES += main.cpp\
     control/controler.cpp \
     control/xmlloader.cpp \
     control/myvideoplayer.cpp \
-    control/loader.cpp \
     mylabel.cpp \
     eventdialog.cpp \
     objectdialog.cpp \
     actioneventdialog.cpp \
     behaviordialog.cpp \
-    model/frame.cpp
+    model/frame.cpp \
+    control/objecthandler.cpp \
+    control/eventhandler.cpp \
+    control/behaviorhandler.cpp \
+    control/framehandler.cpp
 
 HEADERS  += mainwindow.h \
-    control/loader.h \
     model/event.h \
     model/object.h \
     model/activmodel.h \
@@ -44,7 +46,11 @@ HEADERS  += mainwindow.h \
     actioneventdialog.h \
     behaviordialog.h \
     model/verhaltentime.h \
-    model/frame.h
+    model/frame.h \
+    control/objecthandler.h \
+    control/eventhandler.h \
+    control/behaviorhandler.h \
+    control/framehandler.h
 
 FORMS    += mainwindow.ui \
     eventdialog.ui \

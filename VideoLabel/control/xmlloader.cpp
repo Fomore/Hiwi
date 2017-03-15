@@ -4,10 +4,9 @@
 
 #include <iostream>
 
-XMLLoader::XMLLoader(Loader *loader, Controler *control)
+XMLLoader::XMLLoader(Controler *control)
 {
-    mLoader = loader;
-    mControl = control;
+    mControler = control;
     isWriting = false;
 }
 
@@ -67,8 +66,8 @@ void XMLLoader::write(const QString filename, const QString path)
 
     std::cout<<"Schreibe Personen"<<std::endl;
 
-    for(int i = 0; i < mLoader->getObjectSize(); i++){
-        QStringList obj = mLoader->getObject(i);
+    for(int i = 0; i < mControler->getObjectSize(); i++){
+        QStringList obj = mControler->getObjectInfo(i);
         xmlWriter.writeStartElement("person");
         xmlWriter.writeCharacters (obj[0]);
 
@@ -78,7 +77,7 @@ void XMLLoader::write(const QString filename, const QString path)
         xmlWriter.writeEndElement();
         }
 
-        std::vector<VerhaltenTime> beh = mLoader->getBehaviors(i);
+        std::vector<VerhaltenTime> beh = mControler->getBehaviors(i);
         for(size_t j = 0; j < beh.size(); j++){
             VerhaltenTime t = beh[j];
             xmlWriter.writeStartElement("behavior");
@@ -107,8 +106,8 @@ void XMLLoader::write(const QString filename, const QString path)
 
     std::cout<<"Schreibe Events"<<std::endl;
 
-    for(int i = 0; i < mLoader->getEventSize(); i++){
-        Event ev = mLoader->getEvent(i);
+    for(int i = 0; i < mControler->getEventSize(); i++){
+        Event ev = mControler->getEvent(i);
         xmlWriter.writeStartElement("event");
         xmlWriter.writeAttribute("name",ev.getName());
         xmlWriter.writeAttribute("EyeContact",QString::number(ev.getEyeVontact()));
@@ -128,12 +127,12 @@ void XMLLoader::write(const QString filename, const QString path)
     xmlWriter.writeStartElement("images");
 
     int frame_id = -1;
-    while(mControl->getNextSetFrame(frame_id)){
-        int frame = mControl->getActivModel(frame_id,0).getFrame();
+    while(mControler->getNextSetFrame(frame_id)){
+        int frame = mControler->getActivModel(frame_id,0).getFrame();
         xmlWriter.writeStartElement("image");
         xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
-        for(int i = 0; i < mControl->getObjectSizeInFramePos(frame_id); i++){
-            ActivModel mod = mControl->getActivModel(frame_id,i);
+        for(int i = 0; i < mControler->getObjectSizeInFramePos(frame_id); i++){
+            ActivModel mod = mControler->getActivModel(frame_id,i);
 
             if(mod.getFrame() == frame){
                 int x,y,w,h;
@@ -145,7 +144,7 @@ void XMLLoader::write(const QString filename, const QString path)
                 xmlWriter.writeAttribute("width",QString::number(w));
 
                 if(mod.getObjectID() >= 0){
-                    QStringList obj = mLoader->getObject(mod.getObjectID());
+                    QStringList obj = mControler->getObjectInfo(mod.getObjectID());
                     xmlWriter.writeStartElement("label");
                     xmlWriter.writeCharacters (obj[0]);
                     xmlWriter.writeEndElement();
@@ -154,7 +153,7 @@ void XMLLoader::write(const QString filename, const QString path)
                 }
 
                 if(mod.getEventID() >= 0){
-                    Event ev = mLoader->getEvent(mod.getEventID());
+                    Event ev = mControler->getEvent(mod.getEventID());
                     xmlWriter.writeStartElement("event");
                     xmlWriter.writeAttribute("name",ev.getName());
                     xmlWriter.writeEndElement();
@@ -231,7 +230,7 @@ void XMLLoader::processBehavior(int oID)
             xml.skipCurrentElement();
         }
     }
-    mLoader->addNewVerhalten(oID,name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication,start,end);
+    mControler->addNewVerhalten(oID,name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication,start,end);
     std::cout<<"Verhalten: "<<oID<<" "<<name.toStdString()<<std::endl;
 }
 
@@ -297,18 +296,18 @@ void XMLLoader::processImage(int frame)
             int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land);
 
             if(O_id < 0){
-                O_id = mLoader->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
+                O_id = mControler->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
                 std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
             }
-            int FrameID = mControl->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual);
+            int FrameID = mControler->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual);
             if(isLand){
-                mControl->setLandmarks(FrameID ,O_id, land);
+                mControler->setLandmarks(FrameID ,O_id, land);
             }if(isOri){
-                mControl->setOrientation(FrameID ,O_id, orient);
+                mControler->setOrientation(FrameID ,O_id, orient);
             }if(isPos){
-                mControl->setPosition(FrameID ,O_id, pos);
+                mControler->setPosition(FrameID ,O_id, pos);
             }if(isPro){
-                mControl->setProjection(FrameID ,O_id, proj);
+                mControler->setProjection(FrameID ,O_id, proj);
             }
         }
         else{
@@ -391,7 +390,7 @@ int XMLLoader::processEvent()
     QXmlStreamAttributes att = xml.attributes();
     QString name = att.value("name").toString();
 
-    int pos = mLoader->getEventID(name);
+    int pos = mControler->getEventID(name);
     if(pos >= 0){
         return pos;
     }else{
@@ -408,8 +407,8 @@ int XMLLoader::processEvent()
                 xml.skipCurrentElement();
             }
         }
-        mLoader->addEventSave(name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication);
-        return mLoader->getEventID(name);
+        mControler->addEventSave(name,desc,EyeContact,ActiveParticipation,OtherActivities,Restlessness,Communication);
+        return mControler->getEventID(name);
     }
 }
 
@@ -421,7 +420,7 @@ int XMLLoader::processPerson()
         std::cout<<"Label ist Null"<<std::endl;
         return -1;
     }
-    int oID = mLoader->getObjectID(label);
+    int oID = mControler->getObjectID(label);
 
     QString desc;
     while(xml.readNextStartElement()){
@@ -430,7 +429,7 @@ int XMLLoader::processPerson()
             xml.skipCurrentElement();
         }else if(xml.name() == "behavior"){
             if(oID == -1){
-                processBehavior(mLoader->getObjectSize());
+                processBehavior(mControler->getObjectSize());
             }else{
                 processBehavior(oID);
             }
@@ -439,7 +438,7 @@ int XMLLoader::processPerson()
     }
 
     if(oID == -1){
-        return mLoader->addObjectSave(label,desc);
+        return mControler->addObjectSave(label,desc);
     }else{
         return oID;
     }

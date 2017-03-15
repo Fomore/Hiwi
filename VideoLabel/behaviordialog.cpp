@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-BehaviorDialog::BehaviorDialog(QWidget *parent, Loader *load) :
+BehaviorDialog::BehaviorDialog(QWidget *parent, Controler *load) :
     QDialog(parent),
     ui(new Ui::BehaviorDialog),
-    mLoader(load)
+    mControler(load)
 {
     ui->setupUi(this);
 }
@@ -33,7 +33,7 @@ void BehaviorDialog::on_buttonBox_accepted()
     QString desc = ui->textEdit->toPlainText().simplified();
     bool eye, activ, other, less, comm;
     getAttribute(eye, activ, other, less, comm);
-    mLoader->addNewVerhalten(O_ID, name, desc, eye, activ, other, less, comm, frame_S, frame_E);
+    mControler->addNewVerhalten(O_ID, name, desc, eye, activ, other, less, comm, frame_S, frame_E);
 }
 
 void BehaviorDialog::getAttribute(bool &eye, bool &activ, bool &other, bool &less, bool &comm)

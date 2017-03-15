@@ -6,12 +6,11 @@
 #include <QtXml>
 
 #include "control/controler.h"
-#include "control/loader.h"
 
 class XMLLoader
 {
 public:
-    XMLLoader(Loader *loader=0, Controler *control=0);
+    XMLLoader(Controler *control=0);
 
     void read(const QString filename);
     void read(const QString filename, const QString path);
@@ -35,8 +34,7 @@ private:
     void boxAttributToValue(QXmlStreamAttributes att, int &height, int &left, int &top, int &width, bool &manual, bool &ignore);
 
     QXmlStreamReader xml;
-    Loader *mLoader;
-    Controler *mControl;
+    Controler *mControler;
 
     bool isWriting;
 };

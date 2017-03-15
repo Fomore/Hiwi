@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-EventDialog::EventDialog(QWidget *parent, Loader *load) :
+EventDialog::EventDialog(QWidget *parent, Controler *load) :
     QDialog(parent),
     ui(new Ui::EventDialog),
-    mLoader(load)
+    mControler(load)
 {
     ui->setupUi(this);
 }
@@ -34,10 +34,10 @@ void EventDialog::on_buttonBox_accepted()
     bool eye, activ, other, less, comm;
     getAttribute(eye, activ, other, less, comm);
     if(name.size() > 0){//Event wird angelegt
-        if(mID < mLoader->getEventSize()){
-            mLoader->ChamgeEvent(mID, name, desc, eye, activ, other, less, comm);
+        if(mID < mControler->getEventSize()){
+            mControler->ChangeEvent(mID, name, desc, eye, activ, other, less, comm);
         }else{
-            mLoader->addNewEvent(name,desc, eye, activ, other, less, comm);
+            mControler->addNewEvent(name,desc, eye, activ, other, less, comm);
         }
         emit accept();
     }

@@ -31,10 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->labelVideo,SIGNAL(Mouse_Released()),this,SLOT(Mouse_Released()));
 
-    mObjectDialog = new ObjectDialog(this, &mLoader);
-    mEventDialog = new EventDialog(this, &mLoader);
-    mActionEventDialog = new ActionEventDialog(this, &mLoader, &mControler);
-    mBehaviorDialog = new BehaviorDialog(this, &mLoader);
+    mObjectDialog = new ObjectDialog(this, &mControler);
+    mEventDialog = new EventDialog(this, &mControler);
+    mActionEventDialog = new ActionEventDialog(this, &mControler);
+    mBehaviorDialog = new BehaviorDialog(this, &mControler);
 
     connect(mObjectDialog,SIGNAL(accepted()),this,SLOT(updateView()));
     connect(mEventDialog,SIGNAL(accepted()),this,SLOT(updateView()));
@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mObjectMenueAction[5],SIGNAL(triggered()),this,SLOT(show_Actionenevent()));
     connect(mObjectMenueAction[6],SIGNAL(triggered()),this,SLOT(Objectdelete()));
 
-    mXMLLoader = new XMLLoader(&mLoader,&mControler);
+    mXMLLoader = new XMLLoader(&mControler);
 
     QAction *strgS =new QAction("save",this);
     strgS->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
@@ -177,7 +177,7 @@ void MainWindow::myclick_on_Slider(int newPos){
 }
 
 void MainWindow::displayEvent(int id){
-    Event ev = mLoader.getEvent(id);
+    Event ev = mControler.getEvent(id);
     QString text = "<table><tr><th align=left>Name:</th> <td>"+ev.getName()+"</td></tr>";
     text += "<tr> <th align=left>ID:</th> <td>"+QString::number(id)+"</td></tr> </table>";
     if(ev.OnTask()){
@@ -202,7 +202,7 @@ void MainWindow::displayEvent(int id){
 }
 
 void MainWindow::displayObject(int id){
-    QStringList data = mLoader.getObject(id);
+    QStringList data = mControler.getObjectInfo(id);
     QString text = "<table><tr><th align=left>Name:</th> <td>"+data[0]+"</td></tr>";
     text += "<tr> <th align=left>ID:</th> <td>"+data[1]+"</td></tr> </table>";
     text += "<p>"+data[2]+ "</p>";
@@ -211,7 +211,7 @@ void MainWindow::displayObject(int id){
 
 void MainWindow::clearAll()
 {
-    mLoader.clearAll();
+    mControler.clearAll();
     mControler.clearAll();
     mObjectDialog->clear();
     ui->listWidget_2->clear();
@@ -316,7 +316,7 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
                 QMessageBox::question(this, "Object Ändern", "Soll das Object \""+nObj+"\" in  \""+oObj+"\" umbenannt werden?",
                                       QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
             mControler.setAllObject(nID, lastObject);
-            mLoader.deleteObject(nID);
+            mControler.deleteObject(nID);
             updateView();
         }
         ui->listWidget_1->item(lastObject)->setSelected(true);
@@ -393,7 +393,7 @@ void MainWindow::Mouse_Released()
                                 mControler.setObject(mPlayer->getPosition(), Oid, lastObject);
                             }else{
                                 mControler.setAllObject(Oid, lastObject);
-                                mLoader.deleteObject(Oid);
+                                mControler.deleteObject(Oid);
                             }
                             updateView();
                             ui->checkBoxEvent->setChecked(false);
@@ -449,7 +449,7 @@ void MainWindow::newVideoFrame(QImage frame)
             int x,y,w,h;
             mControler.getActivModel(frame_pos,i).getRect(x,y,w,h);
 
-            QString label = mLoader.getObject(mControler.getActivModel(frame_pos,i).getObjectID())[0];
+            QString label = mControler.getObjectInfo(mControler.getActivModel(frame_pos,i).getObjectID())[0];
 
             QRect rec(x,y,w,h);
             if(mControler.getActivModel(frame_pos,i).getObjectID() == ui->listWidget_1->currentIndex().row()){
@@ -505,7 +505,7 @@ void MainWindow::on_actionAddEvent_triggered()
 {
     mEventDialog->setWindowTitle("Add new Event");
     mEventDialog->clear();
-    mEventDialog->setID(mLoader.getEventSize());
+    mEventDialog->setID(mControler.getEventSize());
     mEventDialog->show();
 
 }
@@ -514,20 +514,20 @@ void MainWindow::on_actionAdd_Object_triggered()
 {
     mObjectDialog->setWindowTitle("Add new Object");
     mObjectDialog->clear();
-    mObjectDialog->setID(mLoader.getObjectSize());
+    mObjectDialog->setID(mControler.getObjectSize());
     mObjectDialog->show();
 }
 
 void MainWindow::updateView()
 {
     ui->listWidget_2->clear();
-    QStringList EventList = mLoader.getEventAllName();
+    QStringList EventList = mControler.getEventAllName();
     for(int i = 0; i < EventList.size(); i++){
         ui->listWidget_2->addItem(EventList[i]);
     }
 
     ui->listWidget_1->clear();
-    QStringList ObjectList = mLoader.getObjectAllName();
+    QStringList ObjectList = mControler.getObjectAllName();
     for(int i = 0; i < ObjectList.size(); i++){
         ui->listWidget_1->addItem(ObjectList[i]);
     }
@@ -572,7 +572,7 @@ void MainWindow::contextObjectMenuRequested(const QPoint &point)
 void MainWindow::Eventchange()
 {
     int id = ui->listWidget_2->currentIndex().row();
-    Event ev = mLoader.getEvent(id);
+    Event ev = mControler.getEvent(id);
     mEventDialog->setWindowTitle("Change Event");
     mEventDialog->setAttribute(id, ev.getName(), ev.getDescription());
     mEventDialog->show();
@@ -581,15 +581,15 @@ void MainWindow::Eventchange()
 void MainWindow::Eventdelete()
 {
     int id = ui->listWidget_2->currentIndex().row();
-    Event ev = mLoader.getEvent(id);
+    Event ev = mControler.getEvent(id);
     bool dell = true;
     if(mControler.isEventUsed(id)){
         dell = QMessageBox::question(this, "Lösche Event", "Das Event \""+ev.getName()+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
                                      QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes;
     }
     if(dell){
+        mControler.deleteEventID(id);
         mControler.deleteEvent(id);
-        mLoader.deleteEvent(id);
         updateView();
     }
 }
@@ -602,7 +602,7 @@ void MainWindow::EventClearFocus()
 
 void MainWindow::Objectchange(){
     int id = ui->listWidget_1->currentIndex().row();
-    QStringList all = mLoader.getObject(id);
+    QStringList all = mControler.getObjectInfo(id);
     mObjectDialog->setWindowTitle("Change Object");
     mObjectDialog->setAttribute(id, all[0], all[2]);
     mObjectDialog->show();
@@ -611,7 +611,7 @@ void MainWindow::Objectchange(){
 void MainWindow::Objectdelete()
 {
     int id = ui->listWidget_1->currentIndex().row();
-    QStringList all = mLoader.getObject(id);
+    QStringList all = mControler.getObjectInfo(id);
     bool dell = true;
     if(mControler.isEventUsed(id)){
         dell = QMessageBox::question(this, "Lösche Qbjekt", "Das Object \""+all[0]+"\" wird noch verwendet, soll es dennoch gelöscht werden?",
@@ -620,7 +620,7 @@ void MainWindow::Objectdelete()
 
     if(dell){
         mControler.deleteObject(id);
-        mLoader.deleteObject(id);
+        mControler.deleteObject(id);
         updateView();
     }
 }
@@ -711,12 +711,12 @@ void MainWindow::setFrameOutput(size_t frame)
 void MainWindow::on_actionSuche_Fehler_triggered()
 {
 
-    QStringList items = mLoader.getObjectAllName();
+    QStringList items = mControler.getObjectAllName();
 
     bool ok;
     QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
                                          tr("Season:"), items, 0, false, &ok);
     if (ok && !item.isEmpty()){
-        mControler.detectDataError(mLoader.getObjectID(item),this,mPlayer);
+        mControler.detectDataError(mControler.getObjectID(item),this,mPlayer);
     }
 }

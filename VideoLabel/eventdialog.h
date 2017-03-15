@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QAbstractButton>
-#include "control/loader.h"
+#include "control/controler.h"
 
 namespace Ui {
 class EventDialog;
@@ -14,7 +14,7 @@ class EventDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit EventDialog(QWidget *parent = 0, Loader *load = 0);
+    explicit EventDialog(QWidget *parent = 0, Controler *load = 0);
     ~EventDialog();
 
     void clear();
@@ -30,7 +30,7 @@ private:
 
     int mID;
 
-    Loader *mLoader;
+    Controler *mControler;
 
     void getAttribute(bool &eye, bool &activ, bool &other, bool &less, bool &comm);
 };

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QAbstractButton>
-#include "control/loader.h"
+#include "control/controler.h"
 
 namespace Ui {
 class BehaviorDialog;
@@ -14,7 +14,7 @@ class BehaviorDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit BehaviorDialog(QWidget *parent = 0, Loader *load = 0);
+    explicit BehaviorDialog(QWidget *parent = 0, Controler *load = 0);
     ~BehaviorDialog();
 
     void clear();
@@ -29,7 +29,7 @@ private:
 
     int O_ID, frame_S, frame_E;
 
-    Loader *mLoader;
+    Controler *mControler;
 
     void getAttribute(bool &eye, bool &activ, bool &other, bool &less, bool &comm);
 };

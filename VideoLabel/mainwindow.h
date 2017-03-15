@@ -7,7 +7,6 @@
 #include <QSlider>
 #include <QDebug>
 
-#include "control/loader.h"
 #include "control/controler.h"
 #include "control/xmlloader.h"
 #include "control/myvideoplayer.h"
@@ -114,7 +113,6 @@ private:
 
     Ui::MainWindow *ui;
 
-    Loader mLoader;
     Controler mControler;
     XMLLoader *mXMLLoader;
 

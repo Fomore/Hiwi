@@ -5,9 +5,9 @@
 #include <QInputDialog>
 #include <iostream>
 
-ActionEventDialog::ActionEventDialog(QWidget *parent, Loader *loader, Controler *control) :
+ActionEventDialog::ActionEventDialog(QWidget *parent, Controler *control) :
     QDialog(parent),
-    ui(new Ui::ActionEventDialog), mLoader(loader), mControl(control)
+    ui(new Ui::ActionEventDialog), mControler(control)
 {
     ui->setupUi(this);
 
@@ -34,13 +34,13 @@ void ActionEventDialog::show(int O_id)
 
     QDialog::show();
     mObjectID = O_id;
-    mActivModelList = mControl->getAllActivModel(O_id);
+    mActivModelList = mControler->getAllActivModel(O_id);
     ui->tableWidget->setRowCount(mActivModelList.size());
     for(size_t i = 0; i < mActivModelList.size(); i++){
-        ActivModel mod = mControl->getActivModel(mActivModelList[i].x,mActivModelList[i].y);
+        ActivModel mod = mControler->getActivModel(mActivModelList[i].x,mActivModelList[i].y);
         ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(mod.getFrame())));
-        if(mLoader->existEventID(mod.getEventID())){
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(mLoader->getEventName(mod.getEventID())));
+        if(mControler->existEventID(mod.getEventID())){
+            ui->tableWidget->setItem(i,1,new QTableWidgetItem(mControler->getEventName(mod.getEventID())));
         }else{
             ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(mod.getEventID())));
         }
@@ -116,31 +116,31 @@ void ActionEventDialog::on_buttonBox_accepted()
 {
     for(int i = 0; i < ui->tableWidget->rowCount(); i++){
         int frame = ui->tableWidget->item(i,0)->text().toInt();
-        int E_id = mLoader->getEventID(ui->tableWidget->item(i,1)->text());
+        int E_id = mControler->getEventID(ui->tableWidget->item(i,1)->text());
         int x = ui->tableWidget->item(i,2)->text().toInt();
         int y = ui->tableWidget->item(i,3)->text().toInt();
         int w = ui->tableWidget->item(i,4)->text().toInt();
         int h = ui->tableWidget->item(i,5)->text().toInt();
 
         if(mActivModelList[i].x >=0 && mActivModelList[i].y >= 0 && mActivModelList[i].z >= 0){//Object exisiteirt bereits
-            int framePos = mControl->getFramePosInVector(mActivModelList[i].z);
+            int framePos = mControler->getFramePosInVector(mActivModelList[i].z);
             int Fp = mActivModelList[i].x;
             int Op = mActivModelList[i].y;
-            mControl->changeActionEventValue(framePos,Op,E_id,x,y,w,h);
+            mControler->changeActionEventValue(framePos,Op,E_id,x,y,w,h);
             if(mActivModelList[i].z != frame){
-                mControl->copyActionEvent(framePos,Op,frame);
+                mControler->copyActionEvent(framePos,Op,frame);
                 mDeleteList.push_back(cv::Point3i(mActivModelList[i].z,Op,-1));
             }
         }else{
-            mControl->addObjectInFrame(x,y,w,h,frame,E_id,mObjectID,false);
+            mControler->addObjectInFrame(x,y,w,h,frame,E_id,mObjectID,false);
         }
     }
     for(size_t i = 0; i < mDeleteList.size(); i++){
         if(mDeleteList[i].z >= 0){
-            mControl->setObject(mDeleteList[i].x,mDeleteList[i].y,mDeleteList[i].z);
+            mControler->setObject(mDeleteList[i].x,mDeleteList[i].y,mDeleteList[i].z);
         }else{
-            int f_pos = mControl->getFramePosInVector(mDeleteList[i].x);
-            mControl->deleteActionEvent(mDeleteList[i].y,f_pos);
+            int f_pos = mControler->getFramePosInVector(mDeleteList[i].x);
+            mControler->deleteActionEvent(mDeleteList[i].y,f_pos);
         }
     }
 }
@@ -196,7 +196,7 @@ void ActionEventDialog::contextMenuRequested(const QPoint &point)
 
 void ActionEventDialog::setObject()
 {
-    QStringList items = mLoader->getObjectAllName();
+    QStringList items = mControler->getObjectAllName();
 
     bool ok;
     QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
@@ -207,7 +207,7 @@ void ActionEventDialog::setObject()
 
 void ActionEventDialog::changeObject(const QString name)
 {
-    int id = mLoader->getObjectID(name);
+    int id = mControler->getObjectID(name);
     QModelIndexList list = ui->tableWidget->selectionModel()->selectedRows();
     for(int i = 0; i < list.size(); i++){
         int pos = list[i].row();

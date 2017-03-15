@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QAbstractButton>
-#include "control/loader.h"
+#include "control/controler.h"
 
 namespace Ui {
 class ObjectDialog;
@@ -14,7 +14,7 @@ class ObjectDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ObjectDialog(QWidget *parent = 0, Loader *load = 0);
+    explicit ObjectDialog(QWidget *parent = 0, Controler *load = 0);
     ~ObjectDialog();
     void setUseObject();
     void setUseEvent();
@@ -31,7 +31,7 @@ private:
     Ui::ObjectDialog *ui;
     int mID;
 
-    Loader *mLoader;
+    Controler *mControler;
 };
 
 #endif // ObjectDialog_H

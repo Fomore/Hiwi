@@ -100,7 +100,7 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
     while (i < mFrames.size()) {
         size_t objNr;
         if(mFrames[i].existObject(obj_ID,objNr)){
-            if(mFrames[i].samePosition(objNr,x,y,w,h,20)){
+            if(mFrames[i].samePosition(objNr,x,y,w,h,30)){
                 mFrames[i].getRect(obj_ID,x,y,w,h);
                 frame_l = mFrames[i].getFrameNr();
             }else{
@@ -116,13 +116,14 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
                     mFrames[i].setObjectID(obj_ID, newID);
                     i++;
                     while (i < mFrames.size() && mFrames[i].existObject(obj_ID,objNr)) {
-                        if(mFrames[i].samePosition(objNr,xn,yn,wn,hn,20)){
+                        if(mFrames[i].samePosition(objNr,xn,yn,wn,hn,30)){
                             mFrames[i].getRect(obj_ID,xn,yn,wn,hn);
                             mFrames[i].setObjectID(obj_ID, newID);
-                            i++;
                         }else{
+                            i--;
                             break;
                         }
+                        i++;
                     }
                 }else{
                     return;

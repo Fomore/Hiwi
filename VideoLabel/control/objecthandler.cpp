@@ -74,6 +74,28 @@ void ObjectHandler::deleteObject(int id)
     mObjects.erase(mObjects.begin() + id);
 }
 
+bool ObjectHandler::exisitObject(QString name)
+{
+    for(size_t i = 0; i < mObjects.size(); i++){
+        if(mObjects[i].getName() == name){
+            return true;
+        }
+    }
+    return false;
+}
+
+size_t ObjectHandler::getNextAutoNameID()
+{
+    size_t i = 0;
+    QString name;
+    do {
+        name = "name_auto_"+QString::number(i);
+        i++;
+    } while (exisitObject(name));
+        mObjects.push_back(*(new Object(name, "Automatisch erstelles Objekt")));
+    return mObjects.size()-1;
+}
+
 bool ObjectHandler::existObjectID(int id)
 {
     return id >=0 && id < (int)mObjects.size();

@@ -718,5 +718,7 @@ void MainWindow::on_actionSuche_Fehler_triggered()
                                          tr("Season:"), items, 0, false, &ok);
     if (ok && !item.isEmpty()){
         mControler.detectDataError(mControler.getObjectID(item),this,mPlayer);
+
+        updateView();
     }
 }

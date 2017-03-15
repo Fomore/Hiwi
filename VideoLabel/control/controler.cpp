@@ -100,7 +100,7 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
     while (i < mFrames.size()) {
         size_t objNr;
         if(mFrames[i].existObject(obj_ID,objNr)){
-            if(mFrames[i].samePosition(objNr,x,y,w,h,30)){
+            if(mFrames[i].samePosition(objNr,x,y,w,h,20)){
                 mFrames[i].getRect(obj_ID,x,y,w,h);
                 frame_l = mFrames[i].getFrameNr();
             }else{
@@ -112,7 +112,18 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
                     x = xn; y = yn; w = wn; h = hn;
                     frame_l = frame_n;
                 }else if(work == 0){
-                    std::cout<<"Ändere OBjekt-Name "<<frame_n<<std::endl;
+                    size_t newID = getNextAutoNameID();
+                    mFrames[i].setObjectID(obj_ID, newID);
+                    i++;
+                    while (i < mFrames.size() && mFrames[i].existObject(obj_ID,objNr)) {
+                        if(mFrames[i].samePosition(objNr,xn,yn,wn,hn,20)){
+                            mFrames[i].getRect(obj_ID,xn,yn,wn,hn);
+                            mFrames[i].setObjectID(obj_ID, newID);
+                            i++;
+                        }else{
+                            break;
+                        }
+                    }
                 }else{
                     return;
                 }

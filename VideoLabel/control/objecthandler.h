@@ -26,6 +26,9 @@ public:
 
     void deleteObject(int id);
 
+    bool exisitObject(QString name);
+    size_t getNextAutoNameID();
+
     bool existObjectID(int id);
 };
 

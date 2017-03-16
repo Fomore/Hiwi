@@ -244,14 +244,17 @@ void Controler::fixGesData(QWidget *parent, MyVideoPlayer *player)
         detectJumpBox(i, parent, player);
     }
     std::cout<<"Fix Data - Merge"<<std::endl;
+    if(QMessageBox::question(parent,"Quit","Wollen sie Abbrechen?",QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+        return;
+    }
     size_t anz = 0;
     while(anz != mObjects.size()){
         anz = mObjects.size();
         for(size_t i = 0; i < mObjects.size(); i++){
-            mergeObject(i, parent, player);
             if(i%50 == 0 && QMessageBox::question(parent,"Quit","Wollen sie Abbrechen?",QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
                 return;
             }
+            mergeObject(i, parent, player);
         }
     }
     std::cout<<"Fix Data - Ende"<<std::endl;
@@ -284,7 +287,7 @@ int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Re
     painter.end();
 
     QMessageBox about_box(parent);
-    about_box.setWindowTitle("Handelt es sich um die selbe Person? ["+QString::number((frame_l)+" "+QString::number(frame_r)+"]"));
+    about_box.setWindowTitle("Handelt es sich um die selbe Person? ["+QString::number(frame_l)+" "+QString::number(frame_r)+"]");
     about_box.setIconPixmap(result);
     about_box.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
     about_box.clearFocus();

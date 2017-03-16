@@ -22,6 +22,8 @@ public:
     ActivModel getObject(size_t ob_pos);
     // gibt die Vectorposition von zwei Objekten zurück die die selbe ObjectID haben (zweimal selbes Objekt in Frame)
     std::vector<size_t> SeveralTimesObjects();
+    // Es werden nur Positionen > verglichen im Vector
+    std::vector<size_t> SeveralTimesObject(size_t objPos);
     // git die Vectorposition von Objekten zurück, die in etwa die selbe Position wie gegeben haben
     std::vector<int> getObjectOnPosition(int x, int y, int w, int h, int acc);
 
@@ -31,6 +33,7 @@ public:
     void addObject(ActivModel model);
     int getObjectID(size_t pos);
     void setObjectID(int lastO_id, int newO_id);
+    void setObjectIDPos(size_t pos, int newO_id);
     bool existObject(int O_id);
     bool existObject(int O_id, size_t &pos);
     void deleteObject(int id);
@@ -50,6 +53,7 @@ public:
 
     void setRect(int O_id, int x, int y, int w, int h);
     void getRect(int O_id, int &x, int &y, int &w, int &h);
+    void getRectPos(size_t pos, int &x, int &y, int &w, int &h);
 
     QString printAll(size_t pos);
 };

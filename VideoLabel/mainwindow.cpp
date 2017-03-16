@@ -717,7 +717,8 @@ void MainWindow::on_actionSuche_Fehler_triggered()
     QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
                                          tr("Season:"), items, 0, false, &ok);
     if (ok && !item.isEmpty()){
-        mControler.detectDataError(mControler.getObjectID(item),this,mPlayer);
+//        mControler.detectDataError(mControler.getObjectID(item),this,mPlayer);
+        mControler.detectDataError2(this,mPlayer);
 
         updateView();
     }

@@ -134,54 +134,43 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
     }
 }
 
-void Controler::detectDataError2(int obj_ID, QWidget *parent, MyVideoPlayer *player)
+void Controler::detectDataError2(QWidget *parent, MyVideoPlayer *player)
 {
-    /*
-    size_t frame = 3253;
-    cv::Rect rec_l(170, 533, 47, 64);
-    cv::Rect rec_r(1190, 454, 58, 78);
-    */
-
-    size_t i = 0;
-    //Überspringe bis erstes mal gefunden
-    std::cout<<"Suche erstes Element"<<std::endl;
-    while (i < mFrames.size() && !mFrames[i].existObject(obj_ID)) {
-        i++;
-    }
-    std::cout<<"Suche letztes Element ab "<<i<<std::endl;
-    //Durchlaufe alle aufeinanderfolgenden vorhandenen
-    while (i < mFrames.size() && mFrames[i].existObject(obj_ID)) {
-        i++;
-    }
-
-    std::cout<<"Suche verknüpfung "<<i<<std::endl;
-    if(i < mFrames.size()){
-        size_t frame_l = mFrames[i-1].getFrameNr();
-        cv::Rect rec_l;
-        mFrames[i-1].getRect(obj_ID,rec_l.x,rec_l.y, rec_l.width, rec_l.height);
-        std::vector<int> list;
-
-        do {
-            list.clear();
-            list = mFrames[i].getObjectOnPosition(rec_l.x,rec_l.y, rec_l.width, rec_l.height, 30);
-            i++;
-        } while (i < mFrames.size() && list.size() > 0);
-        std::cout<<"Neues Element: "<<i<<std::endl;
-        for(size_t j = 0; j < list.size(); j++){
-            size_t frame_n = mFrames[i-1].getFrameNr();
-            cv::Rect rec_n;
-            mFrames[i-1].getRect(list[j],rec_n.x,rec_n.y, rec_n.width, rec_n.height);
-            int work = samePerson(frame_l,rec_l,frame_n,rec_n, parent,player);
-            if(work == 1){
-                std::cout<<"Verknüpfen"<<std::endl;
-            }else if(work == 0){
-                           std::cout<<"Tennen"<<std::endl;
-            }else{
-                std::cout<<"Nichts"<<std::endl;
+    std::cout<<"Teile"<<std::endl;
+    for(size_t i = 0; i < mFrames.size(); i++){
+        for(size_t j = 0; j < mFrames[i].getObjectSize(); j++){
+            std::vector<size_t> doppelt = mFrames[i].SeveralTimesObject(j);
+            if(doppelt.size() >= 1){
+                std::cout<<"Verändere "<<mFrames[i].getFrameNr()<<std::endl;
+                doppelt.push_back(j);
+                int obj_ID = mFrames[i].getObjectID(j);
+                int x,y,w,h;
+                if(i > 1 && mFrames[i-1].existObject(obj_ID)){
+                    mFrames[i-1].getRect(obj_ID,x,y,w,h);
+                }else{
+                    mFrames[i].getRect(obj_ID,x,y,w,h);
+                }
+                for(int pos = doppelt.size()-1; pos >= 0; pos--){
+                    size_t newID;
+                    if(pos == (int)doppelt.size()-1){
+                        newID = obj_ID;
+                    }else{
+                        newID = getNextAutoNameID();
+                    }
+                    size_t objNr;
+                    for(size_t run = i; run < mFrames.size() && mFrames[run].existObject(obj_ID,objNr); run++){
+                        if(mFrames[run].samePosition(objNr,x,y,w,h,30)){
+                            mFrames[run].getRectPos(objNr,x,y,w,h);
+                            mFrames[run].setObjectID(objNr, newID);
+                        }else{
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
-    std::cout<<"Fertig"<<std::endl;
+    std::cout<<"Hersche"<<std::endl;
 }
 
 int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player)

@@ -54,6 +54,22 @@ std::vector<size_t> Frame::SeveralTimesObjects()
     return ret;
 }
 
+std::vector<size_t> Frame::SeveralTimesObject(size_t objPos)
+{
+    std::vector<size_t> ret;
+    if(objPos < mObjects.size()){
+        int objID = mObjects[objPos].getObjectID();
+        if(objID >= 0){
+            for(size_t i = objPos+1; i < mObjects.size(); i++){
+                if(objID == mObjects[i].getObjectID()){
+                    ret.push_back(i);
+                }
+            }
+        }
+    }
+    return ret;
+}
+
 std::vector<int> Frame::getObjectOnPosition(int x, int y, int w, int h, int acc)
 {
     std::vector<int> ret;
@@ -187,12 +203,26 @@ void Frame::getRect(int O_id, int &x, int &y, int &w, int &h)
     }
 }
 
+void Frame::getRectPos(size_t pos, int &x, int &y, int &w, int &h)
+{
+    if(pos < mObjects.size()){
+        mObjects[pos].getRect(x,y,w,h);
+    }
+}
+
 void Frame::setObjectID(int lastO_id, int newO_id)
 {
     for(size_t i = 0; i < mObjects.size(); i++){
         if(mObjects[i].getObjectID() == lastO_id){
             mObjects[i].setObjectID(newO_id);
         }
+    }
+}
+
+void Frame::setObjectIDPos(size_t pos, int newO_id)
+{
+    if(pos < mObjects.size()){
+        mObjects[pos].setObjectID(newO_id);
     }
 }
 

@@ -75,14 +75,14 @@ std::vector<int> Frame::getObjectOnPosition(int x, int y, int w, int h, int acc)
     std::vector<int> ret;
     ret.clear();
     for(size_t i = 0; i < mObjects.size(); i++){
-        if(samePosition(i,x,y,w,h,acc)){
+        if(samePositionPos(i,x,y,w,h,acc)){
             ret.push_back(mObjects[i].getObjectID());
         }
     }
     return ret;
 }
 
-bool Frame::samePosition(size_t pos, int x, int y, int w, int h, int acc)
+bool Frame::samePositionPos(size_t pos, int x, int y, int w, int h, int acc)
 {
     if(pos < mObjects.size()){
         int mx, my, mw, mh;
@@ -97,6 +97,17 @@ bool Frame::samePosition(size_t pos, int x, int y, int w, int h, int acc)
     }else{
         return false;
     }
+}
+
+bool Frame::samePosition(int obj_ID, int x, int y, int w, int h, int acc, size_t &pos)
+{
+    for(size_t i = 0; i < mObjects.size(); i++){
+        if(mObjects[i].getObjectID() == obj_ID && samePositionPos(i,x,y,w,h,acc)){
+            pos = i;
+            return true;
+        }
+    }
+    return false;
 }
 
 int Frame::getObjectID(size_t pos)
@@ -199,6 +210,7 @@ void Frame::getRect(int O_id, int &x, int &y, int &w, int &h)
     for(size_t i = 0; i < mObjects.size(); i++){
         if(mObjects[i].getObjectID() == O_id){
             mObjects[i].getRect(x,y,w,h);
+            return;
         }
     }
 }

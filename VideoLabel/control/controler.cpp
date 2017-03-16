@@ -100,7 +100,7 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
     while (i < mFrames.size()) {
         size_t objNr;
         if(mFrames[i].existObject(obj_ID,objNr)){
-            if(mFrames[i].samePosition(objNr,x,y,w,h,30)){
+            if(mFrames[i].samePositionPos(objNr,x,y,w,h,30)){
                 mFrames[i].getRect(obj_ID,x,y,w,h);
                 frame_l = mFrames[i].getFrameNr();
             }else{
@@ -116,7 +116,7 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
                     mFrames[i].setObjectID(obj_ID, newID);
                     i++;
                     while (i < mFrames.size() && mFrames[i].existObject(obj_ID,objNr)) {
-                        if(mFrames[i].samePosition(objNr,xn,yn,wn,hn,30)){
+                        if(mFrames[i].samePositionPos(objNr,xn,yn,wn,hn,30)){
                             mFrames[i].getRect(obj_ID,xn,yn,wn,hn);
                             mFrames[i].setObjectID(obj_ID, newID);
                         }else{
@@ -136,41 +136,49 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
 
 void Controler::detectDataError2(QWidget *parent, MyVideoPlayer *player)
 {
-    std::cout<<"Teile"<<std::endl;
+    bool IDused = true;
+    size_t newID;
     for(size_t i = 0; i < mFrames.size(); i++){
         for(size_t j = 0; j < mFrames[i].getObjectSize(); j++){
             std::vector<size_t> doppelt = mFrames[i].SeveralTimesObject(j);
             if(doppelt.size() >= 1){
-                std::cout<<"Verändere "<<mFrames[i].getFrameNr()<<std::endl;
                 doppelt.push_back(j);
+
                 int obj_ID = mFrames[i].getObjectID(j);
                 int x,y,w,h;
-                if(i > 1 && mFrames[i-1].existObject(obj_ID)){
+                //Auswahl der korrekten Box
+                if(i >= 1 && mFrames[i-1].existObject(obj_ID)){
                     mFrames[i-1].getRect(obj_ID,x,y,w,h);
                 }else{
-                    mFrames[i].getRect(obj_ID,x,y,w,h);
+                    mFrames[i].getRectPos(j,x,y,w,h);
                 }
-                for(int pos = doppelt.size()-1; pos >= 0; pos--){
-                    size_t newID;
-                    if(pos == (int)doppelt.size()-1){
-                        newID = obj_ID;
+
+                bool orginal = true;
+                for(size_t pos = 0; pos < doppelt.size(); pos++){
+                    if(orginal && mFrames[i].samePositionPos(doppelt[pos],x,y,w,h,30)){
+                        orginal = false;
                     }else{
-                        newID = getNextAutoNameID();
-                    }
-                    size_t objNr;
-                    for(size_t run = i; run < mFrames.size() && mFrames[run].existObject(obj_ID,objNr); run++){
-                        if(mFrames[run].samePosition(objNr,x,y,w,h,30)){
-                            mFrames[run].getRectPos(objNr,x,y,w,h);
-                            mFrames[run].setObjectID(objNr, newID);
-                        }else{
-                            break;
+                        if(IDused){
+                            newID = getNextAutoNameID();
+                            IDused = false;
+                        }
+                        size_t objNr;
+                        int xn,yn,wn,hn;
+                        mFrames[i].getRectPos(doppelt[pos],xn,yn,wn,hn);
+                        for(size_t run = i; run < mFrames.size(); run++){
+                            if(mFrames[run].samePosition(obj_ID,xn,yn,wn,hn,30,objNr)){
+                                mFrames[run].setObjectIDPos(objNr, newID);
+                                mFrames[run].getRectPos(objNr,xn,yn,wn,hn);
+                                IDused = true;
+                            }else{
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
     }
-    std::cout<<"Hersche"<<std::endl;
 }
 
 int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player)

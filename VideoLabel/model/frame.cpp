@@ -93,7 +93,9 @@ bool Frame::samePositionPos(size_t pos, int x, int y, int w, int h, int acc)
         int y2 = std::min(y+h,my+mh);
         return(x1 < x2 && y1 < y2
                && std::min(mw, w)*acc/100 < x2-x1
-               && std::min(mh, h)*acc/100 < y2-y1);
+               && std::min(mh, h)*acc/100 < y2-y1
+               && std::max(mw, w)*acc/100 < std::min(mw, w)
+               && std::max(mh, h)*acc/100 < std::min(mh, h));
     }else{
         return false;
     }

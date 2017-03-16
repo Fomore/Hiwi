@@ -108,10 +108,14 @@
     <property name="title">
      <string>Label</string>
     </property>
-    <addaction name="actionAddEvent"/>
     <addaction name="actionAdd_Object"/>
+    <addaction name="actionAddEvent"/>
     <addaction name="actionDrawBox"/>
+    <addaction name="actionMerge_Object"/>
     <addaction name="actionSuche_Fehler"/>
+    <addaction name="actionDetect_Multible_Object"/>
+    <addaction name="actionFix_whole_Data"/>
+    <addaction name="actionDelete_empty_Object"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVideo"/>
@@ -249,7 +253,27 @@
   </action>
   <action name="actionSuche_Fehler">
    <property name="text">
-    <string>Suche Fehler</string>
+    <string>Remove Jump-Box</string>
+   </property>
+  </action>
+  <action name="actionDetect_Multible_Object">
+   <property name="text">
+    <string>Remove all multible Objects</string>
+   </property>
+  </action>
+  <action name="actionMerge_Object">
+   <property name="text">
+    <string>Merge Object</string>
+   </property>
+  </action>
+  <action name="actionFix_whole_Data">
+   <property name="text">
+    <string>Fix whole Data</string>
+   </property>
+  </action>
+  <action name="actionDelete_empty_Object">
+   <property name="text">
+    <string>Delete empty Object</string>
    </property>
   </action>
  </widget>

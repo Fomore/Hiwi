@@ -106,6 +106,14 @@ private slots:
 
     void on_actionSuche_Fehler_triggered();
 
+    void on_actionDetect_Multible_Object_triggered();
+
+    void on_actionMerge_Object_triggered();
+
+    void on_actionFix_whole_Data_triggered();
+
+    void on_actionDelete_empty_Object_triggered();
+
 private:
 
     void selectEvent(int i);

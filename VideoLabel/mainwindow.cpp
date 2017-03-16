@@ -309,7 +309,7 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 {
     displayObject(index.row());
     int nID = ui->listWidget_1->currentRow();
-    if(ui->checkBoxEvent->isChecked()){
+    if(ui->checkBoxEvent->isChecked() && lastObject >= 0){
         QString nObj = ui->listWidget_1->item(nID)->text();
         QString oObj = ui->listWidget_1->item(lastObject)->text();
         if(lastObject != nID &&
@@ -330,7 +330,7 @@ void MainWindow::on_listWidget_1_clicked(const QModelIndex &index)
 void MainWindow::on_listWidget_2_clicked(const QModelIndex &index)
 {
     displayEvent(index.row());
-    if(ui->checkBoxEvent->isChecked()){
+    if(ui->checkBoxEvent->isChecked() && lastEvent >= 0){
         changeData(mPlayer->getPosition(),lastObject,lastEvent,ui->listWidget_1->currentRow(),ui->listWidget_2->currentRow());
 
         ui->listWidget_2->clearFocus();
@@ -349,13 +349,14 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 void MainWindow::Mouse_Released()
 {
     this->setFocus();
-
+    /*
     int x = ui->labelVideo->lastX;
     int y = ui->labelVideo->lastY;
     int w = ui->labelVideo->x;
     int h = ui->labelVideo->y;
     mControler.WindoRectToVideoRect(x,y,w,h);
     ui->textBrowser->setText(QString("Released Label %1 %2 -> %3 %4").arg(x).arg(y).arg(w).arg(h));
+    */
 
     if(ui->labelVideo->isRecActiv()){
         mControler.addEvent(ui->labelVideo->lastX,
@@ -620,7 +621,7 @@ void MainWindow::Objectdelete()
 
     if(dell){
         mControler.deleteObject(id);
-        mControler.deleteObject(id);
+        mControler.deleteObjectID(id);
         updateView();
     }
 }
@@ -710,16 +711,44 @@ void MainWindow::setFrameOutput(size_t frame)
 
 void MainWindow::on_actionSuche_Fehler_triggered()
 {
-
     QStringList items = mControler.getObjectAllName();
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
-                                         tr("Season:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, tr("Select Object: Jump-Box"),
+                                         tr("Auf welchem Object soll gearbeitet werden?"), items, 0, false, &ok);
     if (ok && !item.isEmpty()){
-//        mControler.detectDataError(mControler.getObjectID(item),this,mPlayer);
-        mControler.detectDataError2(this,mPlayer);
-
+        mControler.detectJumpBox(mControler.getObjectID(item),this,mPlayer);
         updateView();
     }
+}
+
+void MainWindow::on_actionDetect_Multible_Object_triggered()
+{
+    mControler.detectMultibleObject();
+    updateView();
+}
+
+void MainWindow::on_actionMerge_Object_triggered()
+{
+    QStringList items = mControler.getObjectAllName();
+
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("Select Object: Merge"),
+                                         tr("Auf welchem Object soll gearbeitet werden?"), items, 0, false, &ok);
+    if (ok && !item.isEmpty()){
+        mControler.mergeObject(mControler.getObjectID(item),this,mPlayer);
+        updateView();
+    }
+}
+
+void MainWindow::on_actionFix_whole_Data_triggered()
+{
+    mControler.fixGesData(this,mPlayer);
+    updateView();
+}
+
+void MainWindow::on_actionDelete_empty_Object_triggered()
+{
+    mControler.deleatEmptyObject();
+    updateView();
 }

@@ -39,8 +39,17 @@ public:
 
     void WindoRectToVideoRect(int &x, int &y, int &w, int &h);
 
-    void detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *player);
-    void detectDataError2(QWidget *parent, MyVideoPlayer *player);
+    // Prüft ob im Verlauf über die Frames die Box springt und bennen mit abfrage um.
+    void detectJumpBox(int obj_ID, QWidget *parent, MyVideoPlayer *player);
+    // Sucht ob in einem Frame ein Objekt merhfach vorhanden ist und ennt die unpassene Boxen um (Automatisch auf allen Frames & Objecten)
+    void detectMultibleObject();
+    //suche Passende Objekte und füge sie zusammen, wenn bestätigt
+    void mergeObject(int obj_ID, QWidget *parent, MyVideoPlayer *player);
+
+    void fixGesData(QWidget *parent, MyVideoPlayer *player);
+
+    void deleatEmptyObject();
+
     int samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player);
     QRect getPrintBox(int Img_width, int Img_height, int X, int Y, int H, int W);
 };

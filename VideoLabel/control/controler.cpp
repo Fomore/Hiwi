@@ -83,12 +83,10 @@ void Controler::WindoRectToVideoRect(int &x, int &y, int &w, int &h)
 }
 
 
-void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *player){
-    std::cout<<"Suche nach Sprüngen im Tracking"<<std::endl;
-
+void Controler::detectJumpBox(int obj_ID, QWidget *parent, MyVideoPlayer *player){
     size_t i = 0;
     //Überspringe bis erstes mal gefunden
-    std::cout<<"Suche erstes Element"<<std::endl;
+    std::cout<<"Suche erstes Element von "<<obj_ID<<std::endl;
     while (i < mFrames.size() && !mFrames[i].existObject(obj_ID)) {
         i++;
     }
@@ -134,7 +132,7 @@ void Controler::detectDataError(int obj_ID, QWidget *parent, MyVideoPlayer *play
     }
 }
 
-void Controler::detectDataError2(QWidget *parent, MyVideoPlayer *player)
+void Controler::detectMultibleObject()
 {
     bool IDused = true;
     size_t newID;
@@ -181,6 +179,95 @@ void Controler::detectDataError2(QWidget *parent, MyVideoPlayer *player)
     }
 }
 
+void Controler::mergeObject(int obj_ID, QWidget *parent, MyVideoPlayer *player)
+{
+    int i = 0;
+    //Überspringe bis erstes mal gefunden
+    std::cout<<"Suche erstes Element "<<obj_ID<<std::endl;
+    while (i < mFrames.size() && !mFrames[i].existObject(obj_ID)) {
+        i++;
+    }
+    int x_start,y_start,w_start,h_start;
+    mFrames[i].getRect(obj_ID,x_start,y_start,w_start,h_start);
+    size_t frame_l = mFrames[i].getFrameNr();
+
+    std::vector<int> ban;
+
+    //Suche nach passenen Objecten
+    for(int step = -1; step <= 1; step+=2){
+        int x,y,w,h;
+        std::cout<<"Merge: "<<step<<std::endl;
+        for(int j = i; j >= 0 && j < mFrames.size(); j+=step){
+            if(mFrames[j].existObject(obj_ID)){
+                mFrames[j].getRect(obj_ID,x,y,w,h);
+                frame_l = mFrames[j].getFrameNr();
+            }else{
+                std::vector<int> posible = mFrames[j].getObjectOnPosition(x, y, w, h, 30);
+                for(size_t id = 0; id < posible.size(); id++){
+                    bool ok = true;
+                    for(size_t r = 0; r < ban.size(); r++){
+                        if(posible[id] == ban[r]){
+                            ok = false;
+                            break;
+                        }
+                    }
+                    if(ok){
+                        int xn,yn,wn,hn;
+                        mFrames[j].getRect(posible[id],xn,yn,wn,hn);
+                        size_t frame_n = mFrames[j].getFrameNr();
+                        int work = samePerson(frame_l,cv::Rect(x,y,w,h),frame_n,cv::Rect(xn,yn,wn,hn), parent,player);
+                        if(work == 1){ //Gleich
+                            setAllObject(posible[id], obj_ID);
+                            deleteObject(posible[id]);
+                            deleteObjectID(posible[id]);
+                            break;
+                        }else if(work == 0){ // abbruch
+                            ban.push_back(posible[id]);
+                        }else{
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    std::cout<<"Ende Meage"<<std::endl;
+}
+
+void Controler::fixGesData(QWidget *parent, MyVideoPlayer *player)
+{
+    size_t tmp = mObjects.size();
+    std::cout<<"Fix Data - Splitt"<<std::endl;
+    detectMultibleObject();
+    std::cout<<"Fix Data - Jump ("<<mObjects.size()-tmp<<" neu)"<<std::endl;
+    for(size_t i = 0; i < mObjects.size(); i++){
+        detectJumpBox(i, parent, player);
+    }
+    std::cout<<"Fix Data - Merge"<<std::endl;
+    size_t anz = 0;
+    while(anz != mObjects.size()){
+        anz = mObjects.size();
+        for(size_t i = 0; i < mObjects.size(); i++){
+            mergeObject(i, parent, player);
+            if(i%50 == 0 && QMessageBox::question(parent,"Quit","Wollen sie Abbrechen?",QMessageBox::Yes|QMessageBox::No) == QMessageBox::Yes){
+                return;
+            }
+        }
+    }
+    std::cout<<"Fix Data - Ende"<<std::endl;
+}
+
+void Controler::deleatEmptyObject()
+{
+    for(size_t i = 0; i < mObjects.size(); i++){
+        if(!isObjectUsed(i)){
+            deleteObjectID(i);
+            deleteObject(i);
+            i--;
+        }
+    }
+}
+
 int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player)
 {
     QImage img_l = player->getFrame(frame_l);
@@ -197,7 +284,7 @@ int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Re
     painter.end();
 
     QMessageBox about_box(parent);
-    about_box.setWindowTitle("Handelt es sich um die selbe Person?");
+    about_box.setWindowTitle("Handelt es sich um die selbe Person? ["+QString::number((frame_l)+" "+QString::number(frame_r)+"]"));
     about_box.setIconPixmap(result);
     about_box.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
     about_box.clearFocus();

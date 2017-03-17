@@ -11,6 +11,9 @@
 
 #include <iostream>
 
+#define FILEPATH "./data/"
+//#define FILEPATH "/media/Volume/annotation/"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -107,7 +110,8 @@ void MainWindow::on_actionOpen_triggered()
 
         clearAll();
 
-        mXMLLoader->read(mFileName, "./data/");
+        mXMLLoader->read(mFileName, FILEPATH);
+        //mXMLLoader->read(mFileName, "./data/");
         //mXMLLoader->read(mFileName, "/media/Volume/annotation/");
 
         updateView();
@@ -497,7 +501,8 @@ void MainWindow::newVideoFrame(QImage frame)
 
 void MainWindow::on_actionSave_triggered()
 {
-    mXMLLoader->write(mFileName,"./data/");
+    mXMLLoader->write(mFileName,FILEPATH);
+        //mXMLLoader->write(mFileName,"./data/");
     //mXMLLoader->write(mFileName,"/media/Volume/annotation/");
 
 }
@@ -683,7 +688,8 @@ void MainWindow::auto_Save()
     //    on_actionPause_triggered();
     QDateTime t;
 
-    mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
+    mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),FILEPATH);
+    //mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"./data/");
     //mXMLLoader->write(mFileName+"_auto_"+t.currentDateTime().toString("yy_MM_dd_hh_mm"),"/media/Volume/annotation/");
 }
 

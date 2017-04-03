@@ -41,7 +41,7 @@ void ActionEventDialog::show(int O_id)
     ui->tableWidget->setRowCount(mActivModelList.size());
     for(size_t i = 0; i < mActivModelList.size(); i++){
         ActivModel mod = mControler->getActivModel(mActivModelList[i].x,mActivModelList[i].y);
-        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(mod.getFrame())));
+        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(mActivModelList[i].z)));
         if(mControler->existEventPos(mod.getEventID())){
             ui->tableWidget->setItem(i,1,new QTableWidgetItem(mControler->getEventName(mod.getEventID())));
         }else{
@@ -215,7 +215,7 @@ void ActionEventDialog::changeObject(const QString name)
     for(int i = 0; i < list.size(); i++){
         int pos = list[i].row();
         if(mActivModelList[pos].x >= 0 && mActivModelList[pos].y >= 0 && mActivModelList[pos].z >= 0){
-            addDeleteList(mActivModelList[pos].z,mActivModelList[pos].y,id);
+            addDeleteList(mActivModelList[pos].x,mActivModelList[pos].y,id);
             mActivModelList.erase(mActivModelList.begin() + pos);
         }else{
             mActivModelList.erase(mActivModelList.begin() + pos);

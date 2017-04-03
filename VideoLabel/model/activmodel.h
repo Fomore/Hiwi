@@ -8,7 +8,6 @@ class ActivModel
 private:
     int mEventID, mObjectID;
     int mX,mY,mW,mH;
-    int mTimePos;
 
     QString toStr(int i);
     QString toStr(double i);
@@ -34,7 +33,6 @@ public:
     virtual void setProjection(double proj[4]);
     virtual void setRect(int x, int y, int w, int h);
 
-    int getFrame();
     int getEventID();
     int getObjectID();
     void getRect(int &x, int &y, int &w, int &h);

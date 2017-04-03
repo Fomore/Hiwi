@@ -5,7 +5,7 @@
 
 ActivModel::ActivModel()
 {
-    mObjectID = mEventID = mTimePos = mX = mY = mW = mH = -1;
+    mObjectID = mEventID = mX = mY = mW = mH = -1;
     mManuel = false;
     setZero();
 }
@@ -14,7 +14,6 @@ ActivModel::ActivModel(ActivModel *p)
 {
     mObjectID = p->mObjectID;
     mEventID = p->mEventID;
-    mTimePos = p->mTimePos;
     mX = p->mX;
     mY = p->mY;
     mW = p->mW;
@@ -90,10 +89,6 @@ void ActivModel::setRect(int x, int y, int w, int h)
     mH = h;
 }
 
-int ActivModel::getFrame(){
-    return mTimePos;
-}
-
 int ActivModel::getEventID()
 {
     return mEventID;
@@ -118,8 +113,6 @@ void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_i
     mY = y;
     mW = w;
     mH = h;
-
-    mTimePos = frame;
 
     mEventID = E_id;
     mObjectID = O_id;
@@ -147,7 +140,7 @@ QString ActivModel::toStr(double i){
 
 QString ActivModel::printAll()
 {
-    QString ret = "["+toStr(mObjectID)+","+toStr(mEventID)+" - "+toStr(mTimePos)+"] ["+toStr(mX)+", "+toStr(mY)+", "+toStr(mW)+", "+toStr(mH)+"] ";
+    QString ret = "["+toStr(mObjectID)+","+toStr(mEventID)+"] ["+toStr(mX)+", "+toStr(mY)+", "+toStr(mW)+", "+toStr(mH)+"] ";
     if(mSetOrienation){
         ret += ", Ori ["+toStr(mOrienation[0])+","+toStr(mOrienation[1])+", "+toStr(mOrienation[2])+"]";
     }

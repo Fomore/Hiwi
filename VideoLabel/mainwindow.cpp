@@ -374,7 +374,7 @@ void MainWindow::Mouse_Released()
         int obj_size = mControler.getObjectSizeInFramePos(frame_pos);
 
         if(frame_pos >= 0 && obj_size >= 0 &&
-                mControler.getActivModel(frame_pos,0).getFrame() == (int)mPlayer->getPosition()){
+                mControler.getFrameNr(frame_pos) == (int)mPlayer->getPosition()){
             int x = ui->labelVideo->x;
             int y = ui->labelVideo->y;
             int w = 0;

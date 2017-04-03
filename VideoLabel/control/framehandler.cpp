@@ -222,10 +222,11 @@ void FrameHandler::changeActionEventValue(size_t frmPos, size_t objPos, int eveI
 int FrameHandler::copyActionEvent(size_t frmPos, size_t objPos, size_t frameNr)
 {
     int pos = getFramePosInVector(frameNr);
+    std::cout<<"Pos: "<<pos<<" "<<frmPos<<" "<<objPos<<" "<<frameNr<<std::endl;
     if(pos < 0){
         pos = 0;
         mFrames.insert(mFrames.begin(),*(new Frame(frameNr)));
-        mFrames[0].addObject(mFrames[frmPos].getObject(objPos));
+        mFrames[0].addObject(mFrames[frmPos+1].getObject(objPos));
     }else if(pos >= (int)mFrames.size()){
         pos = mFrames.size();
         mFrames.push_back(*(new Frame(frameNr)));

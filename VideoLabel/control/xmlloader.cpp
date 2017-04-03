@@ -127,13 +127,12 @@ void XMLLoader::write(const QString filename, const QString path)
     xmlWriter.writeStartElement("images");
 
     for(size_t frame_id = 0; frame_id < mControler->getFrameSize(); frame_id++){
-        int frame = mControler->getActivModel(frame_id,0).getFrame();
+        int frame = mControler->getFrameNr(frame_id);
         xmlWriter.writeStartElement("image");
         xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
         for(int i = 0; i < mControler->getObjectSizeInFramePos(frame_id); i++){
             ActivModel mod = mControler->getActivModel(frame_id,i);
 
-            if(mod.getFrame() == frame){
                 int x,y,w,h;
                 mod.getRect(x,y,w,h);
                 xmlWriter.writeStartElement("box");
@@ -192,9 +191,6 @@ void XMLLoader::write(const QString filename, const QString path)
                     xmlWriter.writeEndElement();
                 }
                 xmlWriter.writeEndElement();
-            }else{
-                std::cout<<"Fehler in Frame "<<frame_id<<"/"<<frame<<" Liste "<<mod.getFrame()<<std::endl;
-            }
         }
         xmlWriter.writeEndElement();
     }

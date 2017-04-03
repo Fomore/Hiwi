@@ -126,8 +126,6 @@ void MyVideoPlayer::getFrame()
 {
     cv::Mat frame;
     if(mStop){
-        //        frame = cv::imread(mImagePaths.at(mImagePos-1), -1);
-        //        mImagePos++;
         video.read(frame);
         if(!frame.empty()){
             video.set(CV_CAP_PROP_POS_FRAMES,std::max(0.0,video.get(CV_CAP_PROP_POS_FRAMES)-1.0));

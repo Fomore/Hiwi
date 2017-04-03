@@ -16,20 +16,18 @@ public:
     int getObjectSize();
     int getObjectID(QString name);
     QStringList getObjectAllName();
-    QString getObjectName(int O_id);
-    QStringList getObjectInfo(int id);
+    QString getObjectName(size_t O_pos);
+    QStringList getObjectInfo(size_t O_pos);
 
     void addNewObject(QString name, QString description);
     int addObjectSave(QString name, QString description);
 
-    void ChangeObject(int id, QString name, QString description);
+    void ChangeObject(size_t O_pos, QString name, QString description);
 
-    void deleteObject(int id);
+    void deleteObject(size_t pos);
 
     bool exisitObject(QString name);
     size_t getNextAutoNameID();
-
-    bool existObjectID(int id);
 };
 
 #endif // OBJECTHANDLER_H

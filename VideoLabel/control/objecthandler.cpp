@@ -5,11 +5,13 @@ ObjectHandler::ObjectHandler()
 }
 
 
-QStringList ObjectHandler::getObjectInfo(int id){
+QStringList ObjectHandler::getObjectInfo(size_t O_pos){
     QStringList ret;
-    ret.push_back(mObjects[id].getName());
-    ret.push_back(QString::number(id));
-    ret.push_back(mObjects[id].getDescription());
+    if(O_pos < mObjects.size()){
+    ret.push_back(mObjects[O_pos].getName());
+    ret.push_back(QString::number(O_pos));
+    ret.push_back(mObjects[O_pos].getDescription());
+    }
     return ret;
 }
 
@@ -44,9 +46,11 @@ int ObjectHandler::addObjectSave(QString name, QString description)
     return ret;
 }
 
-void ObjectHandler::ChangeObject(int id, QString name, QString description)
+void ObjectHandler::ChangeObject(size_t O_pos, QString name, QString description)
 {
-    mObjects[id].change(name,description);
+    if(O_pos < mObjects.size()){
+    mObjects[O_pos].change(name,description);
+    }
 }
 
 int ObjectHandler::getObjectSize()
@@ -64,14 +68,20 @@ int ObjectHandler::getObjectID(QString name)
     return -1;
 }
 
-QString ObjectHandler::getObjectName(int O_id)
+QString ObjectHandler::getObjectName(size_t O_pos)
 {
-    return mObjects[O_id].getName();
+    if(O_pos < mObjects.size()){
+    return mObjects[O_pos].getName();
+    }else{
+        return "";
+    }
 }
 
-void ObjectHandler::deleteObject(int id)
+void ObjectHandler::deleteObject(size_t pos)
 {
-    mObjects.erase(mObjects.begin() + id);
+    if(pos < mObjects.size()){
+    mObjects.erase(mObjects.begin() + pos);
+    }
 }
 
 bool ObjectHandler::exisitObject(QString name)
@@ -94,9 +104,4 @@ size_t ObjectHandler::getNextAutoNameID()
     } while (exisitObject(name));
         mObjects.push_back(*(new Object(name, "Automatisch erstelles Objekt")));
     return mObjects.size()-1;
-}
-
-bool ObjectHandler::existObjectID(int id)
-{
-    return id >=0 && id < (int)mObjects.size();
 }

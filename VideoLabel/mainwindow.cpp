@@ -111,14 +111,13 @@ void MainWindow::on_actionOpen_triggered()
         clearAll();
 
         mXMLLoader->read(mFileName, FILEPATH);
-        //mXMLLoader->read(mFileName, "./data/");
-        //mXMLLoader->read(mFileName, "/media/Volume/annotation/");
 
         updateView();
 
         on_actionStop_triggered();
 
         mPlayer->setPath(filename);
+
         mPlayer->getFrame();
 
         mControler.setDisplaySize(ui->labelVideo->size().width(),ui->labelVideo->size().height());

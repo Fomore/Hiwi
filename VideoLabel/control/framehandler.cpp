@@ -2,6 +2,7 @@
 
 FrameHandler::FrameHandler()
 {
+    mFrames.clear();
 }
 
 void FrameHandler::setEvent(size_t frameNr, int O_pos, int E_id)
@@ -40,7 +41,7 @@ void FrameHandler::setAllObject(int lastO_id, int newO_id)
     }
 }
 
-void FrameHandler::setObject(int frameNr, int lastO_id, int newO_id)
+void FrameHandler::setObject(size_t frameNr, int lastO_id, int newO_id)
 {
     int pos = getFramePosInVector(frameNr);
     if(lastO_id != newO_id && pos >= 0 && mFrames[pos].getFrameNr() == frameNr){
@@ -51,7 +52,7 @@ void FrameHandler::setObject(int frameNr, int lastO_id, int newO_id)
 int FrameHandler::getFramePosInVector(size_t frameNr)
 {
     if(frameNr >= mFrames.size() || mFrames[frameNr].getFrameNr() <= frameNr){
-        for(size_t i = std::min(frameNr,mFrames.size()); i >= 0; i--){
+        for(size_t i = std::min(frameNr,mFrames.size()-1); i < mFrames.size(); i--){
             if(mFrames[i].getFrameNr() <= frameNr){
                 return i;
             }
@@ -74,6 +75,11 @@ size_t FrameHandler::getFrameNr(size_t frame_pos)
     return mFrames[frame_pos].getFrameNr();
 }
 
+size_t FrameHandler::getFrameSize()
+{
+    return mFrames.size();
+}
+
 ActivModel FrameHandler::getActivModel(size_t frame_pos, size_t O_pos)
 {
     if(frame_pos < mFrames.size()){
@@ -83,7 +89,7 @@ ActivModel FrameHandler::getActivModel(size_t frame_pos, size_t O_pos)
     }
 }
 
-int FrameHandler::getLastLabel(int O_id)
+size_t FrameHandler::getLastLabel(int O_id)
 {
     for(size_t i = 0; i < mFrames.size(); i++){
         if(mFrames[i].getEventID(O_id) == -1){
@@ -95,7 +101,7 @@ int FrameHandler::getLastLabel(int O_id)
 
 int FrameHandler::getLastFrame(int O_id)
 {
-    for(int i = (int)mFrames.size()-1; i >= 0; i--){
+    for(size_t i = mFrames.size()-1; i < mFrames.size(); i--){
         if(mFrames[i].existObject(O_id)){
             return mFrames[i].getFrameNr();
         }
@@ -103,9 +109,9 @@ int FrameHandler::getLastFrame(int O_id)
     return -1;
 }
 
-int FrameHandler::getObjectSizeInFramePos(int frame_pos)
+int FrameHandler::getObjectSizeInFramePos(size_t frame_pos)
 {
-    if(frame_pos >= 0 && frame_pos < (int) mFrames.size()){
+    if(frame_pos < mFrames.size()){
         return mFrames[frame_pos].getObjectSize();
     }else{
         return -1;
@@ -125,53 +131,42 @@ std::vector<cv::Point3i> FrameHandler::getAllActivModel(int O_id)
     return list;
 }
 
-int FrameHandler::getEventToObject(int frame, int O_id)
+int FrameHandler::getEventToObject(size_t frameNr, int O_id)
 {
-    int pos = getFramePosInVector(frame);
+    int pos = getFramePosInVector(frameNr);
     if(pos >= 0){
         return mFrames[pos].getEventID(O_id);
     }
     return -1;
 }
 
-void FrameHandler::setLandmarks(int pos, int O_id, double marks[5][2])
+void FrameHandler::setLandmarks(size_t pos, int O_id, double marks[5][2])
 {
-    if(pos >= 0){
+    if(pos < mFrames.size()){
         mFrames[pos].setLandmarks(O_id,marks);
     }
 }
 
-void FrameHandler::setOrientation(int pos, int O_id, double ori[3])
+void FrameHandler::setOrientation(size_t pos, int O_id, double ori[3])
 {
-    if(pos >= 0){
+    if(pos < mFrames.size()){
         mFrames[pos].setOrientation(O_id,ori);
     }
 }
 
-void FrameHandler::setPosition(int frame_pos, int O_id, double pos[3])
+void FrameHandler::setPosition(size_t frame_pos, int O_id, double pos[3])
 {
-    if(frame_pos >= 0){
+    if(frame_pos < mFrames.size()){
         mFrames[frame_pos].setPosition(O_id,pos);
     }
 }
 
-void FrameHandler::setProjection(int pos, int O_id, double pro[4])
+void FrameHandler::setProjection(size_t pos, int O_id, double pro[4])
 {
-    if(pos >= 0){
+    if(pos < mFrames.size()){
         mFrames[pos].setProjection(O_id,pro);
     }
 }
-
-bool FrameHandler::getNextSetFrame(int &frame)
-{
-    do {
-        frame++;
-    } while (frame >= 0
-             && (size_t) frame < mFrames.size()
-             && mFrames[frame].getObjectSize() == 0);
-    return frame >= 0 && (size_t) frame < mFrames.size();
-}
-
 
 bool FrameHandler::isEventUsed(int id)
 {
@@ -207,7 +202,7 @@ void FrameHandler::deleteObjectID(int id)
     }
 }
 
-void FrameHandler::deleteActionEvent(size_t obj_pos, size_t frm_pos)
+void FrameHandler::deleteActionEvent(size_t frm_pos, size_t obj_pos)
 {
     std::cout<<"Lösche: "<<frm_pos<<" - "<<obj_pos<<std::endl;
     if(frm_pos < mFrames.size()){
@@ -218,28 +213,28 @@ void FrameHandler::deleteActionEvent(size_t obj_pos, size_t frm_pos)
     }
 }
 
-void FrameHandler::changeActionEventValue(int frmPos, int objPos, int eveID, int x, int y, int w, int h)
+void FrameHandler::changeActionEventValue(size_t frmPos, size_t objPos, int eveID, int x, int y, int w, int h)
 {
     mFrames[frmPos].setEventID(objPos,eveID);
     mFrames[frmPos].setRect(objPos,x,y,w,h);
 }
 
-int FrameHandler::copyActionEvent(int frmPos, int objPos, int frame)
+int FrameHandler::copyActionEvent(size_t frmPos, size_t objPos, size_t frameNr)
 {
-    int pos = getFramePosInVector(frame);
+    int pos = getFramePosInVector(frameNr);
     if(pos < 0){
         pos = 0;
-        mFrames.insert(mFrames.begin(),*(new Frame(frame)));
+        mFrames.insert(mFrames.begin(),*(new Frame(frameNr)));
         mFrames[0].addObject(mFrames[frmPos].getObject(objPos));
     }else if(pos >= (int)mFrames.size()){
         pos = mFrames.size();
-        mFrames.push_back(*(new Frame(frame)));
+        mFrames.push_back(*(new Frame(frameNr)));
         mFrames[pos].addObject(mFrames[frmPos].getObject(objPos));
-    }else if(mFrames[pos].getFrameNr() == frame){
+    }else if(mFrames[pos].getFrameNr() == frameNr){
         mFrames[pos].addObject(mFrames[frmPos].getObject(objPos));
     }else{
         pos++;
-        mFrames.insert(mFrames.begin()+pos,*(new Frame(frame)));
+        mFrames.insert(mFrames.begin()+pos,*(new Frame(frameNr)));
         mFrames[pos].addObject(mFrames[frmPos].getObject(objPos));
     }
     mFrames[frmPos].deleteActionEvent(objPos);

@@ -98,9 +98,9 @@ void Controler::detectJumpBox(int obj_ID, QWidget *parent, MyVideoPlayer *player
     i++;
 
     while (i < mFrames.size()) {
-        size_t objNr;
-        if(mFrames[i].existObject(obj_ID,objNr)){
-            if(mFrames[i].samePositionPos(objNr,x,y,w,h,30)){
+        size_t objPos;
+        if(mFrames[i].existObject(obj_ID,objPos)){
+            if(mFrames[i].samePositionPos(objPos,x,y,w,h,30)){
                 mFrames[i].getRect(obj_ID,x,y,w,h);
                 frame_l = mFrames[i].getFrameNr();
             }else{
@@ -115,8 +115,8 @@ void Controler::detectJumpBox(int obj_ID, QWidget *parent, MyVideoPlayer *player
                     size_t newID = getNextAutoNameID();
                     mFrames[i].setObjectID(obj_ID, newID);
                     i++;
-                    while (i < mFrames.size() && mFrames[i].existObject(obj_ID,objNr)) {
-                        if(mFrames[i].samePositionPos(objNr,xn,yn,wn,hn,30)){
+                    while (i < mFrames.size() && mFrames[i].existObject(obj_ID,objPos)) {
+                        if(mFrames[i].samePositionPos(objPos,xn,yn,wn,hn,30)){
                             mFrames[i].getRect(obj_ID,xn,yn,wn,hn);
                             mFrames[i].setObjectID(obj_ID, newID);
                         }else{
@@ -266,7 +266,6 @@ void Controler::deleatEmptyObject()
 {
     for(size_t i = 0; i < mObjects.size(); i++){
         if(!isObjectUsed(i)){
-            deleteObjectID(i);
             deleteObject(i);
             i--;
         }

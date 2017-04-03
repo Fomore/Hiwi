@@ -126,8 +126,7 @@ void XMLLoader::write(const QString filename, const QString path)
 
     xmlWriter.writeStartElement("images");
 
-    int frame_id = -1;
-    while(mControler->getNextSetFrame(frame_id)){
+    for(size_t frame_id = 0; frame_id < mControler->getFrameSize(); frame_id++){
         int frame = mControler->getActivModel(frame_id,0).getFrame();
         xmlWriter.writeStartElement("image");
         xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");

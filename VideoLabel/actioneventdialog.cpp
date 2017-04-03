@@ -33,6 +33,9 @@ void ActionEventDialog::show(int O_id)
     mActivModelList.clear();
 
     QDialog::show();
+
+    this->setWindowTitle(mControler->getObjectName(O_id));
+
     mObjectID = O_id;
     mActivModelList = mControler->getAllActivModel(O_id);
     ui->tableWidget->setRowCount(mActivModelList.size());
@@ -130,7 +133,7 @@ void ActionEventDialog::on_buttonBox_accepted()
             mControler->changeActionEventValue(Fp,Op,E_id,x,y,w,h);
             if(mActivModelList[i].z != frame){
                 mControler->copyActionEvent(Fp,Op,frame);
-                mDeleteList.push_back(cv::Point3i(mActivModelList[i].z,Op,-1));
+                mDeleteList.push_back(cv::Point3i(Fp,Op,-1));
             }
         }else{
             mControler->addObjectInFrame(x,y,w,h,frame,E_id,mObjectID,false);
@@ -140,7 +143,7 @@ void ActionEventDialog::on_buttonBox_accepted()
         if(mDeleteList[i].z >= 0){
             mControler->setObject(mDeleteList[i].x,mDeleteList[i].y,mDeleteList[i].z);
         }else{
-            mControler->deleteActionEvent(mDeleteList[i].y,mDeleteList[i].x);
+            mControler->deleteActionEvent(mDeleteList[i].x,mDeleteList[i].y);
         }
     }
 }

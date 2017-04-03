@@ -39,7 +39,7 @@ void ActionEventDialog::show(int O_id)
     for(size_t i = 0; i < mActivModelList.size(); i++){
         ActivModel mod = mControler->getActivModel(mActivModelList[i].x,mActivModelList[i].y);
         ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(mod.getFrame())));
-        if(mControler->existEventID(mod.getEventID())){
+        if(mControler->existEventPos(mod.getEventID())){
             ui->tableWidget->setItem(i,1,new QTableWidgetItem(mControler->getEventName(mod.getEventID())));
         }else{
             ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::number(mod.getEventID())));
@@ -123,12 +123,13 @@ void ActionEventDialog::on_buttonBox_accepted()
         int h = ui->tableWidget->item(i,5)->text().toInt();
 
         if(mActivModelList[i].x >=0 && mActivModelList[i].y >= 0 && mActivModelList[i].z >= 0){//Object exisiteirt bereits
-            int framePos = mControler->getFramePosInVector(mActivModelList[i].z);
+//            int framePos = mControler->getFramePosInVector(mActivModelList[i].z);
             int Fp = mActivModelList[i].x;
             int Op = mActivModelList[i].y;
-            mControler->changeActionEventValue(framePos,Op,E_id,x,y,w,h);
+            std::cout<<i<<": "<<mActivModelList[i]<<std::endl;
+            mControler->changeActionEventValue(Fp,Op,E_id,x,y,w,h);
             if(mActivModelList[i].z != frame){
-                mControler->copyActionEvent(framePos,Op,frame);
+                mControler->copyActionEvent(Fp,Op,frame);
                 mDeleteList.push_back(cv::Point3i(mActivModelList[i].z,Op,-1));
             }
         }else{
@@ -139,8 +140,7 @@ void ActionEventDialog::on_buttonBox_accepted()
         if(mDeleteList[i].z >= 0){
             mControler->setObject(mDeleteList[i].x,mDeleteList[i].y,mDeleteList[i].z);
         }else{
-            int f_pos = mControler->getFramePosInVector(mDeleteList[i].x);
-            mControler->deleteActionEvent(mDeleteList[i].y,f_pos);
+            mControler->deleteActionEvent(mDeleteList[i].y,mDeleteList[i].x);
         }
     }
 }
@@ -159,7 +159,7 @@ void ActionEventDialog::deleteActionEvent()
     }
     for(size_t i =0 ; i < pos.size(); i++){
         if(mActivModelList[pos[i]].x >= 0 && mActivModelList[pos[i]].y >= 0){
-            addDeleteList(mActivModelList[pos[i]].z,mActivModelList[pos[i]].y,-1);
+            addDeleteList(mActivModelList[pos[i]].x,mActivModelList[pos[i]].y,-1);
             mActivModelList.erase(mActivModelList.begin() + pos[i]);
         }else{
             mActivModelList.erase(mActivModelList.begin() + pos[i]);

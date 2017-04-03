@@ -20,13 +20,14 @@ Controler::Controler()
 
 void Controler::addEvent(int x1, int y1, int x2, int y2, int frameNr, int E_id, int O_id)
 {
-    std::cout<<"Aufruf mit: "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<frameNr<<" "<<E_id<<" "<<O_id<<std::endl;
     int x = std::min(x1,x2);
     int w = std::max(x1,x2)-x;
     int y = std::min(y1,y2);
     int h = std::max(y1,y2)-y;
 
     WindoRectToVideoRect(x,y,w,h);
+
+    std::cout<<"Aufruf mit: "<<x<<" "<<y<<" "<<w<<" "<<h<<" "<<frameNr<<" "<<E_id<<" "<<O_id<<std::endl;
 
     addObjectInFrame(x,y,w,h,frameNr,E_id,O_id,true);
 }
@@ -36,6 +37,7 @@ void Controler::calculateParameter()
     mScall = std::min((double)DisplayHeight/(double)VideoHeight,(double)DisplayWidth/(double)VideoWidth);
     ShiftX = (DisplayWidth-VideoWidth*mScall)/2;
     ShiftY = (DisplayHeight-VideoHeight*mScall)/2;
+    std::cout<<"Parameter: "<<mScall<<" "<<ShiftX<<" "<<ShiftY<<std::endl;
 }
 
 void Controler::setVideoSize(int w, int h)

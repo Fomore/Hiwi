@@ -4,15 +4,15 @@ FrameHandler::FrameHandler()
 {
 }
 
-void FrameHandler::setEvent(int frame, int O_id, int E_id)
+void FrameHandler::setEvent(size_t frameNr, int O_pos, int E_id)
 {
-    int pos = getFramePosInVector(frame);
+    int pos = getFramePosInVector(frameNr);
     if(pos >= 0){
-        mFrames[pos].setEventID(O_id, E_id);
+        mFrames[pos].setEventID(O_pos, E_id);
     }
 }
 
-int FrameHandler::addObjectInFrame(int x, int y, int w, int h, int frameNr, int E_id, int O_id, bool man)
+int FrameHandler::addObjectInFrame(int x, int y, int w, int h, size_t frameNr, int E_id, int O_id, bool man)
 {
     int pos = getFramePosInVector(frameNr);
     if(pos < 0){
@@ -48,13 +48,10 @@ void FrameHandler::setObject(int frameNr, int lastO_id, int newO_id)
     }
 }
 
-int FrameHandler::getFramePosInVector(int frameNr)
+int FrameHandler::getFramePosInVector(size_t frameNr)
 {
-    if(frameNr < 0 || mFrames.size() == 0){
-        return -1;
-    }else if((size_t)frameNr >= mFrames.size()
-             || mFrames[frameNr].getFrameNr() <= frameNr){
-        for(size_t i = std::min((size_t)frameNr,mFrames.size()-1); i >= 0; i--){
+    if(frameNr >= mFrames.size() || mFrames[frameNr].getFrameNr() <= frameNr){
+        for(size_t i = std::min(frameNr,mFrames.size()); i >= 0; i--){
             if(mFrames[i].getFrameNr() <= frameNr){
                 return i;
             }

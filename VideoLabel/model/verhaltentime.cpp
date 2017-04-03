@@ -14,18 +14,18 @@ VerhaltenTime::VerhaltenTime(int Oid, QString name, QString description, bool ey
     change(Oid, name,description, eye, activ, other, less, comm, start, end);
 }
 
-void VerhaltenTime::change(int Oid, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm, int start, int end)
+void VerhaltenTime::change(int O_id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm, int start, int end)
 {
     Event::change(name,description,eye,activ,other, less,comm);
     mFrameStart = start;
     mFrameEnd = end;
-    mObjectID = Oid;
+    mObjectID = O_id;
 }
 
-void VerhaltenTime::setStartEnd(int start, int end)
+void VerhaltenTime::setStartEnd(int startTime, int endTime)
 {
-    mFrameStart = start;
-    mFrameEnd = end;
+    mFrameStart = startTime;
+    mFrameEnd = endTime;
 }
 
 void VerhaltenTime::getFrame(int &start, int &end)

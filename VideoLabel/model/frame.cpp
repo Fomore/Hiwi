@@ -14,6 +14,11 @@ Frame::Frame(size_t frameNr)
     mObjects.clear();
 }
 
+Frame::~Frame()
+{
+    mObjects.clear();
+}
+
 void Frame::clear()
 {
     mObjects.clear();
@@ -60,8 +65,8 @@ std::vector<size_t> Frame::SeveralTimesObject(size_t objPos)
     if(objPos < mObjects.size()){
         int objID = mObjects[objPos].getObjectID();
         if(objID >= 0){
-            for(size_t i = objPos+1; i < mObjects.size(); i++){
-                if(objID == mObjects[i].getObjectID()){
+            for(size_t i = 0; i < mObjects.size(); i++){
+                if(i != objPos && objID == mObjects[i].getObjectID()){
                     ret.push_back(i);
                 }
             }
@@ -117,26 +122,24 @@ int Frame::getObjectID(size_t pos)
     if(pos < mObjects.size()){
         return mObjects[pos].getObjectID();
     }else{
-        return -2;
+        return -1;
     }
 }
 
-int Frame::getEventID(int O_id)
+int Frame::getEventID(int Obj_id)
 {
     for(size_t i = 0; i < mObjects.size(); i++){
-        if(mObjects[i].getObjectID() == O_id){
+        if(mObjects[i].getObjectID() == Obj_id){
             mObjects[i].getEventID();
         }
     }
     return -1;
 }
 
-void Frame::setEventID(int O_id, int E_id)
+void Frame::setEventID(size_t Obj_pos, int E_id)
 {
-    for(size_t i = 0; i < mObjects.size(); i++){
-        if(mObjects[i].getObjectID() == O_id){
-            mObjects[i].setEventID(E_id);
-        }
+    if(Obj_pos < mObjects.size()){
+        mObjects[Obj_pos].setEventID(E_id);
     }
 }
 
@@ -150,12 +153,12 @@ bool Frame::existEvent(int E_id)
     return false;
 }
 
-void Frame::deleteEvent(int id)
+void Frame::deleteEvent(int E_id)
 {
     for(size_t i = 0; i < mObjects.size(); i++){
-        if(mObjects[i].getEventID() == id){
+        if(mObjects[i].getEventID() == E_id){
             mObjects[i].setEventID(-1);
-        }else if(mObjects[i].getEventID() > id){
+        }else if(mObjects[i].getEventID() > E_id){
             mObjects[i].setEventID(mObjects[i].getEventID()-1);
         }
     }
@@ -198,13 +201,11 @@ void Frame::setProjection(int O_id, double proj[4])
     }
 }
 
-void Frame::setRect(int O_id, int x, int y, int w, int h)
+void Frame::setRect(size_t O_pos, int x, int y, int w, int h)
 {
-    for(size_t i = 0; i < mObjects.size(); i++){
-        if(mObjects[i].getObjectID() == O_id){
-            mObjects[i].setRect(x,y,w,h);
+    if(O_pos < mObjects.size()){
+            mObjects[O_pos].setRect(x,y,w,h);
         }
-    }
 }
 
 void Frame::getRect(int O_id, int &x, int &y, int &w, int &h)
@@ -217,10 +218,10 @@ void Frame::getRect(int O_id, int &x, int &y, int &w, int &h)
     }
 }
 
-void Frame::getRectPos(size_t pos, int &x, int &y, int &w, int &h)
+void Frame::getRectPos(size_t Obj_pos, int &x, int &y, int &w, int &h)
 {
-    if(pos < mObjects.size()){
-        mObjects[pos].getRect(x,y,w,h);
+    if(Obj_pos < mObjects.size()){
+        mObjects[Obj_pos].getRect(x,y,w,h);
     }
 }
 
@@ -233,10 +234,10 @@ void Frame::setObjectID(int lastO_id, int newO_id)
     }
 }
 
-void Frame::setObjectIDPos(size_t pos, int newO_id)
+void Frame::setObjectIDPos(size_t O_pos, int newO_id)
 {
-    if(pos < mObjects.size()){
-        mObjects[pos].setObjectID(newO_id);
+    if(O_pos < mObjects.size()){
+        mObjects[O_pos].setObjectID(newO_id);
     }
 }
 
@@ -257,12 +258,12 @@ bool Frame::existObject(int O_id, size_t &pos)
     return false;
 }
 
-void Frame::deleteObject(int id)
+void Frame::deleteObject(int O_id)
 {
     for(size_t i = 0; i < mObjects.size();i++){
-        if(mObjects[i].getObjectID() == id){
+        if(mObjects[i].getObjectID() == O_id){
             mObjects[i].setObjectID(-1);
-        }else if(mObjects[i].getObjectID() > id){
+        }else if(mObjects[i].getObjectID() > O_id){
             mObjects[i].setObjectID(mObjects[i].getObjectID()-1);
         }
     }

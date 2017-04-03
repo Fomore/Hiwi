@@ -13,6 +13,7 @@ private:
 public:
     Frame();
     Frame(size_t frameNr);
+    ~Frame();
 
     void clear();
 
@@ -34,17 +35,17 @@ public:
     void addObject(ActivModel model);
     int getObjectID(size_t pos);
     void setObjectID(int lastO_id, int newO_id);
-    void setObjectIDPos(size_t pos, int newO_id);
+    void setObjectIDPos(size_t O_pos, int newO_id);
     bool existObject(int O_id);
     bool existObject(int O_id, size_t &pos);
-    void deleteObject(int id);
+    void deleteObject(int O_id);
 
     void deleteActionEvent(size_t pos);
 
-    int getEventID(int O_id);
-    void setEventID(int O_id, int E_id);
+    int getEventID(int Obj_id);
+    void setEventID(size_t Obj_pos, int E_id);
     bool existEvent(int E_id);
-    void deleteEvent(int id);
+    void deleteEvent(int E_id);
 
 
     void setLandmarks(int O_id, double marks[5][2]);
@@ -52,9 +53,9 @@ public:
     void setPosition(int O_id, double pos[3]);
     void setProjection(int O_id, double proj[4]);
 
-    void setRect(int O_id, int x, int y, int w, int h);
+    void setRect(size_t O_pos, int x, int y, int w, int h);
     void getRect(int O_id, int &x, int &y, int &w, int &h);
-    void getRectPos(size_t pos, int &x, int &y, int &w, int &h);
+    void getRectPos(size_t Obj_pos, int &x, int &y, int &w, int &h);
 
     QString printAll(size_t pos);
 };

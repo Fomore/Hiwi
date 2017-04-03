@@ -4,8 +4,8 @@ EventHandler::EventHandler()
 {
 }
 
-Event EventHandler::getEvent(int id){
-    return mEvents[id];
+Event EventHandler::getEvent(int E_pos){
+    return mEvents[E_pos];
 }
 
 QStringList EventHandler::getEventAllName(){
@@ -35,12 +35,12 @@ void EventHandler::addEventSave(QString name, QString description, bool eye, boo
     }
 }
 
-void EventHandler::ChangeEvent(int id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
+void EventHandler::ChangeEvent(int E_pos, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm)
 {
-    mEvents[id].change(name,description, eye, activ, other, less, comm);
+    mEvents[E_pos].change(name,description, eye, activ, other, less, comm);
 }
 
-int EventHandler::getEventSize()
+size_t EventHandler::getEventSize()
 {
     return mEvents.size();
 }
@@ -55,17 +55,17 @@ int EventHandler::getEventID(QString name)
     return -1;
 }
 
-QString EventHandler::getEventName(int E_id)
+QString EventHandler::getEventName(size_t E_pos)
 {
-    return mEvents[E_id].getName();
+    return mEvents[E_pos].getName();
 }
 
-void EventHandler::deleteEvent(int id)
+void EventHandler::deleteEvent(size_t pos)
 {
-    mEvents.erase(mEvents.begin() + id);
+    mEvents.erase(mEvents.begin() + pos);
 }
 
-bool EventHandler::existEventID(int id)
+bool EventHandler::existEventPos(size_t pos)
 {
-    return id >=0 && id < (int)mEvents.size();
+    return pos < (int)mEvents.size();
 }

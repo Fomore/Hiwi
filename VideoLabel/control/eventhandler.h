@@ -18,17 +18,17 @@ public:
     void addEventSave(QString name, QString description,
                       bool eye, bool activ, bool other, bool less, bool comm);
 
-    void ChangeEvent(int id, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm);
+    void ChangeEvent(int E_pos, QString name, QString description, bool eye, bool activ, bool other, bool less, bool comm);
 
-    Event getEvent(int id);
-    int getEventSize();
+    Event getEvent(int E_pos);
+    size_t getEventSize();
     int getEventID(QString name);
     QStringList getEventAllName();
-    QString getEventName(int E_id);
+    QString getEventName(size_t E_pos);
 
-    void deleteEvent(int id);
+    void deleteEvent(size_t pos);
 
-    bool existEventID(int id);
+    bool existEventPos(size_t pos);
 };
 
 #endif // EVENTHANDLER_H

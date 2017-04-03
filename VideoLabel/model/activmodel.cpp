@@ -36,14 +36,6 @@ ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id
     setAll(x,y,w,h,frame,E_id,O_id, man);
 }
 
-QString ActivModel::toStr(int i)
-{
-    return QString::number(i);
-}
-QString ActivModel::toStr(double i){
-    return QString::number(i,'g',15);
-}
-
 void ActivModel::setZero()
 {
     double zero3[3] = {0,0,0};
@@ -143,6 +135,14 @@ void ActivModel::setEventID(int E_id)
 void ActivModel::setObjectID(int O_id)
 {
     mObjectID = O_id;
+}
+
+QString ActivModel::toStr(int i)
+{
+    return QString::number(i);
+}
+QString ActivModel::toStr(double i){
+    return QString::number(i,'g',15);
 }
 
 QString ActivModel::printAll()

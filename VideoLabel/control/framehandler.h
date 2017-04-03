@@ -12,11 +12,11 @@ protected:
 public:
     FrameHandler();
 
-    int addObjectInFrame(int x, int y, int w, int h, int frameNr, int E_id, int O_id, bool man);
+    int addObjectInFrame(int x, int y, int w, int h, size_t frameNr, int E_id, int O_id, bool man);
 
     void setObject(int frameNr, int lastO_id, int newO_id);
     void setAllObject(int lastO_id, int newO_id);
-    void setEvent(int frame, int O_id, int E_id);
+    void setEvent(size_t frameNr, int O_pos, int E_id);
     void setLandmarks(int pos, int O_id, double marks[5][2]);
     void setOrientation(int pos, int O_id, double ori[3]);
     void setPosition(int frame_pos, int O_id, double pos[3]);
@@ -28,7 +28,7 @@ public:
     int getLastLabel(int O_id);
     int getLastFrame(int O_id);
     int getObjectSizeInFramePos(int frame_pos);
-    int getFramePosInVector(int frameNr);
+    int getFramePosInVector(size_t frameNr);
     size_t getFrameNr(size_t frame_pos);
 
     std::vector<cv::Point3i> getAllActivModel(int O_id);

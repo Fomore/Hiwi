@@ -233,7 +233,6 @@ void MainWindow::updateSelection()
         ui->listWidget_2->clearFocus();
         ui->listWidget_2->clearSelection();
     }
-    std::cout << "Selection:" << O_id << " frame " << frame << std::endl;
 }
 
 void MainWindow::changeData(int frame, int old_oID, int old_eID, int new_oID, int new_eID)

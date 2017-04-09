@@ -129,7 +129,6 @@ void ActionEventDialog::on_buttonBox_accepted()
 //            int framePos = mControler->getFramePosInVector(mActivModelList[i].z);
             int Fp = mActivModelList[i].x;
             int Op = mActivModelList[i].y;
-            std::cout<<i<<": "<<mActivModelList[i]<<std::endl;
             mControler->changeActionEventValue(Fp,Op,E_id,x,y,w,h);
             if(mActivModelList[i].z != frame){
                 mControler->copyActionEvent(Fp,Op,frame);

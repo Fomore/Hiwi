@@ -276,9 +276,9 @@ void Frame::deleteActionEvent(size_t pos)
     }
 }
 
-void Frame::addObject(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man)
+void Frame::addObject(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man, int gaze)
 {
-    mObjects.push_back(*(new ActivModel(x,y,w,h,frame,E_id,O_id,man)));
+    mObjects.push_back(*(new ActivModel(x,y,w,h,frame,E_id,O_id,man, gaze)));
 }
 
 void Frame::addObject(ActivModel model)

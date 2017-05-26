@@ -12,7 +12,7 @@ protected:
 public:
     FrameHandler();
 
-    int addObjectInFrame(int x, int y, int w, int h, size_t frameNr, int E_id, int O_id, bool man);
+    int addObjectInFrame(int x, int y, int w, int h, size_t frameNr, int E_id, int O_id, bool man, int gaze);
 
     void setObject(size_t frameNr, int lastO_id, int newO_id);
     void setAllObject(int lastO_id, int newO_id);

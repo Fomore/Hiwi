@@ -31,7 +31,7 @@ public:
     bool samePositionPos(size_t pos, int x, int y, int w, int h, int acc);
     bool samePosition(int obj_ID, int x, int y, int w, int h, int acc, size_t &pos);
 
-    void addObject(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
+    void addObject(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man, int gaze);
     void addObject(ActivModel model);
     int getObjectID(size_t pos);
     void setObjectID(int lastO_id, int newO_id);

@@ -82,6 +82,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(auto_Save()));
     timer->start(300000);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -755,4 +757,11 @@ void MainWindow::on_actionDelete_empty_Object_triggered()
 {
     mControler.deleatEmptyObject();
     updateView();
+}
+
+void MainWindow::on_actionSave_just_Gaze_triggered()
+{
+    mXMLLoader->writeSmall(mFileName+"_Gaze",FILEPATH,
+                           QInputDialog::getInt(this,"Select Gaze","ALL = -1\n GAZE_YET_UNCHANGED = 0\n UNKNOWN = 1\n BLACKBOARD = 2\n DESK = 3\n WINDOW = 4\n TEACHER = 5\n CONTRIBUTING_STUDENT = 6\n OTHER_STUDENT = 7",
+                         -1,-1,7,1));
 }

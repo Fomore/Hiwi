@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include <iostream>
+#include "model/activmodel.h"
 
 XMLLoader::XMLLoader(Controler *control)
 {
@@ -190,6 +191,11 @@ void XMLLoader::write(const QString filename, const QString path)
                     }
                     xmlWriter.writeEndElement();
                 }
+                if(mod.getGaze() != 0){
+                    xmlWriter.writeStartElement("data");
+                    xmlWriter.writeAttribute("gaze",QString::number(mod.getGaze()));
+                    xmlWriter.writeEndElement();
+                }
                 xmlWriter.writeEndElement();
         }
         xmlWriter.writeEndElement();
@@ -200,6 +206,127 @@ void XMLLoader::write(const QString filename, const QString path)
 
     std::cout<<"Write "<<filename.toStdString()<<" Ende"<<std::endl;
     isWriting = false;
+    }
+}
+
+void XMLLoader::writeSmall(const QString filename, const QString path, int Gaze)
+{
+    if(!isWriting){
+        isWriting = true;
+        QXmlStreamWriter xmlWriter;
+        if(!QDir(path).exists()){
+            QDir().mkdir(path);
+        }
+        QFile file(path+filename+"_Label.xml");
+        file.open(QFile::WriteOnly);
+
+        xmlWriter.setDevice(&file);
+        xmlWriter.setAutoFormatting(true);
+        std::cout<<"Write "<<filename.toStdString()<<std::endl;
+
+        xmlWriter.writeStartDocument();
+        xmlWriter.writeStartElement("dataset");
+
+        xmlWriter.writeStartElement("name");
+        xmlWriter.writeCharacters ("imglab dataset");
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeStartElement("comment");
+        xmlWriter.writeCharacters ("Created by VideoLabel");
+        xmlWriter.writeEndElement();
+
+        std::cout<<"Schreibe Bilder"<<std::endl;
+
+        xmlWriter.writeStartElement("images");
+
+        for(size_t frame_id = 0; frame_id < mControler->getFrameSize(); frame_id++){
+            int frame = mControler->getFrameNr(frame_id);
+            bool exisit = false;
+            for(int i = 0; i < mControler->getObjectSizeInFramePos(frame_id); i++){
+                ActivModel mod = mControler->getActivModel(frame_id,i);
+                if(mod.getGaze() == Gaze || (Gaze == -1 && mod.getGaze() != 0)){
+                    exisit = true;
+                }
+            }
+            if(exisit){
+                xmlWriter.writeStartElement("image");
+                xmlWriter.writeAttribute("file",filename+"-"+QString("%1").arg(frame, 6, 10, QChar('0'))+".jpg");
+                for(int i = 0; i < mControler->getObjectSizeInFramePos(frame_id); i++){
+                    ActivModel mod = mControler->getActivModel(frame_id,i);
+
+                    if(mod.getGaze() == Gaze || (Gaze == -1 && mod.getGaze() != 0)){
+                        int x,y,w,h;
+                        mod.getRect(x,y,w,h);
+                        xmlWriter.writeStartElement("box");
+                        xmlWriter.writeAttribute("left",QString::number(x));
+                        xmlWriter.writeAttribute("top",QString::number(y));
+                        xmlWriter.writeAttribute("height",QString::number(h));
+                        xmlWriter.writeAttribute("width",QString::number(w));
+
+                        if(mod.getObjectID() >= 0){
+                            QStringList obj = mControler->getObjectInfo(mod.getObjectID());
+                            xmlWriter.writeStartElement("label");
+                            xmlWriter.writeCharacters (obj[0]);
+                            xmlWriter.writeEndElement();
+                        }else{
+                            std::cout<<"Kein Object "<<i<<"["<<frame<<"]"<<std::endl;
+                        }
+
+                        if(mod.getEventID() >= 0){
+                            Event ev = mControler->getEvent(mod.getEventID());
+                            xmlWriter.writeStartElement("event");
+                            xmlWriter.writeAttribute("name",ev.getName());
+                            xmlWriter.writeEndElement();
+                        }
+
+                        if(mod.mSetOrienation){
+                            xmlWriter.writeStartElement("orientation");
+                            xmlWriter.writeAttribute("x",QString("%1").arg(mod.mOrienation[0]));
+                            xmlWriter.writeAttribute("y",QString("%1").arg(mod.mOrienation[1]));
+                            xmlWriter.writeAttribute("z",QString("%1").arg(mod.mOrienation[2]));
+                            xmlWriter.writeEndElement();
+                        }
+                        if(mod.mSetPosition){
+                            xmlWriter.writeStartElement("position");
+                            xmlWriter.writeAttribute("x",QString("%1").arg(mod.mPosition[0]));
+                            xmlWriter.writeAttribute("y",QString("%1").arg(mod.mPosition[1]));
+                            xmlWriter.writeAttribute("z",QString("%1").arg(mod.mPosition[2]));
+                            xmlWriter.writeEndElement();
+                        }
+                        if(mod.mSetProjection){
+                            xmlWriter.writeStartElement("projection");
+                            xmlWriter.writeAttribute("x1",QString("%1").arg(mod.mProjection[0]));
+                            xmlWriter.writeAttribute("y1",QString("%1").arg(mod.mProjection[1]));
+                            xmlWriter.writeAttribute("x2",QString("%1").arg(mod.mProjection[2]));
+                            xmlWriter.writeAttribute("y2",QString("%1").arg(mod.mProjection[3]));
+                            xmlWriter.writeEndElement();
+                        }
+                        if(mod.mSetLandmarks){
+                            xmlWriter.writeStartElement("landmarks");
+                            for(int j = 0; j < 5; j++){
+                                xmlWriter.writeStartElement("point");
+                                xmlWriter.writeAttribute("idx",QString("%1").arg(j+1));
+                                xmlWriter.writeAttribute("x",QString("%1").arg(mod.mLandmarks[j][0]));
+                                xmlWriter.writeAttribute("y",QString("%1").arg(mod.mLandmarks[j][1]));
+                                xmlWriter.writeEndElement();
+                            }
+                            xmlWriter.writeEndElement();
+                        }
+                        xmlWriter.writeStartElement("data");
+                        xmlWriter.writeAttribute("gaze",QString::number(mod.getGaze()));
+                        xmlWriter.writeEndElement();
+                        xmlWriter.writeEndElement();
+                    }
+                }
+                xmlWriter.writeEndElement();
+            }
+        }
+
+        xmlWriter.writeEndElement();
+        xmlWriter.writeEndDocument();
+
+        std::cout<<"Write "<<filename.toStdString()<<" Ende"<<std::endl;
+        isWriting = false;
     }
 }
 
@@ -288,13 +415,14 @@ void XMLLoader::processImage(int frame)
             double land[5][2];
 
             int E_id = -1;
-            int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land);
+            int gaze = 0;
+            int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land, gaze);
 
             if(O_id < 0){
                 O_id = mControler->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
                 std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
             }
-            int FrameID = mControler->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual);
+            int FrameID = mControler->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual, gaze);
             if(isLand){
                 mControler->setLandmarks(FrameID ,O_id, land);
             }if(isOri){
@@ -312,7 +440,7 @@ void XMLLoader::processImage(int frame)
     }
 }
 
-int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2]) {
+int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2], int &gaze) {
     if (!xml.isStartElement() || xml.name() != "box"){
         std::cout<<"Keine Box"<<std::endl;
         return -1;
@@ -351,6 +479,9 @@ int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos,
         }else if(xml.name() == "event"){
             E_id = processEvent();
             xml.skipCurrentElement();
+        }else if(xml.name() == "data"){
+             gaze = xml.attributes().value("gaze").toInt();
+             xml.skipCurrentElement();
         }else{
             std::cout<<"Fehler in Box, Zeile "<<xml.lineNumber()<<": "<<xml.name().toString().toStdString()<<std::endl;
             xml.skipCurrentElement();

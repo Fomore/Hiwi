@@ -114,6 +114,8 @@ private slots:
 
     void on_actionDelete_empty_Object_triggered();
 
+    void on_actionSave_just_Gaze_triggered();
+
 private:
 
     void selectEvent(int i);

@@ -13,23 +13,23 @@ void FrameHandler::setEvent(size_t frameNr, int O_pos, int E_id)
     }
 }
 
-int FrameHandler::addObjectInFrame(int x, int y, int w, int h, size_t frameNr, int E_id, int O_id, bool man)
+int FrameHandler::addObjectInFrame(int x, int y, int w, int h, size_t frameNr, int E_id, int O_id, bool man, int gaze)
 {
     int pos = getFramePosInVector(frameNr);
     if(pos < 0){
         mFrames.insert(mFrames.begin(),*(new Frame(frameNr)));
-        mFrames[0].addObject(x,y,w,h,frameNr,E_id,O_id,man);
+        mFrames[0].addObject(x,y,w,h,frameNr,E_id,O_id,man,gaze);
         pos = 0;
     }else if(pos >= (int)mFrames.size()){
         mFrames.push_back(*(new Frame(frameNr)));
         pos = mFrames.size()-1;
-        mFrames[pos].addObject(x,y,w,h,frameNr,E_id,O_id,man);
+        mFrames[pos].addObject(x,y,w,h,frameNr,E_id,O_id,man,gaze);
     }else if(mFrames[pos].getFrameNr() == frameNr){
-        mFrames[pos].addObject(x,y,w,h,frameNr,E_id,O_id,man);
+        mFrames[pos].addObject(x,y,w,h,frameNr,E_id,O_id,man,gaze);
     }else{
         pos++;
         mFrames.insert(mFrames.begin()+pos,*(new Frame(frameNr)));
-        mFrames[pos].addObject(x,y,w,h,frameNr,E_id,O_id,man);
+        mFrames[pos].addObject(x,y,w,h,frameNr,E_id,O_id,man,gaze);
     }
     return pos;
 }

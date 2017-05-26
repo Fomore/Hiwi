@@ -50,7 +50,7 @@ public:
 
     void deleatEmptyObject();
 
-    int samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player);
+    int samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player, QString Name1, QString Name2);
     QRect getPrintBox(int Img_width, int Img_height, int X, int Y, int H, int W);
 };
 

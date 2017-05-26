@@ -29,7 +29,7 @@ void Controler::addEvent(int x1, int y1, int x2, int y2, int frameNr, int E_id, 
 
     std::cout<<"Aufruf mit: "<<x<<" "<<y<<" "<<w<<" "<<h<<" "<<frameNr<<" "<<E_id<<" "<<O_id<<std::endl;
 
-    addObjectInFrame(x,y,w,h,frameNr,E_id,O_id,true);
+    addObjectInFrame(x,y,w,h,frameNr,E_id,O_id,true,0);
 }
 
 void Controler::calculateParameter()
@@ -96,6 +96,7 @@ void Controler::detectJumpBox(int obj_ID, QWidget *parent, MyVideoPlayer *player
     int x,y,w,h;
     mFrames[i].getRect(obj_ID,x,y,w,h);
     i++;
+    QString Name1 = mObjects[obj_ID].getName(), Name2 = mObjects[obj_ID].getName();
 
     while (i < mFrames.size()) {
         size_t objPos;
@@ -107,7 +108,7 @@ void Controler::detectJumpBox(int obj_ID, QWidget *parent, MyVideoPlayer *player
                 int xn,yn,wn,hn;
                 mFrames[i].getRect(obj_ID,xn,yn,wn,hn);
                 size_t frame_n = mFrames[i].getFrameNr();
-                int work = samePerson(frame_l,cv::Rect(x,y,w,h),frame_n,cv::Rect(xn,yn,wn,hn), parent,player);
+                int work = samePerson(frame_l,cv::Rect(x,y,w,h),frame_n,cv::Rect(xn,yn,wn,hn), parent,player,Name1,Name2);
                 if(work == 1){
                     x = xn; y = yn; w = wn; h = hn;
                     frame_l = frame_n;
@@ -217,7 +218,11 @@ void Controler::mergeObject(int obj_ID, QWidget *parent, MyVideoPlayer *player)
                         int xn,yn,wn,hn;
                         mFrames[j].getRect(posible[id],xn,yn,wn,hn);
                         size_t frame_n = mFrames[j].getFrameNr();
-                        int work = samePerson(frame_l,cv::Rect(x,y,w,h),frame_n,cv::Rect(xn,yn,wn,hn), parent,player);
+
+                        QString Name1 = mObjects[obj_ID].getName();
+                        QString Name2 = mObjects[posible[id]].getName();
+
+                        int work = samePerson(frame_l,cv::Rect(x,y,w,h),frame_n,cv::Rect(xn,yn,wn,hn), parent,player, Name1, Name2);
                         if(work == 1){ //Gleich
                             setAllObject(posible[id], obj_ID);
                             deleteObject(posible[id]);
@@ -272,13 +277,13 @@ void Controler::deleatEmptyObject()
     }
 }
 
-int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player)
+int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Rect box_r, QWidget *parent, MyVideoPlayer *player, QString Name1, QString Name2)
 {
     QImage img_l = player->getFrame(frame_l);
     QImage img_r = player->getFrame(frame_r);
 
-    QImage copy_l = img_l.copy(getPrintBox(img_l.width(), img_l.height(), box_l.x, box_l.y, box_l.height, box_l.width)).scaled(300,400,Qt::KeepAspectRatio);
-    QImage copy_r = img_r.copy(getPrintBox(img_r.width(), img_r.height(), box_r.x, box_r.y, box_r.height, box_r.width)).scaled(300,400,Qt::KeepAspectRatio);
+    QImage copy_l = img_l.copy(getPrintBox(img_l.width(), img_l.height(), box_l.x, box_l.y, box_l.height, box_l.width)).scaled(300,400,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QImage copy_r = img_r.copy(getPrintBox(img_r.width(), img_r.height(), box_r.x, box_r.y, box_r.height, box_r.width)).scaled(300,400,Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
     QPixmap result(600,400);
     result.fill(Qt::transparent);
@@ -288,7 +293,7 @@ int Controler::samePerson(size_t frame_l, cv::Rect box_l, size_t frame_r, cv::Re
     painter.end();
 
     QMessageBox about_box(parent);
-    about_box.setWindowTitle("Handelt es sich um die selbe Person? ["+QString::number(frame_l)+" "+QString::number(frame_r)+"]");
+    about_box.setWindowTitle("Handelt es sich bei "+Name1+" und "+Name2+" um die selbe Person? ["+QString::number(frame_l)+" "+QString::number(frame_r)+"]");
     about_box.setIconPixmap(result);
     about_box.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
     about_box.clearFocus();
@@ -309,8 +314,8 @@ QRect Controler::getPrintBox(int Img_width, int Img_height, int X, int Y, int H,
     QRect ret;
     ret.setX(std::max(0,X-W/4));
     ret.setY(std::max(0,Y-H/4));
-    ret.setWidth(W*1.5);
-    ret.setHeight(H*1.5);
+    ret.setWidth(W*1.7);
+    ret.setHeight(H*1.7);
     if(Img_width < ret.x()+ret.width()){
         ret.setWidth(Img_width-ret.x());
     }

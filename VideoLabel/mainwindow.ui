@@ -97,6 +97,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionImport_XML"/>
     <addaction name="actionSave"/>
+    <addaction name="actionSave_just_Gaze"/>
    </widget>
    <widget class="QMenu" name="menuVideo">
     <property name="title">
@@ -277,6 +278,11 @@
   <action name="actionDelete_empty_Object">
    <property name="text">
     <string>Delete empty Object</string>
+   </property>
+  </action>
+  <action name="actionSave_just_Gaze">
+   <property name="text">
+    <string>Save just Gaze</string>
    </property>
   </action>
  </widget>

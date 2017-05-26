@@ -49,10 +49,12 @@ void ActionEventDialog::show(int O_id)
         }
         int x,y,w,h;
         mod.getRect(x,y,w,h);
+        int gaze = mod.getGaze();
         ui->tableWidget->setItem(i,2,new QTableWidgetItem(QString::number(x)));
         ui->tableWidget->setItem(i,3,new QTableWidgetItem(QString::number(y)));
         ui->tableWidget->setItem(i,4,new QTableWidgetItem(QString::number(w)));
         ui->tableWidget->setItem(i,5,new QTableWidgetItem(QString::number(h)));
+        ui->tableWidget->setItem(i,6,new QTableWidgetItem(QString::number(gaze)));
     }
 }
 
@@ -64,7 +66,8 @@ void ActionEventDialog::on_pushButton_Probl_clicked()
                 || ui->tableWidget->item(i,2)->text().toInt() < 0
                 || ui->tableWidget->item(i,3)->text().toInt() < 0
                 || ui->tableWidget->item(i,4)->text().toInt() <= 0
-                || ui->tableWidget->item(i,5)->text().toInt() <= 0){
+                || ui->tableWidget->item(i,5)->text().toInt() <= 0
+                || ui->tableWidget->item(i,6)->text().toInt() <= 0){
             ui->tableWidget->selectRow(i);
             break;
         }
@@ -109,6 +112,7 @@ void ActionEventDialog::on_pushButton_Interpolate_clicked()
             ui->tableWidget->setItem(a+i,3,new QTableWidgetItem(QString::number((int)(y+sy*i+0.5))));
             ui->tableWidget->setItem(a+i,4,new QTableWidgetItem(QString::number((int)(w+sw*i+0.5))));
             ui->tableWidget->setItem(a+i,5,new QTableWidgetItem(QString::number((int)(h+sh*i+0.5))));
+            ui->tableWidget->setItem(a+i,6,new QTableWidgetItem(QString::number(0)));
         }
     }else{
         QMessageBox::information(this, "Interpolation","Bei der Interpolation müssen zwei untereinander liegende Felder ausgewählt werden");
@@ -124,6 +128,7 @@ void ActionEventDialog::on_buttonBox_accepted()
         int y = ui->tableWidget->item(i,3)->text().toInt();
         int w = ui->tableWidget->item(i,4)->text().toInt();
         int h = ui->tableWidget->item(i,5)->text().toInt();
+        int gaze = ui->tableWidget->item(i,6)->text().toInt();
 
         if(mActivModelList[i].x >=0 && mActivModelList[i].y >= 0 && mActivModelList[i].z >= 0){//Object exisiteirt bereits
 //            int framePos = mControler->getFramePosInVector(mActivModelList[i].z);
@@ -135,7 +140,7 @@ void ActionEventDialog::on_buttonBox_accepted()
                 mDeleteList.push_back(cv::Point3i(Fp,Op,-1));
             }
         }else{
-            mControler->addObjectInFrame(x,y,w,h,frame,E_id,mObjectID,false);
+            mControler->addObjectInFrame(x,y,w,h,frame,E_id,mObjectID,false,gaze);
         }
     }
     for(size_t i = 0; i < mDeleteList.size(); i++){

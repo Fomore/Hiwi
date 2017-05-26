@@ -31,7 +31,7 @@
         <number>57</number>
        </attribute>
        <attribute name="verticalHeaderVisible">
-        <bool>true</bool>
+        <bool>false</bool>
        </attribute>
        <column>
         <property name="text">
@@ -61,6 +61,11 @@
        <column>
         <property name="text">
          <string>Height</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Gaze</string>
         </property>
        </column>
       </widget>

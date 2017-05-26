@@ -27,12 +27,13 @@ ActivModel::ActivModel(ActivModel *p)
     mSetOrienation = p->mSetOrienation;
     mSetPosition = p->mSetPosition;
     mSetProjection = p->mSetProjection;
+    mGaze = p->mGaze;
 }
 
-ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man)
+ActivModel::ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man, int gaze)
 {
     setZero();
-    setAll(x,y,w,h,frame,E_id,O_id, man);
+    setAll(x,y,w,h,frame,E_id,O_id, man, gaze);
 }
 
 void ActivModel::setZero()
@@ -45,6 +46,7 @@ void ActivModel::setZero()
     setPosition(zero3);
     setProjection(zero4);
     mSetLandmarks = mSetOrienation = mSetPosition = mSetProjection = false;
+    mGaze = 0;
 }
 
 void ActivModel::setLandmarks(double marks[5][2])
@@ -107,7 +109,12 @@ void ActivModel::getRect(int &x, int &y, int &w, int &h)
     h = mH;
 }
 
-void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man)
+int ActivModel::getGaze()
+{
+    return mGaze;
+}
+
+void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man, int gaze)
 {
     mX = x;
     mY = y;
@@ -118,6 +125,8 @@ void ActivModel::setAll(int x, int y, int w, int h, int frame, int E_id, int O_i
     mObjectID = O_id;
 
     mManuel = man;
+
+    mGaze = gaze;
 }
 
 void ActivModel::setEventID(int E_id)

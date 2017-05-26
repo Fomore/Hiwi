@@ -7,7 +7,7 @@ class ActivModel
 {
 private:
     int mEventID, mObjectID;
-    int mX,mY,mW,mH;
+    int mX,mY,mW,mH,mGaze;
 
     QString toStr(int i);
     QString toStr(double i);
@@ -22,9 +22,9 @@ public:
 
     ActivModel();
     ActivModel(ActivModel *p);
-    ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
+    ActivModel(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man, int gaze);
 
-    void setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man);
+    void setAll(int x, int y, int w, int h, int frame, int E_id, int O_id, bool man, int gaze);
     void setEventID(int E_id);
     void setObjectID(int O_id);
     virtual void setLandmarks(double marks[5][2]);
@@ -36,6 +36,7 @@ public:
     int getEventID();
     int getObjectID();
     void getRect(int &x, int &y, int &w, int &h);
+    int getGaze();
 
     QString printAll();
 };

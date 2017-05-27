@@ -9,6 +9,7 @@ XMLLoader::XMLLoader(Controler *control)
 {
     mControler = control;
     isWriting = false;
+    mIgnoreList.push_back("pupil");
 }
 
 void XMLLoader::read(const QString filename, QString path){
@@ -330,6 +331,20 @@ void XMLLoader::writeSmall(const QString filename, const QString path, int Gaze)
     }
 }
 
+bool XMLLoader::useLabel(QString Label)
+{
+    if(!mIgnorePerson){
+        return true;
+    }else{
+        for(int i = 0; i < mIgnoreList.size(); i++){
+            if(Label.contains(mIgnoreList[i])){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void XMLLoader::processBehavior(int oID)
 {
     if (!xml.isStartElement() || xml.name() != "behavior")
@@ -367,7 +382,8 @@ void XMLLoader::processDataset()
             processEvent();
             xml.skipCurrentElement();
         }else if(xml.name() == "person"){
-            processPerson();
+            bool use;
+            processPerson(use);
         }else{
             std::cout<<"Überspringe in Dataset mit "<<xml.name().toString().toStdString()<<std::endl;
             xml.skipCurrentElement();
@@ -416,21 +432,23 @@ void XMLLoader::processImage(int frame)
 
             int E_id = -1;
             int gaze = 0;
-            int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land, gaze);
-
-            if(O_id < 0){
-                O_id = mControler->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
-                std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
-            }
-            int FrameID = mControler->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual, gaze);
-            if(isLand){
-                mControler->setLandmarks(FrameID ,O_id, land);
-            }if(isOri){
-                mControler->setOrientation(FrameID ,O_id, orient);
-            }if(isPos){
-                mControler->setPosition(FrameID ,O_id, pos);
-            }if(isPro){
-                mControler->setProjection(FrameID ,O_id, proj);
+            bool use;
+            int O_id = processBox(E_id, isOri, orient, isPos, pos, isPro, proj, isLand, land, gaze, use);
+            if(use){
+                if(O_id < 0){
+                    O_id = mControler->addObjectSave("No Label","Dies sind Objekte, bei denen ein Ladeproblem vorliergt, kein Label zugeordnet");
+                    std::cout<<"Fehler bei Label: "<<xml.lineNumber()<<" "<<O_id<<std::endl;
+                }
+                int FrameID = mControler->addObjectInFrame(left,top,width,height,frame,E_id,O_id,manual, gaze);
+                if(isLand){
+                    mControler->setLandmarks(FrameID ,O_id, land);
+                }if(isOri){
+                    mControler->setOrientation(FrameID ,O_id, orient);
+                }if(isPos){
+                    mControler->setPosition(FrameID ,O_id, pos);
+                }if(isPro){
+                    mControler->setProjection(FrameID ,O_id, proj);
+                }
             }
         }
         else{
@@ -440,7 +458,8 @@ void XMLLoader::processImage(int frame)
     }
 }
 
-int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2], int &gaze) {
+int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2],
+                            int &gaze, bool &Use) {
     if (!xml.isStartElement() || xml.name() != "box"){
         std::cout<<"Keine Box"<<std::endl;
         return -1;
@@ -450,7 +469,7 @@ int XMLLoader::processBox(int &E_id, bool &isOri, double orient[3], bool &isPos,
 
     while (xml.readNextStartElement()) {
         if (xml.name() == "label"){
-            O_id = processPerson();
+            O_id = processPerson(Use);
         }else if (xml.name() == "orientation"){
             isOri = true;
             QXmlStreamAttributes att = xml.attributes();
@@ -539,7 +558,7 @@ int XMLLoader::processEvent()
 }
 
 
-int XMLLoader::processPerson()
+int XMLLoader::processPerson(bool &use)
 {
     QString label = readNextText();
     if (label.isNull()){
@@ -563,7 +582,8 @@ int XMLLoader::processPerson()
         }
     }
 
-    if(oID == -1){
+    use = useLabel(label);
+    if(oID == -1 && use){
         return mControler->addObjectSave(label,desc);
     }else{
         return oID;

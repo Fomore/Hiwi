@@ -645,8 +645,10 @@ void MainWindow::start_behavior()
 
 void MainWindow::on_actionImport_XML_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
-    mXMLLoader->read(filename);
+    QStringList filename = QFileDialog::getOpenFileNames(this,tr("Open XML-Datei"), "~", tr("XML (*.xml);; All (*.*)"));
+    for(int i = 0; i < filename.size(); i++){
+        mXMLLoader->read(filename[i]);
+    }
     updateView();
 }
 

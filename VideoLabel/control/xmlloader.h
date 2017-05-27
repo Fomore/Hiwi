@@ -17,16 +17,20 @@ public:
     void write(const QString filename, const QString path);
     void writeSmall(const QString filename, const QString path, int Gaze);
 
+    bool useLabel(QString Label);
+    bool mIgnorePerson = true;
+    QStringList mIgnoreList;
 private:
     void processName();
     void processBehavior(int oID);
     void processDataset();
     void processImages();
     void processImage(int frame);
-    int processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2], int &gaze);
+    int processBox(int &E_id, bool &isOri, double orient[3], bool &isPos, double pos[3], bool &isPro, double proj[4], bool &isLand, double land[5][2],
+                    int &gaze, bool &Use);
     void processLandmarks(double mark[5][2]);
     int processEvent();
-    int processPerson();
+    int processPerson(bool &use);
 
     QString readNextText();
     QString errorString();
